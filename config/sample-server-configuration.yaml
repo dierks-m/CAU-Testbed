@@ -1,6 +1,6 @@
 # This is what a configuration for the server might look like
 nodes:
   - id: raspi01
-    capabilities: [nrf52, zoul, sky]
+    capabilities: [NRF52, ZOUL, SKY]
   - id: raspi02
-    capabilities: [zoul]
+    capabilities: [ZOUL]
