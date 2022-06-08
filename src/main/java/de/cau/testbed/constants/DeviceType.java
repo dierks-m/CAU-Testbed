@@ -1,4 +1,4 @@
-package de.cau.testbed.config;
+package de.cau.testbed.constants;
 
 public enum DeviceType {
     NRF52,
