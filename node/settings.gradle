@@ -1,0 +1,4 @@
+rootProject.name = 'testbed-node'
+
+include ':testbed-server'
+project(':testbed-server').projectDir = new File('../server')
