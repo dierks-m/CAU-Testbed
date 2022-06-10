@@ -1,4 +1,4 @@
-package de.cau.testbed.network;
+package de.cau.testbed.shared.network;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.kafka.common.serialization.Deserializer;
