@@ -1,7 +1,7 @@
 package de.cau.testbed.shared.network;
 
-import de.cau.testbed.shared.network.constants.KafkaConstants;
-import de.cau.testbed.shared.network.constants.KafkaTopic;
+import de.cau.testbed.shared.constants.KafkaConstants;
+import de.cau.testbed.shared.constants.KafkaTopic;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;

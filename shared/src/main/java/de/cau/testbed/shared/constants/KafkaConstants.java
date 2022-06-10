@@ -1,4 +1,4 @@
-package de.cau.testbed.shared.network.constants;
+package de.cau.testbed.shared.constants;
 
 public interface KafkaConstants {
     String KAFKA_ADDRESS = "localhost:9092";
