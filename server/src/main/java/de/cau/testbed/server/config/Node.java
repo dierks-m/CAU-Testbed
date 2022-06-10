@@ -1,4 +1,4 @@
-package de.cau.testbed.config;
+package de.cau.testbed.server.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.cau.testbed.shared.network.constants.DeviceStatus;

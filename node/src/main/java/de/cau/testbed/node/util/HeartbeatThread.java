@@ -1,9 +1,9 @@
-package de.cau.testbedNode.util;
+package de.cau.testbed.node.util;
 
 import de.cau.testbed.constants.KafkaTopic;
 import de.cau.testbed.network.HeartbeatMessage;
 import de.cau.testbed.network.KafkaNetworkSender;
-import de.cau.testbedNode.network.Heartbeat;
+import de.cau.testbed.node.network.Heartbeat;
 
 public class HeartbeatThread extends Thread {
     private final KafkaNetworkSender<HeartbeatMessage> heartbeatSender;

@@ -1,6 +1,6 @@
-package de.cau.testbed;
+package de.cau.testbed.server;
 
-import de.cau.testbed.config.TestbedServerConfiguration;
+import de.cau.testbed.server.config.TestbedServerConfiguration;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Environment;
 

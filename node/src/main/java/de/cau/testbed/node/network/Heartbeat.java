@@ -1,4 +1,4 @@
-package de.cau.testbedNode.network;
+package de.cau.testbed.node.network;
 
 import de.cau.testbed.network.HeartbeatMessage;
 
