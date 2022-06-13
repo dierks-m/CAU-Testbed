@@ -1,16 +1,17 @@
 package de.cau.testbed.node.util;
 
-import de.cau.testbed.constants.KafkaTopic;
-import de.cau.testbed.network.HeartbeatMessage;
-import de.cau.testbed.network.KafkaNetworkSender;
-import de.cau.testbed.node.network.Heartbeat;
+import de.cau.testbed.shared.constants.KafkaConstants;
+import de.cau.testbed.shared.constants.KafkaTopic;
+import de.cau.testbed.shared.network.Heartbeat;
+import de.cau.testbed.shared.network.HeartbeatSerializer;
+import de.cau.testbed.shared.network.KafkaNetworkSender;
 
 public class HeartbeatThread extends Thread {
-    private final KafkaNetworkSender<HeartbeatMessage> heartbeatSender;
+    private final KafkaNetworkSender<Heartbeat> heartbeatSender;
     private final String nodeId;
 
     public HeartbeatThread(String nodeId) {
-        this.heartbeatSender = new KafkaNetworkSender<>(HeartbeatMessage.getSerializer(), KafkaTopic.HEARTBEAT);
+        this.heartbeatSender = new KafkaNetworkSender<>(new HeartbeatSerializer(), KafkaTopic.HEARTBEAT);
         this.nodeId = nodeId;
     }
 
@@ -20,7 +21,7 @@ public class HeartbeatThread extends Thread {
             heartbeatSender.send(null, new Heartbeat(nodeId));
 
             try {
-                Thread.sleep(1_000);
+                Thread.sleep(KafkaConstants.HEARTBEAT_INTERVAL - 1_000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

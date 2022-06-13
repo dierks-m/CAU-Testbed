@@ -11,7 +11,7 @@ public class JSONDeserializer {
             return mapper.readValue(new String(data, "UTF-8"), objectClass);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new SerializationException(String.format("Failed to deserialize order %s", new String(data)));
+            throw new SerializationException(String.format("Failed to deserialize %s", new String(data)));
         }
     }
 }
