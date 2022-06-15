@@ -2,28 +2,26 @@ package de.cau.testbed.server.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.cau.testbed.server.constants.DeviceType;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public class Node {
-    @NotNull
+public class ExperimentNode {
     public final String id;
-    public final List<DeviceType> capabilities;
+    public final List<ExperimentModule> modules;
 
-    public Node(
+    public ExperimentNode(
             @JsonProperty("id") String id,
-            @JsonProperty("capabilities") List<DeviceType> capabilities
+            @JsonProperty("modules") List<ExperimentModule> modules
     ) {
         this.id = id;
-        this.capabilities = capabilities;
+        this.modules = modules;
     }
 
     @Override
     public String toString() {
-        return "Node{" +
+        return "ExperimentNode{" +
                 "id='" + id + '\'' +
-                ", capabilities=" + capabilities +
+                ", modules=" + modules +
                 '}';
     }
 }
