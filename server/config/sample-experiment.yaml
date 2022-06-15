@@ -1,0 +1,10 @@
+name: "Zoul Test Experiment"
+nodes:
+  - id: raspi01
+    modules:
+      - id: ZOUL
+        firmware: "zoul-test.zoul"
+  - id: raspi02
+    modules:
+      - id: ZOUL
+        firmware: "zoul-test.zoul"
