@@ -1,4 +1,4 @@
-import nodeConfiguration
+from configuration import nodeConfiguration
 from network.heartbeat import HeartbeatThread
 from pathlib import Path
 
