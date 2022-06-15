@@ -12,7 +12,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
     @Override
     public void run(TestbedServerConfiguration configuration, Environment environment) throws Exception {
-        System.out.println(configuration.getNodes());
+        System.out.println(configuration.nodes);
         new HeartbeatThread().start();
     }
 }

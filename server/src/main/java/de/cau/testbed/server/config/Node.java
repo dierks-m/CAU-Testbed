@@ -1,7 +1,6 @@
 package de.cau.testbed.server.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.cau.testbed.server.constants.DeviceStatus;
 import de.cau.testbed.server.constants.DeviceType;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,36 +9,15 @@ import java.util.List;
 
 public class Node {
     @NotNull
-    private String id;
-    private List<DeviceType> capabilities = Collections.emptyList();
-    private DeviceStatus deviceStatus = DeviceStatus.WAIT_FOR_INITIAL_CONTACT;
+    public final String id;
+    public final List<DeviceType> capabilities;
 
-    @JsonProperty
-    public String getId() {
-        return id;
-    }
-
-    @JsonProperty
-    public void setId(String id) {
+    public Node(
+            @JsonProperty("id") String id,
+            @JsonProperty("capabilities") List<DeviceType> capabilities
+    ) {
         this.id = id;
-    }
-
-    @JsonProperty
-    public List<DeviceType> getCapabilities() {
-        return capabilities;
-    }
-
-    @JsonProperty
-    public void setCapabilities(List<DeviceType> capabilities) {
         this.capabilities = capabilities;
-    }
-
-    public DeviceStatus getDeviceStatus() {
-        return deviceStatus;
-    }
-
-    public void setDeviceStatus(DeviceStatus deviceStatus) {
-        this.deviceStatus = deviceStatus;
     }
 
     @Override
@@ -47,7 +25,6 @@ public class Node {
         return "Node{" +
                 "id='" + id + '\'' +
                 ", capabilities=" + capabilities +
-                ", status=" + deviceStatus +
                 '}';
     }
 }

@@ -7,15 +7,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class TestbedServerConfiguration extends Configuration {
-    private List<Node> nodes = Collections.emptyList();
+    public final List<Node> nodes;
 
-    @JsonProperty
-    public void setNodes(List<Node> nodes) {
+    public TestbedServerConfiguration(
+            @JsonProperty("nodes") List<Node> nodes
+    ) {
         this.nodes = nodes;
-    }
-
-    @JsonProperty
-    public List<Node> getNodes() {
-        return nodes;
     }
 }
