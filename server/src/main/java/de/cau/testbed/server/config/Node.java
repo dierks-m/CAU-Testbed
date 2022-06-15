@@ -1,8 +1,8 @@
 package de.cau.testbed.server.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.cau.testbed.shared.constants.DeviceStatus;
-import de.cau.testbed.shared.constants.DeviceType;
+import de.cau.testbed.server.constants.DeviceStatus;
+import de.cau.testbed.server.constants.DeviceType;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Collections;

@@ -1,4 +1,1 @@
 rootProject.name = 'testbed-server'
-
-include ':testbed-shared'
-project(':testbed-shared').projectDir = new File('../shared')

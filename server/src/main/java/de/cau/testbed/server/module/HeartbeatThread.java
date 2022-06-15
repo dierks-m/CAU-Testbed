@@ -1,8 +1,8 @@
 package de.cau.testbed.server.module;
 
-import de.cau.testbed.shared.constants.KafkaTopic;
-import de.cau.testbed.shared.network.HeartbeatMessage;
-import de.cau.testbed.shared.network.KafkaNetworkReceiver;
+import de.cau.testbed.server.constants.KafkaTopic;
+import de.cau.testbed.server.network.HeartbeatMessage;
+import de.cau.testbed.server.network.KafkaNetworkReceiver;
 
 public class HeartbeatThread extends Thread {
     private final KafkaNetworkReceiver<HeartbeatMessage> heartbeatReceiver;
