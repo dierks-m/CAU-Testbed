@@ -1,4 +1,5 @@
 name: "Zoul Test Experiment"
+experimentId: "1234567890"
 nodes:
   - id: raspi01
     modules:

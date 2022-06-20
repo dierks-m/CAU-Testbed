@@ -3,6 +3,8 @@ package de.cau.testbed.server.network;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.cau.testbed.server.network.serialization.HeartbeatDeserializer;
+import de.cau.testbed.server.network.serialization.HeartbeatSerializer;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serializer;
 

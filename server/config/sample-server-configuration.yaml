@@ -4,3 +4,5 @@ nodes:
     capabilities: [NRF52, ZOUL, SKY]
   - id: raspi02
     capabilities: [ZOUL]
+
+workingDirectory: "/tmp/testbed"

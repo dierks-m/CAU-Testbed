@@ -1,4 +1,4 @@
-package de.cau.testbed.server.network;
+package de.cau.testbed.server.network.serialization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

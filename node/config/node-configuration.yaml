@@ -1,3 +1,5 @@
 !Configuration
 id: "raspi01"
 bootstrapAddress: "localhost:9092"
+wireguardAddress: "localhost"
+workingDirectory: "/tmp/testbed-node"

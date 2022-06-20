@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.TestbedServerConfiguration;
+import de.cau.testbed.server.module.FirmwareDistributionThread;
 import de.cau.testbed.server.module.HeartbeatThread;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Environment;
@@ -29,5 +30,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         }
 
         new HeartbeatThread().start();
+
+        new FirmwareDistributionThread(Paths.get("/tmp/testbed")).start();
     }
 }

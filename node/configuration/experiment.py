@@ -12,5 +12,6 @@ class ExperimentModule:
         self.firmware = firmware
 
 class ExperimentNode:
-    def __init__(self, id: str, modules: List[ExperimentModule]):
+    def __init__(self, id: str, modules: List[ExperimentModule], experimentId: str):
         self.modules = modules
+        self.experimentId = experimentId

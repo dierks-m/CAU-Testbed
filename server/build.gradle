@@ -15,6 +15,7 @@ dependencies {
 
     implementation 'io.dropwizard:dropwizard-core:4.0.0-beta.1'
     implementation 'org.apache.kafka:kafka-clients:3.1.0'
+    implementation 'com.hierynomus:sshj:0.33.0'
 }
 
 test {
