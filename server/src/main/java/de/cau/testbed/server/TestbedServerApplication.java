@@ -2,6 +2,8 @@ package de.cau.testbed.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.TestbedServerConfiguration;
 import de.cau.testbed.server.module.FirmwareDistributionThread;
@@ -10,6 +12,9 @@ import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Environment;
 
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class TestbedServerApplication extends Application<TestbedServerConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -22,6 +27,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
         try {
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            mapper.registerModule(new JavaTimeModule());
             Experiment experiment = mapper.readValue(Paths.get("config/sample-experiment.yaml").toFile(), Experiment.class);
 
             System.out.println(experiment);

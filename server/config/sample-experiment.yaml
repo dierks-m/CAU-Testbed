@@ -1,5 +1,7 @@
 name: "Zoul Test Experiment"
 experimentId: "1234567890"
+start: "2022-06-20T14:30:00"
+end: "2022-06-20T14:35:00"
 nodes:
   - id: raspi01
     modules:
