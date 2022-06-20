@@ -31,6 +31,6 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
         new HeartbeatThread().start();
 
-        new FirmwareDistributionThread(Paths.get("/tmp/testbed")).start();
+        new FirmwareDistributionThread(configuration.workingDirectory).start();
     }
 }

@@ -7,11 +7,15 @@ import de.cau.testbed.server.network.KafkaNetworkReceiver;
 import de.cau.testbed.server.network.fileTransfer.FileTransferHandler;
 import de.cau.testbed.server.network.fileTransfer.SCPFileTransferHandler;
 import de.cau.testbed.server.network.serialization.FirmwareRetrievalMessageDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 public class FirmwareDistributionThread extends Thread {
+    private final Logger logger = LoggerFactory.getLogger(FirmwareDistributionThread.class);
+
     private final Path workingDirectory;
     private final KafkaNetworkReceiver<FirmwareRetrievalMessage> firmwareReceiver;
 
@@ -34,8 +38,12 @@ public class FirmwareDistributionThread extends Thread {
 
             try {
                 fileTransferHandler.transfer(retrievalMessage);
-            } catch (IOException e) {
-                e.printStackTrace();
+                logger.info(String.format(
+                        "Transferred firmware %s to node %s",
+                        retrievalMessage.firmwareName, retrievalMessage.hostName
+                ));
+            } catch (Exception e) {
+                logger.error("Failed to execute firmware transfer due to ", e);
             }
         }
     }

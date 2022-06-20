@@ -17,8 +17,6 @@ public class SCPFileTransferHandler implements FileTransferHandler {
     }
 
     public void transfer(FirmwareRetrievalMessage retrievalMessage) throws IOException {
-        System.out.println("Doing firmware retrieval for " + retrievalMessage);
-
         final SSHClient sshClient = new SSHClient();
         sshClient.addHostKeyVerifier(new PromiscuousVerifier());
         sshClient.connect(retrievalMessage.hostName);
