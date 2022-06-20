@@ -27,8 +27,6 @@ public class SCPFileTransferHandler implements FileTransferHandler {
                     getValidFirmwarePath(retrievalMessage.experimentId, retrievalMessage.firmwareName).toString(),
                     retrievalMessage.targetPath.toString()
             );
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             sshClient.disconnect();
         }
