@@ -1,6 +1,6 @@
 package de.cau.testbed.server.network.fileTransfer;
 
-import de.cau.testbed.server.network.FirmwareRetrievalMessage;
+import de.cau.testbed.server.network.message.FirmwareRetrievalMessage;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 

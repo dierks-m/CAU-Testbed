@@ -1,6 +1,6 @@
 package de.cau.testbed.server.network.serialization;
 
-import de.cau.testbed.server.network.HeartbeatMessage;
+import de.cau.testbed.server.network.message.HeartbeatMessage;
 import org.apache.kafka.common.serialization.Deserializer;
 
 public class HeartbeatDeserializer extends JSONDeserializer implements Deserializer<HeartbeatMessage> {

@@ -1,6 +1,6 @@
 package de.cau.testbed.server.network.serialization;
 
-import de.cau.testbed.server.network.FirmwareRetrievalMessage;
+import de.cau.testbed.server.network.message.FirmwareRetrievalMessage;
 import org.apache.kafka.common.serialization.Deserializer;
 
 public class FirmwareRetrievalMessageDeserializer extends JSONDeserializer implements Deserializer<FirmwareRetrievalMessage> {

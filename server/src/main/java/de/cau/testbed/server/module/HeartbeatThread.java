@@ -1,7 +1,7 @@
 package de.cau.testbed.server.module;
 
 import de.cau.testbed.server.constants.KafkaTopic;
-import de.cau.testbed.server.network.HeartbeatMessage;
+import de.cau.testbed.server.network.message.HeartbeatMessage;
 import de.cau.testbed.server.network.KafkaNetworkReceiver;
 
 public class HeartbeatThread extends Thread {

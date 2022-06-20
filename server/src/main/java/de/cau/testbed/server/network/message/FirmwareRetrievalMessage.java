@@ -1,4 +1,4 @@
-package de.cau.testbed.server.network;
+package de.cau.testbed.server.network.message;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
