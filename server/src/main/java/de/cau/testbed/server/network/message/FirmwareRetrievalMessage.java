@@ -14,7 +14,7 @@ public class FirmwareRetrievalMessage {
 
     public FirmwareRetrievalMessage(
             @JsonProperty("firmware") String firmwareName,
-            @JsonProperty("host") String hostName,
+            @JsonProperty("hostName") String hostName,
             @JsonProperty("userName") String userName,
             @JsonProperty("targetPath") String targetPath,
             @JsonProperty("experimentId") String experimentId
