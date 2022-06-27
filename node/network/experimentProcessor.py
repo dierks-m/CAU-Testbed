@@ -5,6 +5,7 @@ from kafka import KafkaConsumer
 
 from configuration import constants
 from configuration.experiment import Experiment, ExperimentNode
+from experiment.wrapper import ExperimentWrapper
 
 
 def get_matching_experiment_node(node_id: str, experiment: Experiment) -> ExperimentNode:
@@ -30,10 +31,6 @@ class ExperimentProcessor(Thread):
     def run(self):
         for message in self.kafka_connector:
             experiment = message.value
-            node_self = get_matching_experiment_node(self.node_id, experiment)
 
-            if node_self != None:
-                print("Found own node!")
-                print(str(node_self.modules))
-
-        print("dead.")
+            wrapper = ExperimentWrapper(self.node_id, experiment)
+            wrapper.initiate()
