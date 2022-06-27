@@ -3,7 +3,7 @@ from threading import Thread
 
 from kafka import KafkaConsumer
 
-import constants
+from configuration import constants
 from configuration.experiment import Experiment, ExperimentNode
 
 

@@ -1,7 +1,7 @@
 import json
 import time
 
-import constants
+from configuration import constants
 from threading import Thread
 from kafka import KafkaProducer
 

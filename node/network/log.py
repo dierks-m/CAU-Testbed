@@ -3,7 +3,7 @@ import os
 
 from kafka import KafkaProducer
 
-import constants
+from configuration import constants
 
 
 class LogRetrievalMessage:
