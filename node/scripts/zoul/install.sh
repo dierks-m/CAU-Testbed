@@ -1,0 +1,1 @@
+echo "Installing with arguments: $1, $2"
