@@ -12,9 +12,16 @@ from network import firmware
 
 scheduler = sched.scheduler(time.time, time.sleep)
 
-def module_factory(experiment_id: str, module: ExperimentModule) ->  experiment.modules.module.ExperimentModule:
+
+def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.modules.module.ExperimentModule:
     if module.id == "ZOUL":
-        return ZoulExperimentModule(firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, experiment_id, module.firmware))
+        return ZoulExperimentModule(os.path.join(
+            firmware.resolve_local_fw_path(
+                nodeConfiguration.configuration.workingDirectory, experiment_id, module.firmware
+            ),
+            module.firmware
+        ))
+
 
 class ExperimentWrapper:
     def __init__(self, node_id: str, experiment: Experiment):

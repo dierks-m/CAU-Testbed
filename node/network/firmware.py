@@ -15,7 +15,7 @@ class FirmwareRetrievalMessage:
         self.userName = os.getlogin()
         self.targetPath = targetPath
 
-def resolve_local_fw_path(working_directory: str, experiment_id: str, firmware_name: str) -> Path:
+def resolve_local_fw_path(working_directory: str, experiment_id: str) -> Path:
     return os.path.join(working_directory, experiment_id, "firmware")
 
 class FirmwareRetriever():
