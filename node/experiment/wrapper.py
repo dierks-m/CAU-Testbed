@@ -1,4 +1,5 @@
 import datetime
+import os
 import sched, time
 
 from typing import List
@@ -33,13 +34,25 @@ class ExperimentWrapper:
         for module in modules:
             nodeConfiguration.firmware_retriever.retrieve_firmware(self.experiment.experiment_id, module.firmware)
 
+    def wait_for_firmware(self, target_time: datetime.datetime):
+        modules = self.get_modules()
+
+        for module in modules:
+            while not os.path.exists(firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, self.experiment.experiment_id, module.firmware)):
+                time.sleep(1)
+
+                if datetime.datetime.now() >= target_time:
+                    raise RuntimeError("Failed to retrieve firmware in time!")
+
+            print(f"Got firmware '{module.firmware}'")
+
     def initiate(self):
         self.retrieve_firmware()
-        # scheduler.enterabs(self.experiment.start.timestamp(), 0, lambda _: print("Experiment starts now!"), ("abc",))
-        # scheduler.enterabs(self.experiment.end.timestamp(), 0, lambda _: print("Experiment ends now!"), ("abc",))
 
         module = module_factory(self.experiment.experiment_id, self.get_modules()[0])
 
+        scheduler.enterabs(datetime.datetime.now().timestamp(), 0, lambda: self.wait_for_firmware(max(self.experiment.start - datetime.timedelta(seconds=30), datetime.datetime.now() + datetime.timedelta(seconds=10))))
+        scheduler.enterabs((self.experiment.start - datetime.timedelta(seconds=10)).timestamp(), 0, module.prepare)
         scheduler.enterabs(self.experiment.start.timestamp(), 0, module.start)
         scheduler.enterabs(self.experiment.end.timestamp(), 0, module.stop)
 
