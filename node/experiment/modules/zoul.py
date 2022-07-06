@@ -11,14 +11,18 @@ class ZoulExperimentModule(ExperimentModule):
 
 
     def prepare(self):
-        self.bsl_address = os.system("arm-none-eabi-objdump -h %s |"
+
+        cmd_output_stream = os.popen("arm-none-eabi-objdump -h %s |"
                                      "grep -B1 LOAD | grep -Ev 'LOAD|\\-\\-' |"
                                      "awk '{print \"0x\" $5}' | sort -g | head -1" % (self.firmware_path,))
+
+        self.bsl_address = cmd_output_stream.read().strip()
+        cmd_output_stream.close()
 
         print(f"BSL address is {self.bsl_address}")
 
         os.system(
-            "arm-none-eabi-objcopy -0 binary --gap-fill 0xff %s %s" % (self.firmware_path, self.firmware_path + ".bin")
+            "arm-none-eabi-objcopy -O binary --gap-fill 0xff %s %s" % (self.firmware_path, self.firmware_path + ".bin")
         )
 
     def start(self):
