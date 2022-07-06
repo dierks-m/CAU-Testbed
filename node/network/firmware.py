@@ -28,7 +28,7 @@ class FirmwareRetriever():
         )
 
     def retrieve_firmware(self, experiment_id: str, firmware_name: str):
-        local_fw_path = resolve_local_fw_path(self.working_directory, experiment_id, firmware_name)
+        local_fw_path = resolve_local_fw_path(self.working_directory, experiment_id)
         os.makedirs(local_fw_path, exist_ok=True)
 
         self.retrieval_msg_producer.send(
@@ -37,6 +37,6 @@ class FirmwareRetriever():
                 experiment_id,
                 firmware_name,
                 self.host_name,
-                resolve_local_fw_path(self.working_directory, experiment_id, firmware_name)
+                local_fw_path
             )
         )
