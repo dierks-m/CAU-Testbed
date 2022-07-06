@@ -52,7 +52,7 @@ class ExperimentWrapper:
         module = module_factory(self.experiment.experiment_id, self.get_modules()[0])
 
         scheduler.enterabs(datetime.datetime.now().timestamp(), 0, lambda: self.wait_for_firmware(max(self.experiment.start - datetime.timedelta(seconds=30), datetime.datetime.now() + datetime.timedelta(seconds=10))))
-        scheduler.enterabs((self.experiment.start - datetime.timedelta(seconds=10)).timestamp(), 1, module.prepare)
+        scheduler.enterabs(max(self.experiment.start - datetime.timedelta(seconds=10), datetime.datetime.now()).timestamp(), 1, module.prepare)
         scheduler.enterabs(self.experiment.start.timestamp(), 1, module.start)
         scheduler.enterabs(self.experiment.end.timestamp(), 1, module.stop)
 
