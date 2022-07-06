@@ -16,9 +16,7 @@ scheduler = sched.scheduler(time.time, time.sleep)
 def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.modules.module.ExperimentModule:
     if module.id == "ZOUL":
         return ZoulExperimentModule(os.path.join(
-            firmware.resolve_local_fw_path(
-                nodeConfiguration.configuration.workingDirectory, experiment_id, module.firmware
-            ),
+            firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, experiment_id),
             module.firmware
         ))
 
@@ -45,7 +43,12 @@ class ExperimentWrapper:
         modules = self.get_modules()
 
         for module in modules:
-            while not os.path.exists(firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, self.experiment.experiment_id, module.firmware)):
+            firmware_file_path = os.path.join(
+                firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, self.experiment.experiment_id),
+                module.firmware
+            )
+
+            while not os.path.exists(firmware_file_path):
                 time.sleep(1)
 
                 if datetime.datetime.now() >= target_time:
