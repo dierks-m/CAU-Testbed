@@ -7,26 +7,25 @@ from experiment.modules.module import ExperimentModule
 class ZoulExperimentModule(ExperimentModule):
     def __init__(self, firmware_path: Path):
         ExperimentModule.__init__(self, firmware_path)
-        self.bsl_address = "dummy"
+        self.bsl_address_path = "dummy"
 
 
     def prepare(self):
+        self.bsl_address_path = self.firmware_path + "-bsl-address.txt"
 
-        cmd_output_stream = os.popen("arm-none-eabi-objdump -h %s |"
-                                     "grep -B1 LOAD | grep -Ev 'LOAD|\\-\\-' |"
-                                     "awk '{print \"0x\" $5}' | sort -g | head -1" % (self.firmware_path,))
+        os.system("arm-none-eabi-objdump -h %s |"
+                  "grep -B1 LOAD | grep -Ev 'LOAD|\\-\\-' |"
+                  "awk '{print \"0x\" $5}' | sort -g | head -1 > %s" % (self.firmware_path, self.bsl_address_path))
 
-        self.bsl_address = cmd_output_stream.read().strip()
-        cmd_output_stream.close()
 
-        print(f"BSL address is {self.bsl_address}")
+        print(f"BSL address is {self.bsl_address_path}")
 
         os.system(
             "arm-none-eabi-objcopy -O binary --gap-fill 0xff %s %s" % (self.firmware_path, self.firmware_path + ".bin")
         )
 
     def start(self):
-        os.system("scripts/zoul/install.sh %s %s" % (self.firmware_path + ".bin", self.bsl_address))
+        os.system("scripts/zoul/install.sh %s %s" % (self.firmware_path + ".bin", self.bsl_address_path))
 
     def stop(self):
         os.system("scripts/zoul/install.sh scripts/zoul/null.bin scripts/zoul/null_bsl_address.txt")
