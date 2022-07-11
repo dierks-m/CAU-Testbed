@@ -5,18 +5,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class YAMLExperimentStatus {
     public final String owner;
     public final String experimentId;
+    public final String name;
     public final boolean isScheduled;
     public final boolean isDone;
 
     public final boolean isStarted;
 
     public YAMLExperimentStatus(
+            @JsonProperty("name") String name,
             @JsonProperty("owner") String owner,
             @JsonProperty("experimentId") String experimentId,
             @JsonProperty("isScheduled") boolean isScheduled,
             @JsonProperty("isDone") boolean isDone,
             @JsonProperty("isStarted") boolean isStarted
     ) {
+        this.name = name;
         this.owner = owner;
         this.experimentId = experimentId;
         this.isScheduled = isScheduled;

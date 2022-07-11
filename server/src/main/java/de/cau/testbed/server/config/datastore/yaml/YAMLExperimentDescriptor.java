@@ -21,8 +21,8 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
 
     public YAMLExperimentDescriptor(YAMLExperimentStatus experimentStatus, Experiment experiment) {
         this.owner = experimentStatus.owner;
-        this.id = experiment.experimentId;
-        this.name = experiment.name;
+        this.id = experimentStatus.experimentId;
+        this.name = experimentStatus.name;
         this.start = experiment.start;
         this.end = experiment.end;
         this.scheduled = experimentStatus.isScheduled;

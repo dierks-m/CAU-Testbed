@@ -77,8 +77,7 @@ public class YAMLDatabase implements Database {
 
             YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors));
             YAMLParser.writeFile(Paths.get(workingDirectory.toString(), experimentDescriptor.getId(), "configuration.yaml"), new Experiment(
-                    experimentDescriptor.getName(), experimentDescriptor.getNodes(), experimentDescriptor.getId(),
-                    experimentDescriptor.getStart(), experimentDescriptor.getEnd()
+                    experimentDescriptor.getNodes(), experimentDescriptor.getStart(), experimentDescriptor.getEnd()
             ));
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -9,14 +9,9 @@ import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Experiment {
-    @JsonProperty("name")
-    public final String name;
 
     @JsonProperty("nodes")
     public final List<ExperimentNode> nodes;
-
-    @JsonProperty("experimentId")
-    public final String experimentId;
 
     @JsonProperty("start")
     public final LocalDateTime start;
@@ -25,15 +20,11 @@ public class Experiment {
 
     @JsonCreator
     public Experiment(
-            @JsonProperty("name") String name,
             @JsonProperty("nodes") List<ExperimentNode> nodes,
-            @JsonProperty("experimentId") String experimentId,
             @JsonProperty("start") LocalDateTime start,
             @JsonProperty("end") LocalDateTime end
     ) {
-        this.name = name;
         this.nodes = nodes;
-        this.experimentId = experimentId;
         this.start = start;
         this.end = end;
     }
@@ -41,9 +32,7 @@ public class Experiment {
     @Override
     public String toString() {
         return "Experiment{" +
-                "name='" + name + '\'' +
-                ", nodes=" + nodes +
-                ", experimentId='" + experimentId + '\'' +
+                "nodes=" + nodes +
                 ", start=" + start +
                 ", end=" + end +
                 '}';
