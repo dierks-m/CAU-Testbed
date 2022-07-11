@@ -5,7 +5,6 @@ from kafka import KafkaConsumer
 
 from configuration import constants
 from configuration.experiment import Experiment, ExperimentNode
-from experiment import experiment_logging
 from experiment.wrapper import ExperimentWrapper
 
 
