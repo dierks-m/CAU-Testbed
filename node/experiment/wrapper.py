@@ -70,7 +70,7 @@ class ExperimentWrapper:
         modules = self.get_modules()
 
         for module in modules:
-            wrapped_module = module_factory(self.experiment_id, module)
+            wrapped_module = module_factory(self.experiment.experiment_id, module)
 
             if wrapped_module is not None:
                 scheduler.enter(0, 1, wrapped_module.prepare) # Prepare right after firmware arrives (e.g. BSL address etc.)
