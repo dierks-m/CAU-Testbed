@@ -18,4 +18,8 @@ public class YAMLParser {
     public static <T> T parseFile(Path path, Class<T> objectClass) throws IOException {
         return MAPPER.readValue(path.toFile(), objectClass);
     }
+
+    public static <T> void writeFile(Path path, T object) throws IOException {
+        MAPPER.writeValue(path.toFile(), object);
+    }
 }

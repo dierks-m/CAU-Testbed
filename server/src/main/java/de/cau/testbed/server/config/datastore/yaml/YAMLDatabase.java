@@ -6,6 +6,7 @@ import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -65,5 +66,22 @@ public class YAMLDatabase implements Database {
         }
 
         return Optional.ofNullable(nextExperiment);
+    }
+
+    @Override
+    public void addExperiment(ExperimentDescriptor experimentDescriptor) {
+        experimentDescriptors.add(experimentDescriptor);
+
+        try {
+            Files.createDirectories(Paths.get(workingDirectory.toString(), experimentDescriptor.getId()));
+
+            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors));
+            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), experimentDescriptor.getId(), "configuration.yaml"), new Experiment(
+                    experimentDescriptor.getName(), experimentDescriptor.getNodes(), experimentDescriptor.getId(),
+                    experimentDescriptor.getStart(), experimentDescriptor.getEnd()
+            ));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
