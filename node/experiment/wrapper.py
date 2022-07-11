@@ -53,7 +53,7 @@ class ExperimentWrapper:
                 module.firmware
             )
 
-            while not os.path.exists(firmware_file_path):
+            while not os.path.exists(firmware_file_path) or os.path.getsize(firmware_file_path) == 0:
                 time.sleep(1)
 
                 if datetime.datetime.now() >= target_time:
