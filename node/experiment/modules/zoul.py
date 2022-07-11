@@ -29,5 +29,5 @@ class ZoulExperimentModule(ExperimentModule):
         os.system("scripts/zoul/serialdump.sh %s" % (self.log_path))
 
     def stop(self):
-        os.system("scripts/zoul/install.sh scripts/zoul/null.bin scripts/zoul/null_bsl_address.txt")
         os.system("scripts/zoul/serialdump-stop.sh")
+        os.system("scripts/zoul/install.sh scripts/zoul/null.bin scripts/zoul/null_bsl_address.txt")

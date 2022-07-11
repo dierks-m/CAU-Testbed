@@ -27,7 +27,7 @@ class LogTransfer:
             value_serializer=lambda x: json.dumps(x, default=lambda o: o.__dict__).encode("utf-8")
         )
 
-    def initiateLogRetrieval(self, experiment_id: str):
+    def initiate_log_retrieval(self, experiment_id: str):
         local_log_path = resolve_local_log_path(self.working_directory, experiment_id)
 
         self.retrieval_msg_producer.send(
@@ -39,3 +39,9 @@ class LogTransfer:
                 self.node_id
             )
         )
+
+    def create_logging_directory(self, experiment_id: str):
+        os.makedirs(os.path.join(self.working_directory, experiment_id, "logs"), exist_ok=True)
+
+
+transfer_handler = None  # To be populated by main program

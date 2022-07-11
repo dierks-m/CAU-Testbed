@@ -1,14 +1,14 @@
 import datetime
 import os
-import sched, time
-
+import sched
+import time
 from typing import List
 
 import experiment.modules.module
 from configuration import nodeConfiguration
-from configuration.experiment import Experiment, ExperimentModule, ModuleType
+from configuration.experiment import Experiment, ExperimentModule
 from experiment.modules.zoul import ZoulExperimentModule
-from network import firmware
+from network import firmware, log
 
 scheduler = sched.scheduler(time.time, time.sleep)
 
@@ -62,6 +62,8 @@ class ExperimentWrapper:
             print(f"Got firmware '{module.firmware}'")
 
     def initiate(self):
+        log.transfer_handler.create_logging_directory(self.experiment.experiment_id)
+
         # Initiate firmware retrieval and wait either until 30 seconds before experiment (scheduled)
         # or a maximum of 30 seconds from now (in case of immediate/late execution)
         self.retrieve_firmware()
@@ -79,6 +81,8 @@ class ExperimentWrapper:
                 scheduler.enterabs(max(self.experiment.start, datetime.datetime.now()).timestamp(), 1, wrapped_module.start)
                 scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 1, wrapped_module.stop)
 
-
+        # Initiate log retrieval for *all* modules
+        scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 2,
+                           lambda: log.transfer_handler.initiate_log_retrieval(self.experiment.experiment_id))
 
         scheduler.run()

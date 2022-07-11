@@ -32,8 +32,5 @@ class ExperimentProcessor(Thread):
     def run(self):
         for message in self.kafka_connector:
             experiment = message.value
-
-            experiment_logging.create_logging_directory(experiment)
-
             wrapper = ExperimentWrapper(self.node_id, experiment)
             wrapper.initiate()

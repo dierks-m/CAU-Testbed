@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from configuration import nodeConfiguration
+from network import log
 from network.experimentProcessor import ExperimentProcessor
 from network.firmware import FirmwareRetriever
 
@@ -14,9 +15,7 @@ if __name__ == '__main__':
     # print("Retrieving zoul-test.zoul firmware...")
     # firmwareRetriever.retrieve_firmware("1234567890", "zoul-test.zoul")
 
-    # logSender = LogTransfer(config.wireguardAddress, config.id, config.workingDirectory, config.bootstrapAddress)
-    # print("Sending logs")
-    # logSender.initiateLogRetrieval("1234567890")
+    log.transfer_handler = log.LogTransfer(config.wireguardAddress, config.id, config.workingDirectory, config.bootstrapAddress)
 
     processor = ExperimentProcessor(config.id, config.bootstrapAddress)
     processor.start()
