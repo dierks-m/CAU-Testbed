@@ -5,6 +5,7 @@ from kafka import KafkaConsumer
 
 from configuration import constants
 from configuration.experiment import Experiment, ExperimentNode
+from experiment import experiment_logging
 from experiment.wrapper import ExperimentWrapper
 
 
@@ -31,6 +32,8 @@ class ExperimentProcessor(Thread):
     def run(self):
         for message in self.kafka_connector:
             experiment = message.value
+
+            experiment_logging.create_logging_directory(experiment)
 
             wrapper = ExperimentWrapper(self.node_id, experiment)
             wrapper.initiate()

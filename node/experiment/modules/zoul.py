@@ -5,8 +5,8 @@ from experiment.modules.module import ExperimentModule
 
 
 class ZoulExperimentModule(ExperimentModule):
-    def __init__(self, firmware_path: Path):
-        ExperimentModule.__init__(self, firmware_path)
+    def __init__(self, firmware_path: Path, log_path: Path):
+        ExperimentModule.__init__(self, firmware_path, log_path)
         self.bsl_address_path = "dummy"
 
 
@@ -26,6 +26,8 @@ class ZoulExperimentModule(ExperimentModule):
 
     def start(self):
         os.system("scripts/zoul/install.sh %s %s" % (self.firmware_path + ".bin", self.bsl_address_path))
+        os.system("scripts/zoul/serialdump.sh %s" % (self.log_path))
 
     def stop(self):
         os.system("scripts/zoul/install.sh scripts/zoul/null.bin scripts/zoul/null_bsl_address.txt")
+        os.system("scripts/zoul/serialdump-stop.sh")

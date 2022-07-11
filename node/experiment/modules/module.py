@@ -2,8 +2,9 @@ from pathlib import Path
 
 
 class ExperimentModule:
-    def __init__(self, firmware_path: Path):
+    def __init__(self, firmware_path: Path, log_path: Path):
         self.firmware_path = firmware_path
+        self.log_path = log_path
 
     def prepare(self):
         pass # Can be used to e.g. extract firmware addresses and such

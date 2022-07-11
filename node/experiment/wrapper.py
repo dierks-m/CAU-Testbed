@@ -15,10 +15,15 @@ scheduler = sched.scheduler(time.time, time.sleep)
 
 def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.modules.module.ExperimentModule:
     if module.id == "ZOUL":
-        return ZoulExperimentModule(os.path.join(
-            firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, experiment_id),
-            module.firmware
-        ))
+        return ZoulExperimentModule(
+            os.path.join(
+                firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, experiment_id),
+                module.firmware
+            ),
+            os.path.join(nodeConfiguration.configuration.workingDirectory, experiment_id, "logs", "zoul.log")
+        )
+
+    return None
 
 
 class ExperimentWrapper:
@@ -57,14 +62,23 @@ class ExperimentWrapper:
             print(f"Got firmware '{module.firmware}'")
 
     def initiate(self):
+        # Initiate firmware retrieval and wait either until 30 seconds before experiment (scheduled)
+        # or a maximum of 30 seconds from now (in case of immediate/late execution)
         self.retrieve_firmware()
+        scheduler.enter(0, 0, lambda: self.wait_for_firmware(max(self.experiment.start - datetime.timedelta(seconds=30), datetime.datetime.now() + datetime.timedelta(seconds=30))))
 
-        module = module_factory(self.experiment.experiment_id, self.get_modules()[0])
+        modules = self.get_modules()
 
-        scheduler.enter(0, 0, lambda: self.wait_for_firmware(max(self.experiment.start - datetime.timedelta(seconds=30), datetime.datetime.now() + datetime.timedelta(seconds=10))))
-        scheduler.enter(0, 1, module.prepare)
-        scheduler.enterabs(max(self.experiment.start, datetime.datetime.now()).timestamp(), 1, module.start)
-        scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 1, module.stop)
+        for module in modules:
+            wrapped_module = module_factory(self.experiment_id, module)
+
+            if wrapped_module is not None:
+                scheduler.enter(0, 1, wrapped_module.prepare) # Prepare right after firmware arrives (e.g. BSL address etc.)
+
+                # Enter start and stop times for the individual modules
+                scheduler.enterabs(max(self.experiment.start, datetime.datetime.now()).timestamp(), 1, wrapped_module.start)
+                scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 1, wrapped_module.stop)
+
+
 
         scheduler.run()
-        print("Scheduler done")
