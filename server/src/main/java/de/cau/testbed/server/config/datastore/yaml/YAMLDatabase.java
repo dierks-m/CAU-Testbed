@@ -34,7 +34,7 @@ public class YAMLDatabase implements Database {
     private List<ExperimentDescriptor> loadExperiments(YAMLExperimentList experimentList) {
         final List<ExperimentDescriptor> experimentDescriptors = new ArrayList<>();
 
-        for (ExperimentStatus experimentStatus : experimentList.experiments) {
+        for (YAMLExperimentStatus experimentStatus : experimentList.experiments) {
             try {
                 final Experiment experiment = YAMLParser.parseFile(
                         Paths.get(workingDirectory.toString(), experimentStatus.experimentId, "configuration.yaml"),

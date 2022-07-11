@@ -4,12 +4,13 @@ import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.ExperimentNode;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private final String id;
+
+    private final String owner;
     private final String name;
     private final LocalDateTime start;
     private final LocalDateTime end;
@@ -17,7 +18,8 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private final boolean done;
     private final List<ExperimentNode> nodes;
 
-    public YAMLExperimentDescriptor(ExperimentStatus experimentStatus, Experiment experiment) {
+    public YAMLExperimentDescriptor(YAMLExperimentStatus experimentStatus, Experiment experiment) {
+        this.owner = experimentStatus.owner;
         this.id = experiment.experimentId;
         this.name = experiment.name;
         this.start = experiment.start;
@@ -35,6 +37,11 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getOwner() {
+        return owner;
     }
 
     @Override
@@ -66,6 +73,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     public String toString() {
         return "YAMLExperimentDescriptor{" +
                 "id='" + id + '\'' +
+                ", owner='" + owner + '\'' +
                 ", name='" + name + '\'' +
                 ", start=" + start +
                 ", end=" + end +

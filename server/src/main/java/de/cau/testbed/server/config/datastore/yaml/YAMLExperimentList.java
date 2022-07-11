@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class YAMLExperimentList {
-    public final List<ExperimentStatus> experiments;
+    public final List<YAMLExperimentStatus> experiments;
 
     public YAMLExperimentList(
-            @JsonProperty("experiments") List<ExperimentStatus> experiments
+            @JsonProperty("experiments") List<YAMLExperimentStatus> experiments
     ) {
         this.experiments = experiments;
     }
 
     public static YAMLExperimentList fromExperimentDescriptorList(List<ExperimentDescriptor> experimentDescriptors) {
-        final List<ExperimentStatus> experimentStatusList = new ArrayList<>();
+        final List<YAMLExperimentStatus> experimentStatusList = new ArrayList<>();
 
         for (ExperimentDescriptor descriptor : experimentDescriptors) {
-            experimentStatusList.add(new ExperimentStatus(descriptor.getId(), descriptor.isScheduled(), descriptor.isDone()));
+            experimentStatusList.add(new YAMLExperimentStatus(descriptor.getOwner(), descriptor.getId(), descriptor.isScheduled(), descriptor.isDone()));
         }
 
         return new YAMLExperimentList(experimentStatusList);
