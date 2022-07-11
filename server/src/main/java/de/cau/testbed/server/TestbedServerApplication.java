@@ -8,6 +8,7 @@ import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.ExperimentModule;
 import de.cau.testbed.server.config.ExperimentNode;
 import de.cau.testbed.server.config.TestbedServerConfiguration;
+import de.cau.testbed.server.config.datastore.yaml.YAMLDatabase;
 import de.cau.testbed.server.constants.DeviceType;
 import de.cau.testbed.server.constants.KafkaTopic;
 import de.cau.testbed.server.module.FirmwareDistributionThread;
@@ -32,26 +33,26 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
     @Override
     public void run(TestbedServerConfiguration configuration, Environment environment) throws Exception {
-        System.out.println(configuration.nodes);
-
-        Experiment experiment;
-
-        try {
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            mapper.registerModule(new JavaTimeModule());
-            experiment = mapper.readValue(Paths.get("config/sample-experiment.yaml").toFile(), Experiment.class);
-
-            System.out.println(experiment);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        new HeartbeatThread().start();
-
-        new FirmwareDistributionThread(configuration.workingDirectory).start();
-        new LogRetrievalThread(configuration.workingDirectory).start();
-
-        KafkaNetworkSender<Experiment> experimentSender = new KafkaNetworkSender<>(new ExperimentSerializer(), KafkaTopic.EXPERIMENT_PREPARATION);
+//        System.out.println(configuration.nodes);
+//
+//        Experiment experiment;
+//
+//        try {
+//            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+//            mapper.registerModule(new JavaTimeModule());
+//            experiment = mapper.readValue(Paths.get("config/sample-experiment.yaml").toFile(), Experiment.class);
+//
+//            System.out.println(experiment);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        new HeartbeatThread().start();
+//
+//        new FirmwareDistributionThread(configuration.workingDirectory).start();
+//        new LogRetrievalThread(configuration.workingDirectory).start();
+//
+//        KafkaNetworkSender<Experiment> experimentSender = new KafkaNetworkSender<>(new ExperimentSerializer(), KafkaTopic.EXPERIMENT_PREPARATION);
 
 //        ObjectMapper mapper = new ObjectMapper();
 //
@@ -61,6 +62,10 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 //
 //        System.out.println(mapper.writeValueAsString(experiment1));
 
-        experimentSender.send(null, experiment);
+//        experimentSender.send(null, experiment);
+
+        final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
+
+        System.out.println(database.getNextScheduledExperiment());
     }
 }

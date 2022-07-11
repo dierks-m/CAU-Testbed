@@ -11,7 +11,6 @@ import java.util.List;
 public class TestbedServerConfiguration extends Configuration {
     public final List<Node> nodes;
     public final Path workingDirectory;
-
     public TestbedServerConfiguration(
             @JsonProperty("nodes") List<Node> nodes,
             @JsonProperty("workingDirectory") String workingDirectory
