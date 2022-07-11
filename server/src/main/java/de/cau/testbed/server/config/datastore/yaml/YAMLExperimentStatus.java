@@ -8,16 +8,20 @@ public class YAMLExperimentStatus {
     public final boolean isScheduled;
     public final boolean isDone;
 
+    public final boolean isStarted;
+
     public YAMLExperimentStatus(
             @JsonProperty("owner") String owner,
             @JsonProperty("experimentId") String experimentId,
             @JsonProperty("isScheduled") boolean isScheduled,
-            @JsonProperty("isDone") boolean isDone
+            @JsonProperty("isDone") boolean isDone,
+            @JsonProperty("isStarted") boolean isStarted
     ) {
         this.owner = owner;
         this.experimentId = experimentId;
         this.isScheduled = isScheduled;
         this.isDone = isDone;
+        this.isStarted = isStarted;
     }
 
     @Override

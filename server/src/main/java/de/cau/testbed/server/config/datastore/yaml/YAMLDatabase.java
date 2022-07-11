@@ -56,7 +56,7 @@ public class YAMLDatabase implements Database {
         ExperimentDescriptor nextExperiment = null;
 
         for (ExperimentDescriptor descriptor : experimentDescriptors) {
-            if (descriptor.isScheduled() && !descriptor.isDone()) {
+            if (descriptor.isScheduled() && !descriptor.isDone() && !descriptor.isStarted()) {
                 if (nextExperiment == null)
                     nextExperiment = descriptor;
                 else if (descriptor.getStart().isBefore(nextExperiment.getStart())) {

@@ -19,7 +19,7 @@ public class YAMLExperimentList {
         final List<YAMLExperimentStatus> experimentStatusList = new ArrayList<>();
 
         for (ExperimentDescriptor descriptor : experimentDescriptors) {
-            experimentStatusList.add(new YAMLExperimentStatus(descriptor.getOwner(), descriptor.getId(), descriptor.isScheduled(), descriptor.isDone()));
+            experimentStatusList.add(new YAMLExperimentStatus(descriptor.getOwner(), descriptor.getId(), descriptor.isScheduled(), descriptor.isDone(), descriptor.isStarted()));
         }
 
         return new YAMLExperimentList(experimentStatusList);

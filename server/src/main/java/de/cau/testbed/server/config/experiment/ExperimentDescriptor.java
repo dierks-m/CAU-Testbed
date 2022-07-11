@@ -18,6 +18,8 @@ public interface ExperimentDescriptor {
     LocalDateTime getEnd();
     boolean isScheduled();
     boolean isDone();
+    boolean isStarted();
+    void setStarted(boolean started);
 
     List<ExperimentNode> getNodes();
 }

@@ -16,6 +16,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private final LocalDateTime end;
     private final boolean scheduled;
     private final boolean done;
+    private boolean isStarted;
     private final List<ExperimentNode> nodes;
 
     public YAMLExperimentDescriptor(YAMLExperimentStatus experimentStatus, Experiment experiment) {
@@ -27,6 +28,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
         this.scheduled = experimentStatus.isScheduled;
         this.done = experimentStatus.isDone;
         this.nodes = experiment.nodes;
+        this.isStarted = experimentStatus.isStarted;
     }
 
     @Override
@@ -62,6 +64,16 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     @Override
     public boolean isDone() {
         return done;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    @Override
+    public void setStarted(boolean started) {
+        isStarted = started;
     }
 
     @Override
