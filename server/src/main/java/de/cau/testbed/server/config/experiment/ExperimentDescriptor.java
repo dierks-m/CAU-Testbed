@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Describes an experiment with all its nodes/components.
- * This is a wrapper that provides abstraction from the database in the background
+ * This is a wrapper that provides abstraction from the database in the background.
  */
 public interface ExperimentDescriptor {
     String getId();
