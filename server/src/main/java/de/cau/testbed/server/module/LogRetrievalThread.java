@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class LogRetrievalThread extends Thread {
-    private final Logger logger = LoggerFactory.getLogger(FirmwareDistributionThread.class);
+    private final Logger logger = LoggerFactory.getLogger(LogRetrievalThread.class);
 
     private final KafkaNetworkReceiver<LogRetrievalMessage> logRetrievalReceiver;
 

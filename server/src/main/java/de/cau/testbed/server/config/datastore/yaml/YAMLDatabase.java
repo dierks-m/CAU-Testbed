@@ -72,6 +72,23 @@ public class YAMLDatabase implements Database {
     public void addExperiment(ExperimentDescriptor experimentDescriptor) {
         experimentDescriptors.add(experimentDescriptor);
 
+        writeExperimentFile(experimentDescriptor);
+    }
+
+    @Override
+    public void updateExperiment(ExperimentDescriptor experimentDescriptor) {
+        for (int i = 0; i < experimentDescriptors.size(); i++) {
+            if (experimentDescriptors.get(i).equals(experimentDescriptor)) {
+                experimentDescriptors.set(i, experimentDescriptor);
+                writeExperimentFile(experimentDescriptor);
+                return;
+            }
+        }
+
+        addExperiment(experimentDescriptor);
+    }
+
+    private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {
         try {
             Files.createDirectories(Paths.get(workingDirectory.toString(), experimentDescriptor.getId()));
 

@@ -15,4 +15,6 @@ public interface Database {
      * @param experimentDescriptor
      */
     void addExperiment(ExperimentDescriptor experimentDescriptor);
+
+    void updateExperiment(ExperimentDescriptor experimentDescriptor);
 }

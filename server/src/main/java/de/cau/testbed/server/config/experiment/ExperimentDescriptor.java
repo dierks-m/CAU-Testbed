@@ -11,14 +11,21 @@ import java.util.List;
  */
 public interface ExperimentDescriptor {
     String getId();
+
     String getName();
 
     String getOwner();
+
     LocalDateTime getStart();
+
     LocalDateTime getEnd();
+
     boolean isScheduled();
+
     boolean isDone();
+
     boolean isStarted();
+
     void setStarted(boolean started);
 
     List<ExperimentNode> getNodes();

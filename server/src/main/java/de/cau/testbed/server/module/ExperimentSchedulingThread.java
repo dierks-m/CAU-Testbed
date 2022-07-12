@@ -38,14 +38,20 @@ public class ExperimentSchedulingThread extends Thread {
                 final long minuteDiff = ChronoUnit.MINUTES.between(descriptor.getStart(), LocalDateTime.now());
 
                 if (minuteDiff <= 5) {
-                    logger.info("Preparing experiment " + descriptor.getName());
-                    experimentSender.send(null, new ExperimentMessage(descriptor));
-                    descriptor.setStarted(true);
+                    prepareExperiment(descriptor);
                 } else {
                     trySleep(minuteDiff * 60 * 1000);
                 }
             }
         }
+    }
+
+    private void prepareExperiment(ExperimentDescriptor descriptor) {
+        logger.info("Preparing experiment " + descriptor.getName());
+
+        experimentSender.send(null, new ExperimentMessage(descriptor));
+        descriptor.setStarted(true);
+        database.updateExperiment(descriptor);
     }
 
     public void wakeup() {
