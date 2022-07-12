@@ -35,15 +35,15 @@ public class YAMLDatabase implements Database {
     private List<ExperimentDescriptor> loadExperiments(YAMLExperimentList experimentList) {
         final List<ExperimentDescriptor> experimentDescriptors = new ArrayList<>();
 
-        for (YAMLExperimentStatus experimentStatus : experimentList.experiments) {
+        for (YAMLExperimentInfo experimentInfo : experimentList.experiments) {
             try {
                 final Experiment experiment = YAMLParser.parseFile(
-                        Paths.get(workingDirectory.toString(), experimentStatus.experimentId, "configuration.yaml"),
+                        Paths.get(workingDirectory.toString(), experimentInfo.experimentId, "configuration.yaml"),
                         Experiment.class
                 );
 
                 experimentDescriptors.add(
-                        new YAMLExperimentDescriptor(experimentStatus, experiment)
+                        new YAMLExperimentDescriptor(experimentInfo, experiment)
                 );
             } catch (IOException ignored) {
             }

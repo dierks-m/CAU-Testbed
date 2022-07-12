@@ -18,14 +18,14 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
-    public YAMLExperimentDescriptor(YAMLExperimentStatus experimentStatus, Experiment experiment) {
-        this.owner = experimentStatus.owner;
-        this.id = experimentStatus.experimentId;
-        this.name = experimentStatus.name;
-        this.start = experimentStatus.start;
-        this.end = experimentStatus.end;
+    public YAMLExperimentDescriptor(YAMLExperimentInfo experimentInfo, Experiment experiment) {
+        this.owner = experimentInfo.owner;
+        this.id = experimentInfo.experimentId;
+        this.name = experimentInfo.name;
+        this.start = experimentInfo.start;
+        this.end = experimentInfo.end;
         this.nodes = experiment.nodes;
-        this.status = experimentStatus.status;
+        this.status = experimentInfo.status;
     }
 
     @Override
