@@ -1,6 +1,5 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
-import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.ExperimentNode;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.constants.ExperimentStatus;
@@ -18,13 +17,13 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
-    public YAMLExperimentDescriptor(YAMLExperimentInfo experimentInfo, Experiment experiment) {
+    public YAMLExperimentDescriptor(YAMLExperimentInfo experimentInfo, YAMLExperimentDetail experimentDetail) {
         this.owner = experimentInfo.owner;
         this.id = experimentInfo.experimentId;
         this.name = experimentInfo.name;
         this.start = experimentInfo.start;
         this.end = experimentInfo.end;
-        this.nodes = experiment.nodes;
+        this.nodes = experimentDetail.nodes;
         this.status = experimentInfo.status;
     }
 

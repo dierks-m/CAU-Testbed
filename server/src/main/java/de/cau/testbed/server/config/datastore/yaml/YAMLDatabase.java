@@ -1,8 +1,8 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
-import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.YAMLParser;
 import de.cau.testbed.server.config.datastore.Database;
+import de.cau.testbed.server.config.exception.TimeCollisionException;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,13 +38,13 @@ public class YAMLDatabase implements Database {
 
         for (YAMLExperimentInfo experimentInfo : experimentList.experiments) {
             try {
-                final Experiment experiment = YAMLParser.parseFile(
+                final YAMLExperimentDetail experimentDetail = YAMLParser.parseFile(
                         Paths.get(workingDirectory.toString(), experimentInfo.experimentId, "configuration.yaml"),
-                        Experiment.class
+                        YAMLExperimentDetail.class
                 );
 
                 experimentDescriptors.add(
-                        new YAMLExperimentDescriptor(experimentInfo, experiment)
+                        new YAMLExperimentDescriptor(experimentInfo, experimentDetail)
                 );
             } catch (IOException ignored) {
             }
@@ -70,10 +71,20 @@ public class YAMLDatabase implements Database {
     }
 
     @Override
-    public synchronized void addExperiment(ExperimentDescriptor experimentDescriptor) {
+    public synchronized void addExperiment(ExperimentDescriptor experimentDescriptor) throws TimeCollisionException {
+        checkTimeConflict(experimentDescriptor);
         experimentDescriptors.add(experimentDescriptor);
 
         writeExperimentFile(experimentDescriptor);
+    }
+
+    private void checkTimeConflict(ExperimentDescriptor experimentDescriptor) throws TimeCollisionException {
+        for (ExperimentDescriptor experiment: experimentDescriptors) {
+            if (ChronoUnit.MINUTES.between(experiment.getEnd(), experimentDescriptor.getStart()) <= 5)
+                throw new TimeCollisionException("Start time of experiment is too close to end time of another experiment");
+            else if (ChronoUnit.MINUTES.between(experimentDescriptor.getEnd(), experiment.getStart()) <= 5)
+                throw new TimeCollisionException("End time of experiment is too close to start time of another experiment");
+        }
     }
 
     @Override
@@ -85,8 +96,6 @@ public class YAMLDatabase implements Database {
                 return;
             }
         }
-
-        addExperiment(experimentDescriptor);
     }
 
     private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {
@@ -94,7 +103,7 @@ public class YAMLDatabase implements Database {
             Files.createDirectories(Paths.get(workingDirectory.toString(), experimentDescriptor.getId()));
 
             YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors));
-            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), experimentDescriptor.getId(), "configuration.yaml"), new Experiment(
+            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), experimentDescriptor.getId(), "configuration.yaml"), new YAMLExperimentDetail(
                     experimentDescriptor.getNodes()
             ));
         } catch (IOException e) {

@@ -6,6 +6,7 @@ import de.cau.testbed.server.module.ExperimentSchedulingThread;
 import de.cau.testbed.server.module.FirmwareDistributionThread;
 import de.cau.testbed.server.module.HeartbeatThread;
 import de.cau.testbed.server.module.LogRetrievalThread;
+import de.cau.testbed.server.resources.CreateExperimentResource;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Environment;
 
@@ -23,5 +24,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
         new ExperimentSchedulingThread(database).start();
+
+        environment.jersey().register(new CreateExperimentResource());
     }
 }
