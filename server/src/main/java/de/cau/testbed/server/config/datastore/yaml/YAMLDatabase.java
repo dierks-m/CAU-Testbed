@@ -4,6 +4,7 @@ import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.YAMLParser;
 import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
+import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -56,7 +57,7 @@ public class YAMLDatabase implements Database {
         ExperimentDescriptor nextExperiment = null;
 
         for (ExperimentDescriptor descriptor : experimentDescriptors) {
-            if (descriptor.isScheduled() && !descriptor.isDone() && !descriptor.isStarted()) {
+            if (descriptor.getStatus() == ExperimentStatus.SCHEDULED) {
                 if (nextExperiment == null)
                     nextExperiment = descriptor;
                 else if (descriptor.getStart().isBefore(nextExperiment.getStart())) {
@@ -69,14 +70,14 @@ public class YAMLDatabase implements Database {
     }
 
     @Override
-    public void addExperiment(ExperimentDescriptor experimentDescriptor) {
+    public synchronized void addExperiment(ExperimentDescriptor experimentDescriptor) {
         experimentDescriptors.add(experimentDescriptor);
 
         writeExperimentFile(experimentDescriptor);
     }
 
     @Override
-    public void updateExperiment(ExperimentDescriptor experimentDescriptor) {
+    public synchronized void updateExperiment(ExperimentDescriptor experimentDescriptor) {
         for (int i = 0; i < experimentDescriptors.size(); i++) {
             if (experimentDescriptors.get(i).equals(experimentDescriptor)) {
                 experimentDescriptors.set(i, experimentDescriptor);

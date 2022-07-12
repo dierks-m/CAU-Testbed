@@ -2,6 +2,7 @@ package de.cau.testbed.server.module;
 
 import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
+import de.cau.testbed.server.constants.ExperimentStatus;
 import de.cau.testbed.server.constants.KafkaTopic;
 import de.cau.testbed.server.network.KafkaNetworkSender;
 import de.cau.testbed.server.network.NetworkSender;
@@ -50,7 +51,7 @@ public class ExperimentSchedulingThread extends Thread {
         logger.info("Preparing experiment " + descriptor.getName());
 
         experimentSender.send(null, new ExperimentMessage(descriptor));
-        descriptor.setStarted(true);
+        descriptor.setStatus(ExperimentStatus.STARTED);
         database.updateExperiment(descriptor);
     }
 

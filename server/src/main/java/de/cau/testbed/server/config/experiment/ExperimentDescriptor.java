@@ -1,6 +1,7 @@
 package de.cau.testbed.server.config.experiment;
 
 import de.cau.testbed.server.config.ExperimentNode;
+import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,13 +21,9 @@ public interface ExperimentDescriptor {
 
     LocalDateTime getEnd();
 
-    boolean isScheduled();
+    ExperimentStatus getStatus();
 
-    boolean isDone();
-
-    boolean isStarted();
-
-    void setStarted(boolean started);
+    void setStatus(ExperimentStatus status);
 
     List<ExperimentNode> getNodes();
 }

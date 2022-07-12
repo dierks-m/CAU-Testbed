@@ -3,6 +3,7 @@ package de.cau.testbed.server.config.datastore.yaml;
 import de.cau.testbed.server.config.Experiment;
 import de.cau.testbed.server.config.ExperimentNode;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
+import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,9 +15,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private final String name;
     private final LocalDateTime start;
     private final LocalDateTime end;
-    private final boolean scheduled;
-    private final boolean done;
-    private boolean isStarted;
+    private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
     public YAMLExperimentDescriptor(YAMLExperimentStatus experimentStatus, Experiment experiment) {
@@ -25,10 +24,8 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
         this.name = experimentStatus.name;
         this.start = experimentStatus.start;
         this.end = experimentStatus.end;
-        this.scheduled = experimentStatus.isScheduled;
-        this.done = experimentStatus.isDone;
         this.nodes = experiment.nodes;
-        this.isStarted = experimentStatus.isStarted;
+        this.status = experimentStatus.status;
     }
 
     @Override
@@ -57,23 +54,13 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     }
 
     @Override
-    public boolean isScheduled() {
-        return scheduled;
+    public ExperimentStatus getStatus() {
+        return status;
     }
 
     @Override
-    public boolean isDone() {
-        return done;
-    }
-
-    @Override
-    public boolean isStarted() {
-        return isStarted;
-    }
-
-    @Override
-    public void setStarted(boolean started) {
-        isStarted = started;
+    public void setStatus(ExperimentStatus status) {
+        this.status = status;
     }
 
     @Override
@@ -89,8 +76,6 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
                 ", name='" + name + '\'' +
                 ", start=" + start +
                 ", end=" + end +
-                ", scheduled=" + scheduled +
-                ", done=" + done +
                 ", nodes=" + nodes +
                 '}';
     }

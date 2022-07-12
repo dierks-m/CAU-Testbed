@@ -1,6 +1,7 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,10 +10,7 @@ public class YAMLExperimentStatus {
     public final String owner;
     public final String experimentId;
     public final String name;
-    public final boolean isScheduled;
-    public final boolean isDone;
-    public final boolean isStarted;
-
+    public final ExperimentStatus status;
     public final LocalDateTime start;
 
     public final LocalDateTime end;
@@ -21,18 +19,14 @@ public class YAMLExperimentStatus {
             @JsonProperty("name") String name,
             @JsonProperty("owner") String owner,
             @JsonProperty("experimentId") String experimentId,
-            @JsonProperty("isScheduled") boolean isScheduled,
-            @JsonProperty("isDone") boolean isDone,
-            @JsonProperty("isStarted") boolean isStarted,
+            @JsonProperty("status") ExperimentStatus status,
             @JsonProperty("start") LocalDateTime start,
             @JsonProperty("end")LocalDateTime end
             ) {
         this.name = name;
         this.owner = owner;
         this.experimentId = experimentId;
-        this.isScheduled = isScheduled;
-        this.isDone = isDone;
-        this.isStarted = isStarted;
+        this.status = status;
         this.start = start;
         this.end = end;
     }
@@ -42,8 +36,8 @@ public class YAMLExperimentStatus {
         return "YAMLExperimentStatus{" +
                 "owner='" + owner + '\'' +
                 ", experimentId='" + experimentId + '\'' +
-                ", isScheduled=" + isScheduled +
-                ", isDone=" + isDone +
+                ", name='" + name + '\'' +
+                ", status=" + status +
                 '}';
     }
 }
