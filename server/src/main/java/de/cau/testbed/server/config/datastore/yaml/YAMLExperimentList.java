@@ -25,7 +25,9 @@ public class YAMLExperimentList {
                     descriptor.getId(),
                     descriptor.isScheduled(),
                     descriptor.isDone(),
-                    descriptor.isStarted())
+                    descriptor.isStarted(),
+                    descriptor.getStart(),
+                    descriptor.getEnd())
             );
         }
 

@@ -23,8 +23,8 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
         this.owner = experimentStatus.owner;
         this.id = experimentStatus.experimentId;
         this.name = experimentStatus.name;
-        this.start = experiment.start;
-        this.end = experiment.end;
+        this.start = experimentStatus.start;
+        this.end = experimentStatus.end;
         this.scheduled = experimentStatus.isScheduled;
         this.done = experimentStatus.isDone;
         this.nodes = experiment.nodes;

@@ -1,6 +1,7 @@
 package de.cau.testbed.server.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -13,6 +14,7 @@ public class YAMLParser {
     static {
         MAPPER = new ObjectMapper(new YAMLFactory());
         MAPPER.registerModule(new JavaTimeModule());
+        MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     public static <T> T parseFile(Path path, Class<T> objectClass) throws IOException {
