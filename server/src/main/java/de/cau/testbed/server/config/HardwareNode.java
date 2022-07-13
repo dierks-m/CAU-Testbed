@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public class Node {
+public class HardwareNode {
     @NotNull
     public final String id;
     public final List<DeviceType> capabilities;
 
-    public Node(
+    public HardwareNode(
             @JsonProperty("id") String id,
             @JsonProperty("capabilities") List<DeviceType> capabilities
     ) {

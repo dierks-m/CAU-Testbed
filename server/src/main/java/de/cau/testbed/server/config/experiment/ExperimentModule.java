@@ -1,4 +1,4 @@
-package de.cau.testbed.server.config;
+package de.cau.testbed.server.config.experiment;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;

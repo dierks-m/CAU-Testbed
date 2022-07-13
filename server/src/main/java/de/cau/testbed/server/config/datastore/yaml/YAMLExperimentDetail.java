@@ -3,7 +3,7 @@ package de.cau.testbed.server.config.datastore.yaml;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.cau.testbed.server.config.ExperimentNode;
+import de.cau.testbed.server.config.experiment.ExperimentNode;
 
 import java.util.List;
 

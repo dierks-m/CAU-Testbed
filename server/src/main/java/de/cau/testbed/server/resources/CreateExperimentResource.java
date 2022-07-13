@@ -1,6 +1,6 @@
 package de.cau.testbed.server.resources;
 
-import de.cau.testbed.server.api.Experiment;
+import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.api.ExperimentId;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -14,8 +14,8 @@ import jakarta.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class CreateExperimentResource {
     @POST
-    public ExperimentId createExperiment(@Valid Experiment experiment) {
-        System.out.println("Posted: " + experiment + "!");
+    public ExperimentId createExperiment(@Valid ExperimentTemplate experimentTemplate) {
+        System.out.println("Posted: " + experimentTemplate + "!");
         return new ExperimentId("aBC");
     }
 }

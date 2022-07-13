@@ -1,6 +1,5 @@
 package de.cau.testbed.server.config.experiment;
 
-import de.cau.testbed.server.config.ExperimentNode;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;

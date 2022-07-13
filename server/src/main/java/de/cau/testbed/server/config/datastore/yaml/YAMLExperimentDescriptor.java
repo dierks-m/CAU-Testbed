@@ -1,6 +1,6 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
-import de.cau.testbed.server.config.ExperimentNode;
+import de.cau.testbed.server.config.experiment.ExperimentNode;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.constants.ExperimentStatus;
 

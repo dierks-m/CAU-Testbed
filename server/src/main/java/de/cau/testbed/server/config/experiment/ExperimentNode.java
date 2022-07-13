@@ -1,9 +1,9 @@
-package de.cau.testbed.server.config;
+package de.cau.testbed.server.config.experiment;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.cau.testbed.server.constants.DeviceType;
+import de.cau.testbed.server.config.experiment.ExperimentModule;
 
 import java.util.List;
 
