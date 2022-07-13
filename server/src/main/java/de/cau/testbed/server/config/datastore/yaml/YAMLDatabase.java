@@ -1,15 +1,19 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
+import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.YAMLParser;
 import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.exception.TimeCollisionException;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
+import de.cau.testbed.server.config.experiment.ExperimentDetail;
+import de.cau.testbed.server.config.experiment.ExperimentInfo;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,10 +22,14 @@ import java.util.Optional;
 
 public class YAMLDatabase implements Database {
     private final Path workingDirectory;
+
+    private long nextId;
     private final List<ExperimentDescriptor> experimentDescriptors;
 
     public YAMLDatabase(Path workingDirectory) {
         this.workingDirectory = workingDirectory;
+        final YAMLExperimentList experimentList = loadExperimentList();
+        this.nextId = experimentList.nextId;
         this.experimentDescriptors = loadExperiments(loadExperimentList());
     }
 
@@ -29,18 +37,18 @@ public class YAMLDatabase implements Database {
         try {
             return YAMLParser.parseFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.class);
         } catch (IOException e) {
-            return new YAMLExperimentList(Collections.emptyList());
+            return new YAMLExperimentList(Collections.emptyList(), 1);
         }
     }
 
     private List<ExperimentDescriptor> loadExperiments(YAMLExperimentList experimentList) {
         final List<ExperimentDescriptor> experimentDescriptors = new ArrayList<>();
 
-        for (YAMLExperimentInfo experimentInfo : experimentList.experiments) {
+        for (ExperimentInfo experimentInfo : experimentList.experiments) {
             try {
-                final YAMLExperimentDetail experimentDetail = YAMLParser.parseFile(
-                        Paths.get(workingDirectory.toString(), experimentInfo.experimentId, "configuration.yaml"),
-                        YAMLExperimentDetail.class
+                final ExperimentDetail experimentDetail = YAMLParser.parseFile(
+                        Paths.get(workingDirectory.toString(), Long.toString(experimentInfo.experimentId), "configuration.yaml"),
+                        ExperimentDetail.class
                 );
 
                 experimentDescriptors.add(
@@ -71,20 +79,23 @@ public class YAMLDatabase implements Database {
     }
 
     @Override
-    public synchronized void addExperiment(ExperimentDescriptor experimentDescriptor) throws TimeCollisionException {
-        checkTimeConflict(experimentDescriptor);
-        experimentDescriptors.add(experimentDescriptor);
+    public synchronized ExperimentDescriptor addExperiment(ExperimentTemplate template) {
+        final ExperimentInfo experimentInfo = new ExperimentInfo(
+                template.name,
+                "dummy owner",
+                nextId++,
+                ExperimentStatus.CREATED,
+                template.start,
+                template.end
+        );
 
-        writeExperimentFile(experimentDescriptor);
-    }
+        final ExperimentDetail experimentDetail = new ExperimentDetail(template.nodes);
 
-    private void checkTimeConflict(ExperimentDescriptor experimentDescriptor) throws TimeCollisionException {
-        for (ExperimentDescriptor experiment: experimentDescriptors) {
-            if (ChronoUnit.MINUTES.between(experiment.getEnd(), experimentDescriptor.getStart()) <= 5)
-                throw new TimeCollisionException("Start time of experiment is too close to end time of another experiment");
-            else if (ChronoUnit.MINUTES.between(experimentDescriptor.getEnd(), experiment.getStart()) <= 5)
-                throw new TimeCollisionException("End time of experiment is too close to start time of another experiment");
-        }
+        final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(experimentInfo, experimentDetail);
+
+        experimentDescriptors.add(experiment);
+        writeExperimentFile(experiment);
+        return experiment;
     }
 
     @Override
@@ -98,12 +109,30 @@ public class YAMLDatabase implements Database {
         }
     }
 
+    @Override
+    public List<ExperimentDescriptor> getExperimentsInTimeFrame(LocalDateTime start, LocalDateTime end) {
+        final List<ExperimentDescriptor> matchingExperiments = new ArrayList<>();
+
+        for (ExperimentDescriptor descriptor : experimentDescriptors) {
+            if (descriptor.getStart().compareTo(start) >= 0 && descriptor.getStart().compareTo(end) <= 0 ||
+                    descriptor.getEnd().compareTo(start) >= 0 && descriptor.getEnd().compareTo(end) <= 0)
+                matchingExperiments.add(descriptor);
+        }
+
+        return matchingExperiments;
+    }
+
+    @Override
+    public synchronized long getNextExperimentId() {
+        return nextId++;
+    }
+
     private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {
         try {
-            Files.createDirectories(Paths.get(workingDirectory.toString(), experimentDescriptor.getId()));
+            Files.createDirectories(Paths.get(workingDirectory.toString(), Long.toString(experimentDescriptor.getId())));
 
-            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors));
-            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), experimentDescriptor.getId(), "configuration.yaml"), new YAMLExperimentDetail(
+            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors, nextId));
+            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), Long.toString(experimentDescriptor.getId()), "configuration.yaml"), new ExperimentDetail(
                     experimentDescriptor.getNodes()
             ));
         } catch (IOException e) {

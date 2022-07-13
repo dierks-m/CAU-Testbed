@@ -10,7 +10,7 @@ import java.util.List;
  * This is a wrapper that provides abstraction from the database in the background.
  */
 public interface ExperimentDescriptor {
-    String getId();
+    long getId();
 
     String getName();
 

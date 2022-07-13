@@ -25,7 +25,7 @@ public class ExperimentMessage {
     public ExperimentMessage(ExperimentDescriptor experimentDescriptor) {
         this.name = experimentDescriptor.getName();
         this.nodes = experimentDescriptor.getNodes();
-        this.experimentId = experimentDescriptor.getId();
+        this.experimentId = Long.toString(experimentDescriptor.getId());
         this.start = experimentDescriptor.getStart();
         this.end = experimentDescriptor.getEnd();
     }

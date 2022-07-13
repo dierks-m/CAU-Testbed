@@ -2,13 +2,15 @@ package de.cau.testbed.server.config.datastore.yaml;
 
 import de.cau.testbed.server.config.experiment.ExperimentNode;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
+import de.cau.testbed.server.config.experiment.ExperimentDetail;
+import de.cau.testbed.server.config.experiment.ExperimentInfo;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class YAMLExperimentDescriptor implements ExperimentDescriptor {
-    private final String id;
+    private final long id;
 
     private final String owner;
     private final String name;
@@ -17,7 +19,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
-    public YAMLExperimentDescriptor(YAMLExperimentInfo experimentInfo, YAMLExperimentDetail experimentDetail) {
+    public YAMLExperimentDescriptor(ExperimentInfo experimentInfo, ExperimentDetail experimentDetail) {
         this.owner = experimentInfo.owner;
         this.id = experimentInfo.experimentId;
         this.name = experimentInfo.name;
@@ -28,7 +30,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     }
 
     @Override
-    public String getId() {
+    public long getId() {
         return id;
     }
 

@@ -1,20 +1,19 @@
-package de.cau.testbed.server.config.datastore.yaml;
+package de.cau.testbed.server.config.experiment;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.cau.testbed.server.config.experiment.ExperimentNode;
 
 import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class YAMLExperimentDetail {
+public class ExperimentDetail {
 
     @JsonProperty("nodes")
     public final List<ExperimentNode> nodes;
 
     @JsonCreator
-    public YAMLExperimentDetail(
+    public ExperimentDetail(
             @JsonProperty("nodes") List<ExperimentNode> nodes
     ) {
         this.nodes = nodes;

@@ -1,23 +1,23 @@
-package de.cau.testbed.server.config.datastore.yaml;
+package de.cau.testbed.server.config.experiment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;
 
-public class YAMLExperimentInfo {
+public class ExperimentInfo {
     public final String owner;
-    public final String experimentId;
+    public final long experimentId;
     public final String name;
     public final ExperimentStatus status;
     public final LocalDateTime start;
 
     public final LocalDateTime end;
 
-    public YAMLExperimentInfo(
+    public ExperimentInfo(
             @JsonProperty("name") String name,
             @JsonProperty("owner") String owner,
-            @JsonProperty("experimentId") String experimentId,
+            @JsonProperty("experimentId") long experimentId,
             @JsonProperty("status") ExperimentStatus status,
             @JsonProperty("start") LocalDateTime start,
             @JsonProperty("end")LocalDateTime end

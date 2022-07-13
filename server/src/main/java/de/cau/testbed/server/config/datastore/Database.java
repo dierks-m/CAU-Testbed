@@ -1,8 +1,11 @@
 package de.cau.testbed.server.config.datastore;
 
+import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.exception.TimeCollisionException;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,7 +18,11 @@ public interface Database {
      * Adds a new experiment, but does not schedule it, yet.
      * @param experimentDescriptor
      */
-    void addExperiment(ExperimentDescriptor experimentDescriptor) throws TimeCollisionException;
+    ExperimentDescriptor addExperiment(ExperimentTemplate experimentDescriptor) throws TimeCollisionException;
 
     void updateExperiment(ExperimentDescriptor experimentDescriptor);
+
+    List<ExperimentDescriptor> getExperimentsInTimeFrame(LocalDateTime start, LocalDateTime end);
+
+    long getNextExperimentId();
 }

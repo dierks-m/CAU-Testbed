@@ -8,8 +8,8 @@ public class ExperimentId {
 
     @JsonCreator
     public ExperimentId(
-            @JsonProperty("id") String id
+            @JsonProperty("id") long id
     ) {
-        this.id = id;
+        this.id = Long.toString(id);
     }
 }
