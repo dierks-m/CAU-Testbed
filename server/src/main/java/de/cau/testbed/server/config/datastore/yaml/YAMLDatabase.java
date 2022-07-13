@@ -123,8 +123,12 @@ public class YAMLDatabase implements Database {
     }
 
     @Override
-    public synchronized long getNextExperimentId() {
-        return nextId++;
+    public Optional<ExperimentDescriptor> getExperimentById(long id) {
+        for (ExperimentDescriptor experiment : experimentDescriptors)
+            if (experiment.getId() == id)
+                return Optional.of(experiment);
+
+        return Optional.empty();
     }
 
     private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {

@@ -24,5 +24,5 @@ public interface Database {
 
     List<ExperimentDescriptor> getExperimentsInTimeFrame(LocalDateTime start, LocalDateTime end);
 
-    long getNextExperimentId();
+    Optional<ExperimentDescriptor> getExperimentById(long id);
 }

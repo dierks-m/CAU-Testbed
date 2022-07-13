@@ -3,22 +3,26 @@ package de.cau.testbed.server.service;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.HardwareNode;
 import de.cau.testbed.server.config.datastore.Database;
-import de.cau.testbed.server.config.datastore.yaml.YAMLExperimentDescriptor;
-import de.cau.testbed.server.config.exception.TimeCollisionException;
-import de.cau.testbed.server.config.exception.UnknownModuleException;
-import de.cau.testbed.server.config.exception.UnknownNodeException;
-import de.cau.testbed.server.config.experiment.*;
+import de.cau.testbed.server.config.exception.*;
+import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
+import de.cau.testbed.server.config.experiment.ExperimentModule;
+import de.cau.testbed.server.config.experiment.ExperimentNode;
 import de.cau.testbed.server.constants.ExperimentStatus;
+import de.cau.testbed.server.module.ExperimentSchedulingThread;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class ExperimentService {
     private final Database database;
     private final List<HardwareNode> availableNodes;
+    private final ExperimentSchedulingThread experimentScheduler;
 
-    public ExperimentService(Database database, List<HardwareNode> availableNodes) {
+    public ExperimentService(Database database, List<HardwareNode> availableNodes, ExperimentSchedulingThread experimentScheduler) {
         this.database = database;
         this.availableNodes = availableNodes;
+        this.experimentScheduler = experimentScheduler;
     }
 
     public long createNewExperiment(ExperimentTemplate template) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
@@ -54,5 +58,27 @@ public class ExperimentService {
         }
 
         throw new UnknownNodeException("No node called " + node.id + " exists");
+    }
+
+    public void scheduleExperiment(long id) {
+        final Optional<ExperimentDescriptor> maybeExperiment = database.getExperimentById(id);
+
+        if (maybeExperiment.isEmpty())
+            throw new NoSuchExperimentException("Experiment does not exist");
+
+        final ExperimentDescriptor experiment = maybeExperiment.get();
+
+        if (LocalDateTime.now().compareTo(experiment.getEnd()) >= 0)
+            throw new IllegalExperimentTimeException("Experiment's end time is before current time");
+
+        checkExperimentFirmwareExists(experiment);
+
+        experiment.setStatus(ExperimentStatus.SCHEDULED);
+        database.updateExperiment(experiment);
+        experimentScheduler.wakeup();
+    }
+
+    private void checkExperimentFirmwareExists(ExperimentDescriptor experiment) {
+        
     }
 }
