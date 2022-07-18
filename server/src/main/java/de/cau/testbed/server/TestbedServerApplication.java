@@ -6,8 +6,7 @@ import de.cau.testbed.server.module.ExperimentSchedulingThread;
 import de.cau.testbed.server.module.FirmwareDistributionThread;
 import de.cau.testbed.server.module.HeartbeatThread;
 import de.cau.testbed.server.module.LogRetrievalThread;
-import de.cau.testbed.server.resources.CreateExperimentResource;
-import de.cau.testbed.server.resources.ScheduleExperimentResource;
+import de.cau.testbed.server.resources.ExperimentResource;
 import de.cau.testbed.server.resources.UploadFirmwareResource;
 import de.cau.testbed.server.service.ExperimentService;
 import de.cau.testbed.server.service.FirmwareService;
@@ -39,8 +38,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         schedulingThread.start();
 
         final ExperimentService experimentService = new ExperimentService(database, configuration.nodes, schedulingThread, configuration.workingDirectory);
-        environment.jersey().register(new CreateExperimentResource(experimentService));
-        environment.jersey().register(new ScheduleExperimentResource(experimentService));
+        environment.jersey().register(new ExperimentResource(experimentService));
 
         final FirmwareService firmwareService = new FirmwareService(configuration.workingDirectory);
         environment.jersey().register(new UploadFirmwareResource(firmwareService));

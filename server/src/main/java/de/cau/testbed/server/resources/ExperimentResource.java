@@ -11,17 +11,26 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/create-experiment")
+@Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class CreateExperimentResource {
+public class ExperimentResource {
     private final ExperimentService service;
 
-    public CreateExperimentResource(ExperimentService service) {
+    public ExperimentResource(ExperimentService service) {
         this.service = service;
     }
+
+    @Path("schedule-experiment")
+    @POST
+    public Response scheduleExperiment(@Valid ExperimentId experimentId) {
+        service.scheduleExperiment(experimentId.id);
+        return Response.ok().build();
+    }
+
+    @Path("create-experiment")
     @POST
     public Response createExperiment(@Valid ExperimentTemplate experimentTemplate) {
-            return Response.ok(new ExperimentId(service.createNewExperiment(experimentTemplate))).build();
+        return Response.ok(new ExperimentId(service.createNewExperiment(experimentTemplate))).build();
     }
 }
