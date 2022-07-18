@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class FirmwareService {
     private final Path workingDirectory;
@@ -17,6 +16,7 @@ public class FirmwareService {
     }
 
     public void writeFile(InputStream uploadInputStream, long experimentId, String firmwareName) throws IOException {
+        Files.createDirectories(PathUtil.getFirmwarePath(experimentId));
         final Path target = PathUtil.getFirmwarePath(experimentId).resolve(firmwareName);
 
         Files.copy(uploadInputStream, target);

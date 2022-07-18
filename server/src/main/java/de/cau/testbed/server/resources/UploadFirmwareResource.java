@@ -1,5 +1,6 @@
 package de.cau.testbed.server.resources;
 
+import de.cau.testbed.server.api.ErrorMessage;
 import de.cau.testbed.server.config.exception.FirmwareDoesNotExistException;
 import de.cau.testbed.server.service.FirmwareService;
 import jakarta.ws.rs.Consumes;
@@ -12,6 +13,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileAlreadyExistsException;
 
 @Path("/upload-firmware")
 public class UploadFirmwareResource {
@@ -31,8 +33,12 @@ public class UploadFirmwareResource {
         try {
             firmwareService.writeFile(uploadInputStream, experimentId, firmwareName);
             return Response.ok().build();
+        } catch (FileAlreadyExistsException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(
+                    "Firmware " + firmwareName + " already exists for this experiment!"
+            )).build();
         } catch (IOException e) {
-            throw new FirmwareDoesNotExistException(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
 }

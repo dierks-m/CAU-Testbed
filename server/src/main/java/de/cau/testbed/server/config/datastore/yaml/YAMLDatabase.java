@@ -132,7 +132,7 @@ public class YAMLDatabase implements Database {
 
     private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {
         try {
-            Files.createDirectories(Paths.get(workingDirectory.toString(), Long.toString(experimentDescriptor.getId())));
+            Files.createDirectories(PathUtil.getExperimentPath(experimentDescriptor.getId()));
 
             YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors, nextId));
             YAMLParser.writeFile(
