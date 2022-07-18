@@ -10,19 +10,23 @@ import de.cau.testbed.server.config.experiment.ExperimentNode;
 import de.cau.testbed.server.constants.ExperimentStatus;
 import de.cau.testbed.server.module.ExperimentSchedulingThread;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ExperimentService {
     private final Database database;
     private final List<HardwareNode> availableNodes;
     private final ExperimentSchedulingThread experimentScheduler;
+    private final Path workingDirectory;
 
-    public ExperimentService(Database database, List<HardwareNode> availableNodes, ExperimentSchedulingThread experimentScheduler) {
+    public ExperimentService(Database database, List<HardwareNode> availableNodes, ExperimentSchedulingThread experimentScheduler, Path workingDirectory) {
         this.database = database;
         this.availableNodes = availableNodes;
         this.experimentScheduler = experimentScheduler;
+        this.workingDirectory = workingDirectory;
     }
 
     public long createNewExperiment(ExperimentTemplate template) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
@@ -79,6 +83,21 @@ public class ExperimentService {
     }
 
     private void checkExperimentFirmwareExists(ExperimentDescriptor experiment) {
-        
+        final Set<String> firmwares = new HashSet<>();
+
+        for (ExperimentNode node : experiment.getNodes()) {
+            for (ExperimentModule module : node.modules) {
+                firmwares.add(module.firmwarePath);
+            }
+        }
+
+        for (String firmware : firmwares) {
+            assertFirmwareExists(experiment.getId(), firmware);
+        }
+    }
+
+    private void assertFirmwareExists(long experimentId, String firmware) {
+        if (!Files.isRegularFile(Paths.get(workingDirectory.toString(), Long.toString(experimentId), "firmware", firmware)))
+            throw new FirmwareDoesNotExistException("Firmware " + firmware + " is not present");
     }
 }

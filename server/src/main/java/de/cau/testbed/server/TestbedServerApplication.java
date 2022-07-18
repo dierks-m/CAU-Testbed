@@ -28,7 +28,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         final ExperimentSchedulingThread schedulingThread = new ExperimentSchedulingThread(database);
         schedulingThread.start();
 
-        final ExperimentService experimentService = new ExperimentService(database, configuration.nodes, schedulingThread);
+        final ExperimentService experimentService = new ExperimentService(database, configuration.nodes, schedulingThread, configuration.workingDirectory);
         environment.jersey().register(new CreateExperimentResource(experimentService));
         environment.jersey().register(new ScheduleExperimentResource(experimentService));
     }

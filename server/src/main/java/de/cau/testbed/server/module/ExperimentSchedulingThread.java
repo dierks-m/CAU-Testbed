@@ -36,7 +36,7 @@ public class ExperimentSchedulingThread extends Thread {
                 suspendUntilWakeup();
             } else {
                 final ExperimentDescriptor descriptor = nextExperiment.get();
-                final long minuteDiff = ChronoUnit.MINUTES.between(descriptor.getStart(), LocalDateTime.now());
+                final long minuteDiff = ChronoUnit.MINUTES.between(LocalDateTime.now(), descriptor.getStart());
 
                 if (minuteDiff <= 5) {
                     prepareExperiment(descriptor);
@@ -70,9 +70,11 @@ public class ExperimentSchedulingThread extends Thread {
         }
     }
 
-    private static void trySleep(long millis) {
+    private void trySleep(long millis) {
         try {
-            Thread.sleep(millis);
+            synchronized (waitObject) {
+                waitObject.wait(millis);
+            }
         } catch (InterruptedException ignored) {
         }
     }
