@@ -1,5 +1,6 @@
 package de.cau.testbed.server.module;
 
+import de.cau.testbed.server.PathUtil;
 import de.cau.testbed.server.constants.KafkaConstants;
 import de.cau.testbed.server.constants.KafkaTopic;
 import de.cau.testbed.server.network.fileTransfer.NodeTransferTarget;
@@ -59,18 +60,18 @@ public class FirmwareDistributionThread extends Thread {
         return getValidFirmwarePath(retrievalMessage.experimentId, retrievalMessage.firmwareName);
     }
 
-    private Path getValidFirmwarePath(String experimentId, String firmwareName) throws IOException {
-        final Path experimentFolder = Paths.get(workingDirectory.toString(), experimentId);
+    private Path getValidFirmwarePath(long experimentId, String firmwareName) throws IOException {
+        final Path experimentFolder = PathUtil.getExperimentPath(experimentId);
 
         if (!Files.isDirectory(experimentFolder))
             throw new IOException("Experiment folder for experiment " + experimentId + " does not exist!");
 
-        final Path firmwareFolder = Paths.get(experimentFolder.toString(), "firmware");
+        final Path firmwareFolder = PathUtil.getFirmwarePath(experimentId);
 
         if (!Files.isDirectory(firmwareFolder))
             throw new IOException("Experiment " + experimentId + " has no firmware folder!");
 
-        final Path firmware = Paths.get(firmwareFolder.toString(), firmwareName);
+        final Path firmware = firmwareFolder.resolve(firmwareName);
 
         if (!Files.isRegularFile(firmware))
             throw new IOException("Firmware " + firmwareName + " does not exist for experiment " + experimentId);

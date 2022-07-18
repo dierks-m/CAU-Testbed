@@ -16,6 +16,7 @@ import io.dropwizard.core.setup.Environment;
 import io.dropwizard.forms.MultiPartBundle;
 
 public class TestbedServerApplication extends Application<TestbedServerConfiguration> {
+
     public static void main(String[] args) throws Exception {
         new TestbedServerApplication().run(args);
     }
@@ -28,6 +29,8 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
     @Override
     public void run(TestbedServerConfiguration configuration, Environment environment) {
+        PathUtil.initialize(configuration.workingDirectory);
+
         new HeartbeatThread().start();
 
         new FirmwareDistributionThread(configuration.workingDirectory).start();

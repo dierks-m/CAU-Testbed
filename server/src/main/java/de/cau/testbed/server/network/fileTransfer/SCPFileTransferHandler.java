@@ -1,5 +1,6 @@
 package de.cau.testbed.server.network.fileTransfer;
 
+import de.cau.testbed.server.PathUtil;
 import de.cau.testbed.server.network.message.FirmwareRetrievalMessage;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
@@ -7,7 +8,6 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class SCPFileTransferHandler implements FileTransferHandler {
     private final Path workingDirectory;
@@ -68,18 +68,18 @@ public class SCPFileTransferHandler implements FileTransferHandler {
         return sshClient;
     }
 
-    private Path getValidFirmwarePath(String experimentId, String firmwareName) throws IOException {
-        final Path experimentFolder = Paths.get(workingDirectory.toString(), experimentId);
+    private Path getValidFirmwarePath(long experimentId, String firmwareName) throws IOException {
+        final Path experimentFolder = PathUtil.getExperimentPath(experimentId);
 
         if (!Files.isDirectory(experimentFolder))
             throw new IOException("Experiment folder for experiment " + experimentId + " does not exist!");
 
-        final Path firmwareFolder = Paths.get(experimentFolder.toString(), "firmware");
+        final Path firmwareFolder = PathUtil.getFirmwarePath(experimentId);
 
         if (!Files.isDirectory(firmwareFolder))
             throw new IOException("Experiment " + experimentId + " has no firmware folder!");
 
-        final Path firmware = Paths.get(firmwareFolder.toString(), firmwareName);
+        final Path firmware = firmwareFolder.resolve(firmwareName);
 
         if (!Files.isRegularFile(firmware))
             throw new IOException("Firmware " + firmwareName + " does not exist for experiment " + experimentId);

@@ -1,5 +1,6 @@
 package de.cau.testbed.server.service;
 
+import de.cau.testbed.server.PathUtil;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.HardwareNode;
 import de.cau.testbed.server.config.datastore.Database;
@@ -97,7 +98,7 @@ public class ExperimentService {
     }
 
     private void assertFirmwareExists(long experimentId, String firmware) {
-        if (!Files.isRegularFile(Paths.get(workingDirectory.toString(), Long.toString(experimentId), "firmware", firmware)))
+        if (!Files.isRegularFile(PathUtil.getFirmwarePath(experimentId).resolve(firmware)))
             throw new FirmwareDoesNotExistException("Firmware " + firmware + " is not present");
     }
 }

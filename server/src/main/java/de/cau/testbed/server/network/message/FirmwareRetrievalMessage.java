@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FirmwareRetrievalMessage {
-    public final String experimentId;
+    public final long experimentId;
     public final String firmwareName;
     public final String hostName;
     public final String userName;
@@ -23,7 +23,7 @@ public class FirmwareRetrievalMessage {
         this.hostName = hostName;
         this.userName = userName;
         this.targetPath = Paths.get(targetPath);
-        this.experimentId = experimentId;
+        this.experimentId = Long.parseLong(experimentId);
     }
 
     @Override

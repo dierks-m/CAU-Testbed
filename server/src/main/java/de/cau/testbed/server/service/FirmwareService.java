@@ -1,6 +1,8 @@
 package de.cau.testbed.server.service;
 
 
+import de.cau.testbed.server.PathUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -15,7 +17,7 @@ public class FirmwareService {
     }
 
     public void writeFile(InputStream uploadInputStream, long experimentId, String firmwareName) throws IOException {
-        final Path target = Paths.get(workingDirectory.toString(), Long.toString(experimentId), "firmware", firmwareName);
+        final Path target = PathUtil.getFirmwarePath(experimentId).resolve(firmwareName);
 
         Files.copy(uploadInputStream, target);
     }

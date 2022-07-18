@@ -1,9 +1,9 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
+import de.cau.testbed.server.PathUtil;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.YAMLParser;
 import de.cau.testbed.server.config.datastore.Database;
-import de.cau.testbed.server.config.exception.TimeCollisionException;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.config.experiment.ExperimentDetail;
 import de.cau.testbed.server.config.experiment.ExperimentInfo;
@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +46,7 @@ public class YAMLDatabase implements Database {
         for (ExperimentInfo experimentInfo : experimentList.experiments) {
             try {
                 final ExperimentDetail experimentDetail = YAMLParser.parseFile(
-                        Paths.get(workingDirectory.toString(), Long.toString(experimentInfo.experimentId), "configuration.yaml"),
+                        PathUtil.getExperimentPath(experimentInfo.experimentId).resolve("configuration.yaml"),
                         ExperimentDetail.class
                 );
 
@@ -136,9 +135,10 @@ public class YAMLDatabase implements Database {
             Files.createDirectories(Paths.get(workingDirectory.toString(), Long.toString(experimentDescriptor.getId())));
 
             YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors, nextId));
-            YAMLParser.writeFile(Paths.get(workingDirectory.toString(), Long.toString(experimentDescriptor.getId()), "configuration.yaml"), new ExperimentDetail(
-                    experimentDescriptor.getNodes()
-            ));
+            YAMLParser.writeFile(
+                    PathUtil.getExperimentPath(experimentDescriptor.getId()).resolve("configuration.yaml"),
+                    new ExperimentDetail(experimentDescriptor.getNodes())
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
