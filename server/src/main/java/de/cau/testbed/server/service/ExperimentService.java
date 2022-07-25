@@ -1,6 +1,7 @@
 package de.cau.testbed.server.service;
 
 import de.cau.testbed.server.PathUtil;
+import de.cau.testbed.server.api.AnonymizedExperimentInfo;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.HardwareNode;
 import de.cau.testbed.server.config.datastore.Database;
@@ -103,5 +104,17 @@ public class ExperimentService {
     private void assertFirmwareExists(long experimentId, String firmware) {
         if (!Files.isRegularFile(PathUtil.getFirmwarePath(experimentId).resolve(firmware)))
             throw new FirmwareDoesNotExistException("Firmware " + firmware + " is not present");
+    }
+
+    public List<AnonymizedExperimentInfo> listAnonymizedExperiments(LocalDateTime start, LocalDateTime end) {
+        final List<ExperimentDescriptor> experimentDescriptors = database.getExperimentsInTimeFrame(start, end);
+
+        final List<AnonymizedExperimentInfo> anonymizedDescriptors = new ArrayList<>();
+
+        for (ExperimentDescriptor descriptor : experimentDescriptors) {
+            anonymizedDescriptors.add(new AnonymizedExperimentInfo(descriptor.getName(), descriptor.getStart(), descriptor.getEnd()));
+        }
+
+        return anonymizedDescriptors;
     }
 }

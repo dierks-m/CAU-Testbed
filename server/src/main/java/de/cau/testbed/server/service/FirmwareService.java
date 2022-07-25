@@ -13,19 +13,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 public class FirmwareService {
-    private final Path workingDirectory;
     private final Database database;
 
-    public FirmwareService(Path workingDirectory, Database database) {
-        this.workingDirectory = workingDirectory;
+    public FirmwareService(Database database) {
         this.database = database;
     }
 
-    public void writeFile(InputStream uploadInputStream, long experimentId, String firmwareName) throws IOException, PathTraversalException {
+    public void writeFile(InputStream uploadInputStream, long experimentId, String firmwareName) throws PathTraversalException, IOException {
         // Will prevent upwards
         final Path safeFirmwarePath = PathUtil.sanitizeFileName(firmwareName);
 

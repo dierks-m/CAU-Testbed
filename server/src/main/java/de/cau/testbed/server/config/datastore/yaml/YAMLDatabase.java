@@ -33,7 +33,8 @@ public class YAMLDatabase implements Database {
         final YAMLExperimentList experimentList = loadExperimentList();
         this.userTable = loadUserTable();
         this.nextId = experimentList.nextId;
-        this.experimentDescriptors = loadExperiments(loadExperimentList());
+        System.out.println("experiment list " + experimentList);
+        this.experimentDescriptors = loadExperiments(experimentList);
     }
 
     private YAMLUserTable loadUserTable() {
@@ -46,7 +47,7 @@ public class YAMLDatabase implements Database {
 
     private YAMLExperimentList loadExperimentList() {
         try {
-            return YAMLParser.parseFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.class);
+            return YAMLParser.parseFile(workingDirectory.resolve("experiments.yaml"), YAMLExperimentList.class);
         } catch (IOException e) {
             return new YAMLExperimentList(Collections.emptyList(), 1);
         }
