@@ -65,7 +65,7 @@ public class ExperimentService {
         throw new UnknownNodeException("No node called " + node.id + " exists");
     }
 
-    public void scheduleExperiment(long id) {
+    public void scheduleExperiment(long id, User user) {
         final Optional<ExperimentDescriptor> maybeExperiment = database.getExperimentById(id);
 
         if (maybeExperiment.isEmpty())
@@ -73,7 +73,10 @@ public class ExperimentService {
 
         final ExperimentDescriptor experiment = maybeExperiment.get();
 
-        if (LocalDateTime.now().compareTo(experiment.getEnd()) >= 0)
+        if (!experiment.getOwner().equals(user))
+            throw new UnauthorizedException();
+
+        if (LocalDateTime.now().compareTo(experiment.getEnd()) < 0)
             throw new IllegalExperimentTimeException("Experiment's end time is before current time");
 
         checkExperimentFirmwareExists(experiment);

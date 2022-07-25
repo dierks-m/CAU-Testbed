@@ -25,8 +25,11 @@ public class ExperimentResource {
 
     @Path("schedule-experiment")
     @POST
-    public Response scheduleExperiment(@Valid ExperimentId experimentId) {
-        service.scheduleExperiment(experimentId.id);
+    public Response scheduleExperiment(
+            @Auth User user,
+            @Valid ExperimentId experimentId
+    ) {
+        service.scheduleExperiment(experimentId.id, user);
         return Response.ok().build();
     }
 
