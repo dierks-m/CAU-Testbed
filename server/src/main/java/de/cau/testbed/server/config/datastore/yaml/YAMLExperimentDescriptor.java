@@ -1,26 +1,29 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
-import de.cau.testbed.server.config.experiment.ExperimentNode;
-import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
-import de.cau.testbed.server.config.experiment.ExperimentDetail;
-import de.cau.testbed.server.config.experiment.ExperimentInfo;
+import de.cau.testbed.server.config.datastore.User;
+import de.cau.testbed.server.config.experiment.*;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private final long id;
 
-    private final String owner;
+    private final User owner;
     private final String name;
     private final LocalDateTime start;
     private final LocalDateTime end;
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
-    public YAMLExperimentDescriptor(ExperimentInfo experimentInfo, ExperimentDetail experimentDetail) {
-        this.owner = experimentInfo.owner;
+    public YAMLExperimentDescriptor(ExperimentInfo experimentInfo, ExperimentDetail experimentDetail, YAMLUserTable userTable) {
+        final Optional<User> user = userTable.getUserById(experimentInfo.owner);
+        if (user.isEmpty())
+            throw new IllegalArgumentException("User with id " + experimentInfo.owner + " does not exist!");
+        this.owner = user.get();
+
         this.id = experimentInfo.experimentId;
         this.name = experimentInfo.name;
         this.start = experimentInfo.start;
@@ -40,7 +43,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     }
 
     @Override
-    public String getOwner() {
+    public User getOwner() {
         return owner;
     }
 

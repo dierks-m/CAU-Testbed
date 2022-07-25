@@ -18,7 +18,7 @@ public interface Database {
      * Adds a new experiment, but does not schedule it, yet.
      * @param experimentDescriptor
      */
-    ExperimentDescriptor addExperiment(ExperimentTemplate experimentDescriptor) throws TimeCollisionException;
+    ExperimentDescriptor addExperiment(ExperimentTemplate experimentDescriptor, User owner) throws TimeCollisionException;
 
     void updateExperiment(ExperimentDescriptor experimentDescriptor);
 

@@ -1,5 +1,6 @@
 package de.cau.testbed.server.config.experiment;
 
+import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public interface ExperimentDescriptor {
 
     String getName();
 
-    String getOwner();
+    User getOwner();
 
     LocalDateTime getStart();
 

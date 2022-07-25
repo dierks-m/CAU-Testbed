@@ -4,9 +4,11 @@ import de.cau.testbed.server.PathUtil;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.YAMLParser;
 import de.cau.testbed.server.config.datastore.Database;
+import de.cau.testbed.server.config.datastore.UserDatabase;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.config.experiment.ExperimentDetail;
 import de.cau.testbed.server.config.experiment.ExperimentInfo;
+import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.Optional;
 
 public class YAMLDatabase implements Database {
     private final Path workingDirectory;
+    private final YAMLUserTable userTable;
 
     private long nextId;
     private final List<ExperimentDescriptor> experimentDescriptors;
@@ -28,8 +31,17 @@ public class YAMLDatabase implements Database {
     public YAMLDatabase(Path workingDirectory) {
         this.workingDirectory = workingDirectory;
         final YAMLExperimentList experimentList = loadExperimentList();
+        this.userTable = loadUserTable();
         this.nextId = experimentList.nextId;
         this.experimentDescriptors = loadExperiments(loadExperimentList());
+    }
+
+    private YAMLUserTable loadUserTable() {
+        try {
+            return YAMLParser.parseFile(workingDirectory.resolve("users.yaml"), YAMLUserTable.class);
+        } catch (IOException e) {
+            return new YAMLUserTable(Collections.emptyList(), 1);
+        }
     }
 
     private YAMLExperimentList loadExperimentList() {
@@ -50,8 +62,9 @@ public class YAMLDatabase implements Database {
                         ExperimentDetail.class
                 );
 
+                //TODO: Perhaps incorporate user into experiment info (saved data structure != represented structure)
                 experimentDescriptors.add(
-                        new YAMLExperimentDescriptor(experimentInfo, experimentDetail)
+                        new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userTable)
                 );
             } catch (IOException ignored) {
             }
@@ -78,10 +91,10 @@ public class YAMLDatabase implements Database {
     }
 
     @Override
-    public synchronized ExperimentDescriptor addExperiment(ExperimentTemplate template) {
+    public synchronized ExperimentDescriptor addExperiment(ExperimentTemplate template, User owner) {
         final ExperimentInfo experimentInfo = new ExperimentInfo(
                 template.name,
-                "dummy owner",
+                owner.getId(),
                 nextId++,
                 ExperimentStatus.CREATED,
                 template.start,
@@ -90,7 +103,7 @@ public class YAMLDatabase implements Database {
 
         final ExperimentDetail experimentDetail = new ExperimentDetail(template.nodes);
 
-        final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(experimentInfo, experimentDetail);
+        final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userTable);
 
         experimentDescriptors.add(experiment);
         writeExperimentFile(experiment);
@@ -128,6 +141,10 @@ public class YAMLDatabase implements Database {
                 return Optional.of(experiment);
 
         return Optional.empty();
+    }
+
+    public UserDatabase getUserDatabase() {
+        return userTable;
     }
 
     private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {

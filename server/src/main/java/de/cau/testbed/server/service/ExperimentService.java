@@ -8,12 +8,12 @@ import de.cau.testbed.server.config.exception.*;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.config.experiment.ExperimentModule;
 import de.cau.testbed.server.config.experiment.ExperimentNode;
+import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.constants.ExperimentStatus;
 import de.cau.testbed.server.module.ExperimentSchedulingThread;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -30,11 +30,11 @@ public class ExperimentService {
         this.workingDirectory = workingDirectory;
     }
 
-    public long createNewExperiment(ExperimentTemplate template) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
+    public long createNewExperiment(ExperimentTemplate template, User owner) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
         checkTimeCollision(template);
         checkModules(template);
 
-        final ExperimentDescriptor experiment = database.addExperiment(template);
+        final ExperimentDescriptor experiment = database.addExperiment(template, owner);
 
         return experiment.getId();
     }

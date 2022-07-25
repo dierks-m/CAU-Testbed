@@ -28,7 +28,7 @@ public class YAMLExperimentList {
         for (ExperimentDescriptor descriptor : experimentDescriptors) {
             experimentStatusList.add(new ExperimentInfo(
                     descriptor.getName(),
-                    descriptor.getOwner(),
+                    descriptor.getOwner().getId(),
                     descriptor.getId(),
                     descriptor.getStatus(),
                     descriptor.getStart(),

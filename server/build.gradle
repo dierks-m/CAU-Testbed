@@ -18,6 +18,7 @@ dependencies {
     implementation 'com.hierynomus:sshj:0.33.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'io.dropwizard:dropwizard-forms:4.0.0-beta.2'
+    implementation 'io.dropwizard:dropwizard-auth:4.0.0-beta.2'
 }
 
 test {

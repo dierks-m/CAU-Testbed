@@ -2,7 +2,9 @@ package de.cau.testbed.server.resources;
 
 import de.cau.testbed.server.api.ExperimentId;
 import de.cau.testbed.server.api.ExperimentTemplate;
+import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.service.ExperimentService;
+import io.dropwizard.auth.Auth;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -30,7 +32,11 @@ public class ExperimentResource {
 
     @Path("create-experiment")
     @POST
-    public Response createExperiment(@Valid ExperimentTemplate experimentTemplate) {
-        return Response.ok(new ExperimentId(service.createNewExperiment(experimentTemplate))).build();
+    public Response createExperiment(
+            @Auth User user,
+            @Valid ExperimentTemplate experimentTemplate
+    ) {
+
+        return Response.ok(new ExperimentId(service.createNewExperiment(experimentTemplate, user))).build();
     }
 }

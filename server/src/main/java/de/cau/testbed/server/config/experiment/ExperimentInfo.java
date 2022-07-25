@@ -6,7 +6,7 @@ import de.cau.testbed.server.constants.ExperimentStatus;
 import java.time.LocalDateTime;
 
 public class ExperimentInfo {
-    public final String owner;
+    public final long owner;
     public final long experimentId;
     public final String name;
     public final ExperimentStatus status;
@@ -16,14 +16,14 @@ public class ExperimentInfo {
 
     public ExperimentInfo(
             @JsonProperty("name") String name,
-            @JsonProperty("owner") String owner,
+            @JsonProperty("owner") long ownerId,
             @JsonProperty("experimentId") long experimentId,
             @JsonProperty("status") ExperimentStatus status,
             @JsonProperty("start") LocalDateTime start,
             @JsonProperty("end")LocalDateTime end
             ) {
         this.name = name;
-        this.owner = owner;
+        this.owner = ownerId;
         this.experimentId = experimentId;
         this.status = status;
         this.start = start;
