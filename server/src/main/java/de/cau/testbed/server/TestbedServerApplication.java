@@ -60,7 +60,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         final ExperimentService experimentService = new ExperimentService(database, configuration.nodes, schedulingThread, configuration.workingDirectory);
         environment.jersey().register(new ExperimentResource(experimentService));
 
-        final FirmwareService firmwareService = new FirmwareService(configuration.workingDirectory);
+        final FirmwareService firmwareService = new FirmwareService(configuration.workingDirectory, database);
         environment.jersey().register(new UploadFirmwareResource(firmwareService));
     }
 }
