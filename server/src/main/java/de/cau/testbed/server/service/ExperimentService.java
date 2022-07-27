@@ -1,6 +1,6 @@
 package de.cau.testbed.server.service;
 
-import de.cau.testbed.server.PathUtil;
+import de.cau.testbed.server.util.PathUtil;
 import de.cau.testbed.server.api.AnonymizedExperimentInfo;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.HardwareNode;

@@ -1,4 +1,4 @@
-package de.cau.testbed.server;
+package de.cau.testbed.server.util;
 
 import de.cau.testbed.server.config.exception.PathTraversalException;
 

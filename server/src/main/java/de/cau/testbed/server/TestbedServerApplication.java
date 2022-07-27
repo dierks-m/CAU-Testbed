@@ -13,6 +13,7 @@ import de.cau.testbed.server.security.ApiKeyAuthenticator;
 import de.cau.testbed.server.security.ApiKeyAuthorizer;
 import de.cau.testbed.server.service.ExperimentService;
 import de.cau.testbed.server.service.FirmwareService;
+import de.cau.testbed.server.util.PathUtil;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;

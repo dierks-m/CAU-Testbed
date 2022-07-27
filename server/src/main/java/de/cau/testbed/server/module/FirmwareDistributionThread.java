@@ -1,6 +1,6 @@
 package de.cau.testbed.server.module;
 
-import de.cau.testbed.server.PathUtil;
+import de.cau.testbed.server.util.PathUtil;
 import de.cau.testbed.server.constants.KafkaConstants;
 import de.cau.testbed.server.constants.KafkaTopic;
 import de.cau.testbed.server.network.fileTransfer.NodeTransferTarget;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class FirmwareDistributionThread extends Thread {
     private final Logger logger = LoggerFactory.getLogger(FirmwareDistributionThread.class);

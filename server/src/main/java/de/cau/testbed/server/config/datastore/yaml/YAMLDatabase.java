@@ -1,6 +1,6 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
-import de.cau.testbed.server.PathUtil;
+import de.cau.testbed.server.util.PathUtil;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.config.YAMLParser;
 import de.cau.testbed.server.config.datastore.Database;

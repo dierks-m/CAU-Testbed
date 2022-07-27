@@ -1,7 +1,7 @@
 package de.cau.testbed.server.service;
 
 
-import de.cau.testbed.server.PathUtil;
+import de.cau.testbed.server.util.PathUtil;
 import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.config.exception.NoSuchExperimentException;
