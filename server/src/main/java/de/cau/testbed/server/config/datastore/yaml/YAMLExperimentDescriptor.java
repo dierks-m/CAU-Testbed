@@ -1,6 +1,7 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
 import de.cau.testbed.server.config.datastore.User;
+import de.cau.testbed.server.config.datastore.UserDatabase;
 import de.cau.testbed.server.config.experiment.*;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
@@ -18,7 +19,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
-    public YAMLExperimentDescriptor(ExperimentInfo experimentInfo, ExperimentDetail experimentDetail, YAMLUserTable userTable) {
+    public YAMLExperimentDescriptor(ExperimentInfo experimentInfo, ExperimentDetail experimentDetail, UserDatabase userTable) {
         final Optional<User> user = userTable.getUserById(experimentInfo.owner);
         if (user.isEmpty())
             throw new IllegalArgumentException("User with id " + experimentInfo.owner + " does not exist!");

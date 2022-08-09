@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public class YAMLDatabase implements Database {
     private final Path workingDirectory;
-    private final YAMLUserTable userTable;
+    private final YAMLUserDatabase userDatabase;
 
     private long nextId;
     private final List<ExperimentDescriptor> experimentDescriptors;
@@ -31,7 +31,7 @@ public class YAMLDatabase implements Database {
     public YAMLDatabase(Path workingDirectory) {
         this.workingDirectory = workingDirectory;
         final YAMLExperimentList experimentList = loadExperimentList();
-        this.userTable = loadUserTable();
+        this.userDatabase = new YAMLUserDatabase(workingDirectory);
         this.nextId = experimentList.nextId;
         System.out.println("experiment list " + experimentList);
         this.experimentDescriptors = loadExperiments(experimentList);
@@ -65,7 +65,7 @@ public class YAMLDatabase implements Database {
 
                 //TODO: Perhaps incorporate user into experiment info (saved data structure != represented structure)
                 experimentDescriptors.add(
-                        new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userTable)
+                        new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userDatabase)
                 );
             } catch (IOException ignored) {
             }
@@ -104,7 +104,7 @@ public class YAMLDatabase implements Database {
 
         final ExperimentDetail experimentDetail = new ExperimentDetail(template.nodes);
 
-        final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userTable);
+        final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userDatabase);
 
         experimentDescriptors.add(experiment);
         writeExperimentFile(experiment);
@@ -145,7 +145,7 @@ public class YAMLDatabase implements Database {
     }
 
     public UserDatabase getUserDatabase() {
-        return userTable;
+        return userDatabase;
     }
 
     private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {

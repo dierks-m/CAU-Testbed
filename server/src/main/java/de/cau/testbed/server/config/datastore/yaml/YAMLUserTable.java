@@ -1,15 +1,19 @@
 package de.cau.testbed.server.config.datastore.yaml;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.cau.testbed.server.config.datastore.UserDatabase;
 import de.cau.testbed.server.config.datastore.User;
+import de.cau.testbed.server.constants.UserType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public class YAMLUserTable implements UserDatabase {
+public class YAMLUserTable {
+    @JsonProperty("users")
     private final List<YAMLUser> users;
-    private final long nextId;
+
+    @JsonProperty("nextId")
+    private long nextId;
 
     public YAMLUserTable(
             @JsonProperty("users") List<YAMLUser> users,
@@ -28,12 +32,24 @@ public class YAMLUserTable implements UserDatabase {
         return Optional.empty();
     }
 
-    @Override
     public Optional<User> getUserByApiKey(String apiKey) {
         for (YAMLUser user : users)
             if (user.getApiKey().equals(apiKey))
                 return Optional.of(user);
 
         return Optional.empty();
+    }
+
+    public User addUser(String name, UserType type) {
+        final YAMLUser user = new YAMLUser(
+                name,
+                nextId++,
+                UUID.randomUUID().toString(),
+                type
+        );
+
+        users.add(user);
+
+        return user;
     }
 }

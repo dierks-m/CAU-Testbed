@@ -7,12 +7,14 @@ import de.cau.testbed.server.module.ExperimentSchedulingThread;
 import de.cau.testbed.server.module.FirmwareDistributionThread;
 import de.cau.testbed.server.module.HeartbeatThread;
 import de.cau.testbed.server.module.LogRetrievalThread;
+import de.cau.testbed.server.resources.AdminResource;
 import de.cau.testbed.server.resources.ExperimentResource;
 import de.cau.testbed.server.resources.UploadFirmwareResource;
 import de.cau.testbed.server.security.ApiKeyAuthenticator;
 import de.cau.testbed.server.security.ApiKeyAuthorizer;
 import de.cau.testbed.server.service.ExperimentService;
 import de.cau.testbed.server.service.FirmwareService;
+import de.cau.testbed.server.service.UserService;
 import de.cau.testbed.server.util.PathUtil;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -63,5 +65,8 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
         final FirmwareService firmwareService = new FirmwareService(database);
         environment.jersey().register(new UploadFirmwareResource(firmwareService));
+
+        final UserService userService = new UserService(database.getUserDatabase());
+        environment.jersey().register(new AdminResource(userService));
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 public enum UserType {
     USER("USER"),
+    ADMIN("ADMIN"),
     ;
 
     private final List<String> roles;
