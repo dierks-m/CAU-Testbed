@@ -12,7 +12,7 @@ class ZoulExperimentModule(ExperimentModule):
 
 
     def prepare(self):
-        logging.debug("Preparing ZOUL module")
+        logging.info("Preparing ZOUL module")
         self.bsl_address_path = self.firmware_path + "-bsl-address.txt"
 
         os.system("arm-none-eabi-objdump -h %s |"
@@ -27,11 +27,11 @@ class ZoulExperimentModule(ExperimentModule):
         )
 
     def start(self):
-        logging.debug("Starting ZOUL module")
+        logging.info("Starting ZOUL module")
         os.system("scripts/zoul/install.sh %s %s" % (self.firmware_path + ".bin", self.bsl_address_path))
         os.system("scripts/zoul/serialdump.sh %s" % (self.log_path))
 
     def stop(self):
-        logging.debug("Stopping ZOUL module")
+        logging.info("Stopping ZOUL module")
         os.system("scripts/zoul/serialdump-stop.sh")
         os.system("scripts/zoul/install.sh scripts/zoul/null.bin scripts/zoul/null_bsl_address.txt")
