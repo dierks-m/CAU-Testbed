@@ -12,6 +12,7 @@ import de.cau.testbed.server.config.experiment.ExperimentNode;
 import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.constants.ExperimentStatus;
 import de.cau.testbed.server.module.ExperimentSchedulingThread;
+import jakarta.ws.rs.BadRequestException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -76,6 +77,9 @@ public class ExperimentService {
 
         if (!experiment.getOwner().equals(user))
             throw new UnauthorizedException();
+
+        if (experiment.getStatus() != ExperimentStatus.CREATED)
+            throw new BadRequestException("Experiment cannot be scheduled as it may already have been started");
 
         if (experiment.getEnd().compareTo(LocalDateTime.now()) < 0)
             throw new IllegalExperimentTimeException("Experiment's end time is before current time");
