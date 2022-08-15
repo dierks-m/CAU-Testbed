@@ -1,7 +1,9 @@
 package de.cau.testbed.server.resources;
 
 import de.cau.testbed.server.api.UserTemplate;
+import de.cau.testbed.server.constants.UserType;
 import de.cau.testbed.server.service.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -22,6 +24,13 @@ public class AdminResource {
     @Path("create-user")
     @POST
     public Response createUser(UserTemplate template) {
+        return Response.ok(userService.createUser(template.name, UserType.USER)).build();
+    }
+
+    @RolesAllowed("ADMIN")
+    @Path("create-custom-user")
+    @POST
+    public Response createCustomUser(UserTemplate template) {
         return Response.ok(userService.createUser(template.name, template.type)).build();
     }
 }
