@@ -77,7 +77,7 @@ public class ExperimentService {
         if (!experiment.getOwner().equals(user))
             throw new UnauthorizedException();
 
-        if (LocalDateTime.now().compareTo(experiment.getEnd()) < 0)
+        if (experiment.getEnd().compareTo(LocalDateTime.now()) < 0)
             throw new IllegalExperimentTimeException("Experiment's end time is before current time");
 
         checkExperimentFirmwareExists(experiment);

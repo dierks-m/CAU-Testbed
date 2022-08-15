@@ -8,6 +8,7 @@ import de.cau.testbed.server.network.fileTransfer.NodeTransferTarget;
 import de.cau.testbed.server.network.fileTransfer.SCPFileTransferHandler;
 import de.cau.testbed.server.network.message.LogRetrievalMessage;
 import de.cau.testbed.server.network.serialization.LogRetrievalMessageDeserializer;
+import de.cau.testbed.server.util.PathUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,6 @@ public class LogRetrievalThread extends Thread {
     }
 
     private Path getValidExperimentLogPath(String experimentId, String nodeId) {
-        return Paths.get(workingDirectory.toString(), experimentId, "logs", nodeId);
+        return PathUtil.getLogPath(Long.parseLong(experimentId)).resolve(nodeId);
     }
 }

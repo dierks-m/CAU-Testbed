@@ -36,7 +36,7 @@ class ExperimentWrapper:
 
         logging.basicConfig(
             filename=os.path.join(nodeConfiguration.configuration.workingDirectory, experiment.experiment_id, "logs", "node.log"),
-            level=logging.DEBUG,
+            level=logging.INFO,
             format='%(asctime)s [%(levelname)-8s] %(message)s',
             datefmt='%H:%M:%S'
         )
@@ -57,7 +57,7 @@ class ExperimentWrapper:
             nodeConfiguration.firmware_retriever.retrieve_firmware(self.experiment.experiment_id, module.firmware)
 
     def wait_for_firmware(self, target_time: datetime.datetime):
-        logging.debug("Waiting for firmware")
+        logging.info("Waiting for firmware")
 
         modules = self.get_modules()
 
@@ -81,8 +81,9 @@ class ExperimentWrapper:
                 time.sleep(.1)
 
             print(f"Got firmware '{module.firmware}'")
+            logging.info(f"Got firmware '{module.firmware}'")
 
-        logging.debug("All firmware received")
+        logging.info("All firmware received")
 
     def initiate(self):
         # Initiate firmware retrieval and wait either until 30 seconds before experiment (scheduled)

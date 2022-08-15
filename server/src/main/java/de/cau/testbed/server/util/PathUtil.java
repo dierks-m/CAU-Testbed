@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 public class PathUtil {
     private static final Path EXPERIMENTS_FOLDER = Paths.get("experiments");
     private static final Path FIRMWARE_FOLDER = Paths.get("firmware");
+
+    private static final Path LOGGING_FOLDER = Paths.get("logs");
     private static Path workingDirectory;
 
     private PathUtil() {}
@@ -28,6 +30,10 @@ public class PathUtil {
 
     public static Path getFirmwarePath(long experimentId) {
         return getExperimentPath(experimentId).resolve(FIRMWARE_FOLDER);
+    }
+
+    public static Path getLogPath(long experimentId) {
+        return getExperimentPath(experimentId).resolve(LOGGING_FOLDER);
     }
 
     public static Path sanitizeFileName(String fileName) throws PathTraversalException {
