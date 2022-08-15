@@ -110,4 +110,4 @@ class ExperimentWrapper:
         scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 3,
                            lambda: logging.shutdown())
 
-        scheduler.run(blocking=False)
+        scheduler.run()

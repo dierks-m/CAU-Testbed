@@ -1,4 +1,5 @@
 import json
+import threading
 from threading import Thread
 
 from kafka import KafkaConsumer
@@ -32,4 +33,4 @@ class ExperimentProcessor(Thread):
         for message in self.kafka_connector:
             experiment = message.value
             wrapper = ExperimentWrapper(self.node_id, experiment)
-            wrapper.initiate()
+            threading.Thread(targer=wrapper.initiate).start()
