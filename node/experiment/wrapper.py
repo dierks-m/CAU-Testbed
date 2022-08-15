@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 import sched
 import time
@@ -31,6 +32,15 @@ class ExperimentWrapper:
         self.node_id = node_id
         self.experiment = experiment
 
+        log.transfer_handler.create_logging_directory(self.experiment.experiment_id)
+
+        logging.basicConfig(
+            filename=os.path.join(nodeConfiguration.configuration.workingDirectory, experiment.experiment_id, "logs", "node.log"),
+            level=logging.DEBUG,
+            format='%(asctime)s [%(levelname)-8s] %(message)s',
+            datefmt='%H:%M:%S'
+        )
+
     def get_modules(self) -> List[ExperimentModule]:
         for node in self.experiment.nodes:
             if node.id == self.node_id:
@@ -39,12 +49,16 @@ class ExperimentWrapper:
         return []
 
     def retrieve_firmware(self):
+        logging.debug("Initiating firmware retrieval")
+
         modules = self.get_modules()
 
         for module in modules:
             nodeConfiguration.firmware_retriever.retrieve_firmware(self.experiment.experiment_id, module.firmware)
 
     def wait_for_firmware(self, target_time: datetime.datetime):
+        logging.debug("Waiting for firmware")
+
         modules = self.get_modules()
 
         for module in modules:
@@ -53,17 +67,24 @@ class ExperimentWrapper:
                 module.firmware
             )
 
-            while not os.path.exists(firmware_file_path) or os.path.getsize(firmware_file_path) == 0:
+            while not os.path.exists(firmware_file_path):
                 time.sleep(1)
 
                 if datetime.datetime.now() >= target_time:
                     raise RuntimeError("Failed to retrieve firmware in time!")
 
+            # Perhaps improve this with a message back from the server
+            # If this size check isn't used, this will terminate immediately as soon as the file is created, but the firmware
+            # isn't transferred yet
+            firmware_file_size = -1
+            while firmware_file_size < (firmware_file_size := os.path.getsize(firmware_file_path)):
+                time.sleep(.1)
+
             print(f"Got firmware '{module.firmware}'")
 
-    def initiate(self):
-        log.transfer_handler.create_logging_directory(self.experiment.experiment_id)
+        logging.debug("All firmware received")
 
+    def initiate(self):
         # Initiate firmware retrieval and wait either until 30 seconds before experiment (scheduled)
         # or a maximum of 30 seconds from now (in case of immediate/late execution)
         self.retrieve_firmware()
@@ -84,5 +105,8 @@ class ExperimentWrapper:
         # Initiate log retrieval for *all* modules
         scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 2,
                            lambda: log.transfer_handler.initiate_log_retrieval(self.experiment.experiment_id))
+
+        scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 3,
+                           lambda: logging.shutdown())
 
         scheduler.run()
