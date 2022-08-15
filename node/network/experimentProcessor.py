@@ -33,4 +33,4 @@ class ExperimentProcessor(Thread):
         for message in self.kafka_connector:
             experiment = message.value
             wrapper = ExperimentWrapper(self.node_id, experiment)
-            threading.Thread(targer=wrapper.initiate).start()
+            threading.Thread(target=wrapper.initiate).start()
