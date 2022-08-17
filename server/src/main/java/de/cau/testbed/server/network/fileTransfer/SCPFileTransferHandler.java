@@ -16,20 +16,6 @@ public class SCPFileTransferHandler implements FileTransferHandler {
         this.workingDirectory = workingDirectory;
     }
 
-    public void transfer(FirmwareRetrievalMessage retrievalMessage) throws IOException {
-        final SSHClient sshClient = createSSHConnection(retrievalMessage.hostName);
-
-        try {
-            sshClient.authPublickey(retrievalMessage.userName);
-            sshClient.newSCPFileTransfer().upload(
-                    getValidFirmwarePath(retrievalMessage.experimentId, retrievalMessage.firmwareName).toString(),
-                    retrievalMessage.targetPath.toString()
-            );
-        } finally {
-            sshClient.disconnect();
-        }
-    }
-
     @Override
     public void upload(TransferTarget target, Path localPath) throws IOException {
         final SSHClient sshClient = createSSHConnection(target.getHost());

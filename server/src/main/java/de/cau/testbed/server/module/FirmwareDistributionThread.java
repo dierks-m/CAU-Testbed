@@ -40,19 +40,32 @@ public class FirmwareDistributionThread extends Thread {
             final FirmwareRetrievalMessage retrievalMessage = firmwareReceiver.receive();
 
             try {
+                logRetrievalIntent(retrievalMessage);
+
                 fileTransferHandler.upload(
                         new NodeTransferTarget(retrievalMessage.hostName, retrievalMessage.userName, retrievalMessage.targetPath),
                         getValidFirmwarePath(retrievalMessage)
                 );
 
-                logger.info(String.format(
-                        "Transferred firmware %s to node %s",
-                        retrievalMessage.firmwareName, retrievalMessage.hostName
-                ));
+                logRetrievalSuccess(retrievalMessage);
             } catch (Exception e) {
                 logger.error("Failed to execute firmware transfer due to ", e);
             }
         }
+    }
+
+    private void logRetrievalSuccess(FirmwareRetrievalMessage retrievalMessage) {
+        logger.info(String.format(
+                "Node %s got firmware %s for experiment %d",
+                retrievalMessage.hostName, retrievalMessage.firmwareName, retrievalMessage.experimentId
+        ));
+    }
+
+    private void logRetrievalIntent(FirmwareRetrievalMessage retrievalMessage) {
+        logger.info(String.format(
+                "Node %s requests firmware transfer for experiment %d",
+                retrievalMessage.hostName, retrievalMessage.experimentId
+        ));
     }
 
     private Path getValidFirmwarePath(FirmwareRetrievalMessage retrievalMessage) throws IOException {

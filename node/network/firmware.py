@@ -8,18 +8,19 @@ from configuration import constants
 
 
 class FirmwareRetrievalMessage:
-    def __init__(self, experimentId: str, firmwareName: str, hostName: str, targetPath: str):
+    def __init__(self, experimentId: str, firmwareName: str, hostName: str, targetPath: str, nodeId: str):
         self.experimentId = experimentId
         self.firmwareName = firmwareName
         self.hostName = hostName
         self.userName = os.getlogin()
         self.targetPath = targetPath
+        self.nodeId = nodeId
 
 def resolve_local_fw_path(working_directory: str, experiment_id: str) -> Path:
     return os.path.join(working_directory, experiment_id, "firmware")
 
 class FirmwareRetriever():
-    def __init__(self, host_name: str, working_directory: str, kafka_bootstrap: str):
+    def __init__(self, host_name: str, node_id: str, working_directory: str, kafka_bootstrap: str):
         self.host_name = host_name
         self.working_directory = working_directory
         self.retrieval_msg_producer = KafkaProducer(
@@ -37,6 +38,7 @@ class FirmwareRetriever():
                 experiment_id,
                 firmware_name,
                 self.host_name,
-                local_fw_path
+                local_fw_path,
+                self.node_id
             )
         )

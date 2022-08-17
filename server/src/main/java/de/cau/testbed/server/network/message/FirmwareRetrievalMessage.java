@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 public class FirmwareRetrievalMessage {
     public final long experimentId;
+    private final String nodeId;
     public final String firmwareName;
     public final String hostName;
     public final String userName;
@@ -17,13 +18,15 @@ public class FirmwareRetrievalMessage {
             @JsonProperty("hostName") String hostName,
             @JsonProperty("userName") String userName,
             @JsonProperty("targetPath") String targetPath,
-            @JsonProperty("experimentId") String experimentId
+            @JsonProperty("experimentId") String experimentId,
+            @JsonProperty("nodeId") String nodeId
     ) {
         this.firmwareName = firmwareName;
         this.hostName = hostName;
         this.userName = userName;
         this.targetPath = Paths.get(targetPath);
         this.experimentId = Long.parseLong(experimentId);
+        this.nodeId = nodeId;
     }
 
     @Override
