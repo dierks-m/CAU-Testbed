@@ -1,8 +1,8 @@
 package de.cau.testbed.server;
 
 import de.cau.testbed.server.config.TestbedServerConfiguration;
-import de.cau.testbed.server.config.datastore.yaml.YAMLDatabase;
 import de.cau.testbed.server.config.datastore.User;
+import de.cau.testbed.server.config.datastore.yaml.YAMLDatabase;
 import de.cau.testbed.server.module.ExperimentSchedulingThread;
 import de.cau.testbed.server.module.FirmwareDistributionThread;
 import de.cau.testbed.server.module.HeartbeatThread;
