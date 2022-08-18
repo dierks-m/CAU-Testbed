@@ -1,8 +1,49 @@
 # This is what a configuration for the server might look like
+
+workingDirectory: "/home/mikod/testbed-server"
+
+logging:
+  appenders:
+    - type: file
+      threshold: INFO
+      currentLogFilename: "/home/mikod/testbed-server/logs/server.log"
+      archivedLogFilenamePattern: "/home/mikod/testbed-server/logs/server.%d.log.gz"
+      archivedFileCount: 5
+
 nodes:
   - id: raspi01
-    capabilities: [NRF52, ZOUL, SKY]
+    capabilities: [ ZOUL ]
   - id: raspi02
-    capabilities: [ZOUL]
-
-workingDirectory: "/tmp/testbed"
+    capabilities: [ ZOUL ]
+  - id: raspi03
+    capabilities: [ ZOUL ]
+  - id: raspi04
+    capabilities: [ ZOUL ]
+  - id: raspi06
+    capabilities: [ ZOUL ]
+  - id: raspi07
+    capabilities: [ ZOUL ]
+  - id: raspi08
+    capabilities: [ ZOUL ]
+  - id: raspi09
+    capabilities: [ ZOUL ]
+  - id: raspi10
+    capabilities: [ ZOUL ]
+  - id: raspi12
+    capabilities: [ ZOUL ]
+  - id: raspi13
+    capabilities: [ ZOUL ]
+  - id: raspi14
+    capabilities: [ ZOUL ]
+  - id: raspi15
+    capabilities: [ ZOUL ]
+  - id: raspi16
+    capabilities: [ ZOUL ]
+  - id: raspi17
+    capabilities: [ ZOUL ]
+  - id: raspi18
+    capabilities: [ ZOUL ]
+  - id: raspi19
+    capabilities: [ ZOUL ]
+  - id: raspi21
+    capabilities: [ ZOUL ]
