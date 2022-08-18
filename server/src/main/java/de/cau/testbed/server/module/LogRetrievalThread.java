@@ -9,6 +9,8 @@ import de.cau.testbed.server.network.fileTransfer.SCPFileTransferHandler;
 import de.cau.testbed.server.network.message.LogRetrievalMessage;
 import de.cau.testbed.server.network.serialization.LogRetrievalMessageDeserializer;
 import de.cau.testbed.server.util.PathUtil;
+import de.cau.testbed.server.util.event.EventHandler;
+import de.cau.testbed.server.util.event.LogRetrievedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,10 +24,10 @@ public class LogRetrievalThread extends Thread {
     private final KafkaNetworkReceiver<LogRetrievalMessage> logRetrievalReceiver;
 
     private final FileTransferHandler fileTransferHandler;
-    private final Path workingDirectory;
+    private final EventHandler<LogRetrievedEvent> logEventHandler;
 
-    public LogRetrievalThread(Path workingDirectory) {
-        this.workingDirectory = workingDirectory;
+    public LogRetrievalThread(Path workingDirectory, EventHandler<LogRetrievedEvent> logEventHandler) {
+        this.logEventHandler = logEventHandler;
         this.logRetrievalReceiver = new KafkaNetworkReceiver<>(
                 new LogRetrievalMessageDeserializer(),
                 KafkaTopic.LOG_RETRIEVAL,

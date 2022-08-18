@@ -16,6 +16,8 @@ import de.cau.testbed.server.service.ExperimentService;
 import de.cau.testbed.server.service.FirmwareService;
 import de.cau.testbed.server.service.UserService;
 import de.cau.testbed.server.util.PathUtil;
+import de.cau.testbed.server.util.event.EventHandler;
+import de.cau.testbed.server.util.event.LogRetrievedEvent;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
@@ -44,18 +46,13 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         new HeartbeatThread().start();
 
         new FirmwareDistributionThread(configuration.workingDirectory).start();
-        new LogRetrievalThread(configuration.workingDirectory).start();
+
+        final EventHandler<LogRetrievedEvent> logEventHandler = new EventHandler<>();
+        new LogRetrievalThread(configuration.workingDirectory, logEventHandler).start();
 
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
 
-        environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
-                .setAuthenticator(new ApiKeyAuthenticator(database.getUserDatabase()))
-                .setAuthorizer(new ApiKeyAuthorizer())
-                .setRealm("API-KEY-AUTH-REALM")
-                .buildAuthFilter()
-        ));
-        environment.jersey().register(new RolesAllowedDynamicFeature());
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
+        registerAuthorizationComponent(environment, database);
 
         final ExperimentSchedulingThread schedulingThread = new ExperimentSchedulingThread(database);
         schedulingThread.start();
@@ -68,5 +65,17 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
         final UserService userService = new UserService(database.getUserDatabase());
         environment.jersey().register(new AdminResource(userService));
+    }
+
+    private void registerAuthorizationComponent(Environment environment, YAMLDatabase database) {
+        environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
+                .setAuthenticator(new ApiKeyAuthenticator(database.getUserDatabase()))
+                .setAuthorizer(new ApiKeyAuthorizer())
+                .setRealm("API-KEY-AUTH-REALM")
+                .buildAuthFilter()
+        ));
+
+        environment.jersey().register(new RolesAllowedDynamicFeature());
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
     }
 }

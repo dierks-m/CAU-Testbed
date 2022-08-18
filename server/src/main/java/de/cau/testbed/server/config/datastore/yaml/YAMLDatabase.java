@@ -33,7 +33,6 @@ public class YAMLDatabase implements Database {
         final YAMLExperimentList experimentList = loadExperimentList();
         this.userDatabase = new YAMLUserDatabase(workingDirectory);
         this.nextId = experimentList.nextId;
-        System.out.println("experiment list " + experimentList);
         this.experimentDescriptors = loadExperiments(experimentList);
     }
 
