@@ -57,6 +57,7 @@ public class LogRetrievalThread extends Thread {
                 );
 
                 logger.info(String.format("Transferred logs for node %s", retrievalMessage.nodeId));
+                logEventHandler.publishEvent(new LogRetrievedEvent(retrievalMessage.experimentId, retrievalMessage.nodeId));
             } catch (Exception e) {
                 logger.error("Failed to execute log transfer due to ", e);
             }
@@ -67,7 +68,7 @@ public class LogRetrievalThread extends Thread {
         return getValidExperimentLogPath(retrievalMessage.experimentId, retrievalMessage.nodeId);
     }
 
-    private Path getValidExperimentLogPath(String experimentId, String nodeId) {
-        return PathUtil.getLogPath(Long.parseLong(experimentId)).resolve(nodeId);
+    private Path getValidExperimentLogPath(long experimentId, String nodeId) {
+        return PathUtil.getLogPath(experimentId).resolve(nodeId);
     }
 }

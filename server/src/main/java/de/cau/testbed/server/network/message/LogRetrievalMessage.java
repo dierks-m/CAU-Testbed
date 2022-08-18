@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 public class LogRetrievalMessage {
     public final String host;
     public final String userName;
-    public final String experimentId;
+    public final long experimentId;
     public final String nodeId;
     public final Path path;
 
@@ -21,7 +21,7 @@ public class LogRetrievalMessage {
     ) {
         this.host = host;
         this.userName = userName;
-        this.experimentId = experimentId;
+        this.experimentId = Long.parseLong(experimentId);
         this.nodeId = nodeId;
         this.path = Paths.get(path);
     }
