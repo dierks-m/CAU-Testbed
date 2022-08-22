@@ -9,6 +9,9 @@ logging:
       currentLogFilename: "/home/mikod/testbed-server/logs/server.log"
       archivedLogFilenamePattern: "/home/mikod/testbed-server/logs/server.%d.log.gz"
       archivedFileCount: 5
+    - type: console
+      threshold: INFO
+      target: stdout
 
 nodes:
   - id: raspi01
