@@ -21,6 +21,7 @@ def resolve_local_fw_path(working_directory: str, experiment_id: str) -> Path:
 
 class FirmwareRetriever():
     def __init__(self, host_name: str, node_id: str, working_directory: str, kafka_bootstrap: str):
+        self.node_id = node_id
         self.host_name = host_name
         self.working_directory = working_directory
         self.retrieval_msg_producer = KafkaProducer(
