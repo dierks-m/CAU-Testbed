@@ -25,9 +25,11 @@ public class LogRetrievalThread extends Thread {
 
     private final FileTransferHandler fileTransferHandler;
     private final EventHandler<LogRetrievedEvent> logEventHandler;
+    private final int id;
 
-    public LogRetrievalThread(Path workingDirectory, EventHandler<LogRetrievedEvent> logEventHandler) {
+    public LogRetrievalThread(Path workingDirectory, EventHandler<LogRetrievedEvent> logEventHandler, int id) {
         this.logEventHandler = logEventHandler;
+        this.id = id;
         this.logRetrievalReceiver = new KafkaNetworkReceiver<>(
                 new LogRetrievalMessageDeserializer(),
                 KafkaTopic.LOG_RETRIEVAL,
@@ -47,6 +49,8 @@ public class LogRetrievalThread extends Thread {
                 if (!Files.isDirectory(logPath))
                     Files.createDirectories(logPath);
 
+                logger.info(String.format("[Thread %d] Node %s requests transfer of logs for experiments %d", id, retrievalMessage.nodeId, retrievalMessage.experimentId));
+
                 fileTransferHandler.download(
                         new NodeTransferTarget(
                                 retrievalMessage.host,
@@ -56,10 +60,10 @@ public class LogRetrievalThread extends Thread {
                         logPath
                 );
 
-                logger.info(String.format("Transferred logs for node %s", retrievalMessage.nodeId));
+                logger.info(String.format("[Thread %d] Transferred logs for node %s for experiment %d", id, retrievalMessage.nodeId, retrievalMessage.experimentId));
                 logEventHandler.publishEvent(new LogRetrievedEvent(retrievalMessage.experimentId, retrievalMessage.nodeId));
             } catch (Exception e) {
-                logger.error("Failed to execute log transfer due to ", e);
+                logger.error("Failed to execute log transfer for node %s due to ", e);
             }
         }
     }

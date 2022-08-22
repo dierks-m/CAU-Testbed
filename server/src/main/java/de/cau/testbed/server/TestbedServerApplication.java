@@ -46,10 +46,13 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         PathUtil.initialize(configuration.workingDirectory);
 
         final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes);
-        new FirmwareDistributionThread(configuration.workingDirectory).start();
+
+        for (int i = 0; i < 2; i++)
+            new FirmwareDistributionThread(configuration.workingDirectory, i).start();
 
         final EventHandler<LogRetrievedEvent> logEventHandler = new EventHandler<>();
-        new LogRetrievalThread(configuration.workingDirectory, logEventHandler).start();
+        for (int i = 0; i < 2; i++)
+            new LogRetrievalThread(configuration.workingDirectory, logEventHandler, i).start();
 
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
 

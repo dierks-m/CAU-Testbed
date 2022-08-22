@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 public class FirmwareRetrievalMessage {
     public final long experimentId;
-    private final String nodeId;
+    public final String nodeId;
     public final String firmwareName;
     public final String hostName;
     public final String userName;

@@ -23,9 +23,11 @@ public class FirmwareDistributionThread extends Thread {
 
     private final FileTransferHandler fileTransferHandler;
     private final Path workingDirectory;
+    private final int id;
 
-    public FirmwareDistributionThread(Path workingDirectory) {
+    public FirmwareDistributionThread(Path workingDirectory, int id) {
         this.workingDirectory = workingDirectory;
+        this.id = id;
         this.firmwareReceiver = new KafkaNetworkReceiver<>(
                 new FirmwareRetrievalMessageDeserializer(),
                 KafkaTopic.FIRMWARE_RETRIEVAL,
@@ -56,15 +58,15 @@ public class FirmwareDistributionThread extends Thread {
 
     private void logRetrievalSuccess(FirmwareRetrievalMessage retrievalMessage) {
         logger.info(String.format(
-                "Node %s got firmware %s for experiment %d",
-                retrievalMessage.hostName, retrievalMessage.firmwareName, retrievalMessage.experimentId
+                "[Thread %d] Node %s got firmware %s for experiment %d",
+                id, retrievalMessage.nodeId, retrievalMessage.firmwareName, retrievalMessage.experimentId
         ));
     }
 
     private void logRetrievalIntent(FirmwareRetrievalMessage retrievalMessage) {
         logger.info(String.format(
-                "Node %s requests firmware transfer for experiment %d",
-                retrievalMessage.hostName, retrievalMessage.experimentId
+                "[Thread %d] Node %s requests firmware transfer for experiment %d",
+                id, retrievalMessage.nodeId, retrievalMessage.experimentId
         ));
     }
 

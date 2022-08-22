@@ -2,7 +2,14 @@
 
 workingDirectory: "/home/mikod/testbed-server"
 
+server:
+  requestLog:
+    appenders: []
+
 logging:
+  level: OFF
+  loggers:
+    "de.cau.testbed.server": INFO
   appenders:
     - type: file
       threshold: INFO
