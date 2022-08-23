@@ -38,7 +38,8 @@ class ExperimentWrapper:
             filename=os.path.join(nodeConfiguration.configuration.workingDirectory, experiment.experiment_id, "logs", "node.log"),
             level=logging.INFO,
             format=f'%(asctime)s.%(msecs)03d [%(levelname)s] [{nodeConfiguration.configuration.id}] [Experiment {self.experiment.experiment_id}] %(message)s',
-            datefmt='%H:%M:%S'
+            datefmt='%H:%M:%S',
+            force=True
         )
 
     def get_modules(self) -> List[ExperimentModule]:

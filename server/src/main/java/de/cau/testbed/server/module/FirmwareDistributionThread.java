@@ -66,9 +66,9 @@ public class FirmwareDistributionThread extends Thread {
         logger.info(String.format(
                 "[Thread %d] [Experiment %d] Node %s got firmware %s",
                 id,
+                retrievalMessage.experimentId,
                 retrievalMessage.nodeId,
-                retrievalMessage.firmwareName,
-                retrievalMessage.experimentId
+                retrievalMessage.firmwareName
         ));
     }
 
