@@ -28,6 +28,7 @@ public class LogRetrievalThread extends Thread {
     private final int id;
 
     public LogRetrievalThread(Path workingDirectory, EventHandler<LogRetrievedEvent> logEventHandler, int id) {
+        logger.info("Initializing thread " + id);
         this.logEventHandler = logEventHandler;
         this.id = id;
         this.logRetrievalReceiver = new KafkaNetworkReceiver<>(

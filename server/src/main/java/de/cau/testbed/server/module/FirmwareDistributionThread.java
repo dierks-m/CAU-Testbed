@@ -26,6 +26,7 @@ public class FirmwareDistributionThread extends Thread {
     private final int id;
 
     public FirmwareDistributionThread(Path workingDirectory, int id) {
+        logger.info("Intializing thread " + id);
         this.workingDirectory = workingDirectory;
         this.id = id;
         this.firmwareReceiver = new KafkaNetworkReceiver<>(

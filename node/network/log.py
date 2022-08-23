@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from kafka import KafkaProducer
@@ -29,6 +30,8 @@ class LogTransfer:
 
     def initiate_log_retrieval(self, experiment_id: str):
         local_log_path = resolve_local_log_path(self.working_directory, experiment_id)
+
+        logging.info("Initiating log retrieval")
 
         self.retrieval_msg_producer.send(
             constants.LOG_RETRIEVAL_TOPIC,
