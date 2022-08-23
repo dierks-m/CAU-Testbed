@@ -16,6 +16,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 public class ExperimentSchedulingThread extends Thread {
+    private static final int PREPARE_BUFFER_MIN = 2;
     private final Object waitObject = new Object();
     private final Logger logger = LoggerFactory.getLogger(ExperimentSchedulingThread.class);
     private final Database database;
@@ -38,17 +39,21 @@ public class ExperimentSchedulingThread extends Thread {
                 final ExperimentDescriptor descriptor = nextExperiment.get();
                 final long minuteDiff = ChronoUnit.MINUTES.between(LocalDateTime.now(), descriptor.getStart());
 
-                if (minuteDiff <= 5) {
+                if (minuteDiff <= PREPARE_BUFFER_MIN) {
                     prepareExperiment(descriptor);
                 } else {
-                    trySleep(minuteDiff * 60 * 1000);
+                    trySleep((minuteDiff - PREPARE_BUFFER_MIN) * 60 * 1000);
                 }
             }
         }
     }
 
     private void prepareExperiment(ExperimentDescriptor descriptor) {
-        logger.info("Preparing experiment " + descriptor.getName());
+        logger.info(String.format(
+                "[Experiment %d] Preparing experiment %s",
+                descriptor.getId(),
+                descriptor.getName()
+        ));
 
         experimentSender.send(null, new ExperimentMessage(descriptor));
         descriptor.setStatus(ExperimentStatus.STARTED);

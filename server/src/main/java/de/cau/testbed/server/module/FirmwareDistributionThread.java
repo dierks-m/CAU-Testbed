@@ -52,22 +52,32 @@ public class FirmwareDistributionThread extends Thread {
 
                 logRetrievalSuccess(retrievalMessage);
             } catch (Exception e) {
-                logger.error("Failed to execute firmware transfer due to ", e);
+                logger.error(String.format(
+                        "[Experiment %d] Failed to execute firmware for node %s transfer due to %s",
+                        retrievalMessage.experimentId,
+                        retrievalMessage.nodeId,
+                        e
+                ));
             }
         }
     }
 
     private void logRetrievalSuccess(FirmwareRetrievalMessage retrievalMessage) {
         logger.info(String.format(
-                "[Thread %d] Node %s got firmware %s for experiment %d",
-                id, retrievalMessage.nodeId, retrievalMessage.firmwareName, retrievalMessage.experimentId
+                "[Thread %d] [Experiment %d] Node %s got firmware %s",
+                id,
+                retrievalMessage.nodeId,
+                retrievalMessage.firmwareName,
+                retrievalMessage.experimentId
         ));
     }
 
     private void logRetrievalIntent(FirmwareRetrievalMessage retrievalMessage) {
         logger.info(String.format(
-                "[Thread %d] Node %s requests firmware transfer for experiment %d",
-                id, retrievalMessage.nodeId, retrievalMessage.experimentId
+                "[Thread %d] [Experiment %d] Node %s requests firmware transfer",
+                id,
+                retrievalMessage.experimentId,
+                retrievalMessage.nodeId
         ));
     }
 

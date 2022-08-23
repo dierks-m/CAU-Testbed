@@ -50,7 +50,7 @@ public class LogRetrievalThread extends Thread {
                 if (!Files.isDirectory(logPath))
                     Files.createDirectories(logPath);
 
-                logger.info(String.format("[Thread %d] Node %s requests transfer of logs for experiments %d", id, retrievalMessage.nodeId, retrievalMessage.experimentId));
+                logRetrievalIntent(retrievalMessage);
 
                 fileTransferHandler.download(
                         new NodeTransferTarget(
@@ -61,10 +61,16 @@ public class LogRetrievalThread extends Thread {
                         logPath
                 );
 
-                logger.info(String.format("[Thread %d] Transferred logs for node %s for experiment %d", id, retrievalMessage.nodeId, retrievalMessage.experimentId));
+                logSuccessfulRetrieval(retrievalMessage);
+
                 logEventHandler.publishEvent(new LogRetrievedEvent(retrievalMessage.experimentId, retrievalMessage.nodeId));
             } catch (Exception e) {
-                logger.error("Failed to execute log transfer for node %s due to ", e);
+                logger.error(String.format(
+                        "[Experiment %d] Failed to execute log transfer for node %s due to ",
+                        retrievalMessage.experimentId,
+                        retrievalMessage.nodeId,
+                        e
+                ));
             }
         }
     }
@@ -75,5 +81,23 @@ public class LogRetrievalThread extends Thread {
 
     private Path getValidExperimentLogPath(long experimentId, String nodeId) {
         return PathUtil.getLogPath(experimentId).resolve(nodeId);
+    }
+
+    private void logSuccessfulRetrieval(LogRetrievalMessage retrievalMessage) {
+        logger.info(String.format(
+                "[Thread %d] [Experiment %d] Transferred logs for node %s",
+                id,
+                retrievalMessage.experimentId,
+                retrievalMessage.nodeId
+        ));
+    }
+
+    private void logRetrievalIntent(LogRetrievalMessage retrievalMessage) {
+        logger.info(String.format(
+                "[Thread %d] [Experiment %d] Node %s requests transfer of logs",
+                id,
+                retrievalMessage.experimentId,
+                retrievalMessage.nodeId
+        ));
     }
 }
