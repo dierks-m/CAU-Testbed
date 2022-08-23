@@ -56,7 +56,7 @@ public class FirmwareDistributionThread extends Thread {
                         "[Experiment %d] Failed to execute firmware for node %s transfer due to %s",
                         retrievalMessage.experimentId,
                         retrievalMessage.nodeId,
-                        e
+                        e.getMessage()
                 ));
             }
         }
