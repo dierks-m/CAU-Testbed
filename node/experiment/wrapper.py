@@ -3,6 +3,7 @@ import logging
 import os
 import sched
 import time
+from pathlib import Path
 from typing import List
 
 import experiment.modules.module
@@ -15,13 +16,21 @@ scheduler = sched.scheduler(time.time, time.sleep)
 
 
 def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.modules.module.ExperimentModule:
+    if module.serial_dump:
+        log_path_prefix = nodeConfiguration.configuration.workingDirectory.joinpath(experiment_id, "logs")
+    else:
+        log_path_prefix = Path("/tmp")
+
     if module.id == "ZOUL":
         return ZoulExperimentModule(
-            os.path.join(
+            firmware_path=os.path.join(
                 firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, experiment_id),
                 module.firmware
             ),
-            os.path.join(nodeConfiguration.configuration.workingDirectory, experiment_id, "logs", "zoul.log")
+            log_path=log_path_prefix.joinpath("zoul.log"),
+            serial_dump=module.serial_dump,
+            serial_forward=module.serial_forward,
+            gpio_tracer=module.gpio_tracer
         )
 
     return None

@@ -3,7 +3,6 @@ from pathlib import Path
 
 yaml = YAML()
 
-
 @yaml_object(yaml)
 class Configuration:
     def __init__(
@@ -24,3 +23,5 @@ class Configuration:
 
 def load_configuration(path: Path) -> Configuration:
     return yaml.load(path)
+
+configuration: Configuration = None

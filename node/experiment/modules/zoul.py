@@ -6,14 +6,13 @@ from experiment.modules.module import ExperimentModule
 
 
 class ZoulExperimentModule(ExperimentModule):
-    def __init__(self, firmware_path: Path, log_path: Path):
-        ExperimentModule.__init__(self, firmware_path, log_path)
-        self.bsl_address_path = "dummy"
+    def __init__(self, *args, **kwargs):
+        super(ZoulExperimentModule, self).__init__(self, *args, **kwargs)
+        self.bsl_address_path = self.firmware_path + "-bsl-address.txt"
 
 
     def prepare(self):
         logging.info("Preparing ZOUL module")
-        self.bsl_address_path = self.firmware_path + "-bsl-address.txt"
 
         os.system("arm-none-eabi-objdump -h %s |"
                   "grep -B1 LOAD | grep -Ev 'LOAD|\\-\\-' |"
@@ -29,9 +28,15 @@ class ZoulExperimentModule(ExperimentModule):
     def start(self):
         logging.info("Starting ZOUL module")
         os.system("scripts/zoul/install.sh %s %s" % (self.firmware_path + ".bin", self.bsl_address_path))
-        os.system("scripts/zoul/serialdump.sh %s" % (self.log_path))
+
+        if self.serial_forward:
+            os.system("scripts/zoul/serial_forwarder.sh %s" % (self.log_path))
+        else:
+            os.system("scripts/zoul/serialdump.sh %s" % (self.log_path))
 
     def stop(self):
         logging.info("Stopping ZOUL module")
-        os.system("scripts/zoul/serialdump-stop.sh")
+        os.system("scripts/zoul/stop-forwarder-dump.sh")
+
+        # Install null firmware to get device to a known state
         os.system("scripts/zoul/install.sh scripts/zoul/null.bin scripts/zoul/null_bsl_address.txt")
