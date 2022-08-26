@@ -1,5 +1,6 @@
 package de.cau.testbed.server.resources;
 
+import de.cau.testbed.server.api.ErrorMessage;
 import de.cau.testbed.server.api.ExperimentId;
 import de.cau.testbed.server.api.ExperimentTemplate;
 import de.cau.testbed.server.api.TimeFrame;
@@ -39,7 +40,11 @@ public class ExperimentResource {
             @Auth User user,
             @Valid ExperimentTemplate experimentTemplate
     ) {
-        return Response.ok(new ExperimentId(service.createNewExperiment(experimentTemplate, user))).build();
+        try {
+            return Response.ok(new ExperimentId(service.createNewExperiment(experimentTemplate, user))).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
+        }
     }
 
     @Path("list-experiments")

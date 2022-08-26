@@ -1,5 +1,4 @@
 import datetime
-import json
 from enum import Enum
 from typing import List, Dict
 
@@ -10,11 +9,12 @@ class ModuleType(Enum):
     SKY = 3
 
 class ExperimentModule:
-    def __init__(self, id: ModuleType, firmwarePath: str, serialDump: bool, gpioTracer: bool):
+    def __init__(self, id: ModuleType, firmwarePath: str, serialDump: bool, serialForward: bool, gpioTracer: bool):
         self.id = id
         self.firmware = firmwarePath
         self.serial_dump = serialDump
         self.gpio_tracer = gpioTracer
+        self.serial_forward = serialForward
 
     @staticmethod
     def from_json(json_dict: Dict):

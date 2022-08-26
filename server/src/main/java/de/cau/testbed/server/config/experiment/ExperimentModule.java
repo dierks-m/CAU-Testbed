@@ -12,7 +12,7 @@ public class ExperimentModule {
     @JsonProperty("id")
     public final DeviceType moduleType;
 
-    @JsonProperty("firmwarePath")
+    @JsonProperty("firmware")
     public final String firmwarePath;
 
     @JsonProperty("gpioTracer")
@@ -21,17 +21,22 @@ public class ExperimentModule {
     @JsonProperty("serialDump")
     public final boolean serialDump;
 
+    @JsonProperty("serialForward")
+    public final boolean serialForward;
+
     @JsonCreator
     public ExperimentModule(
             @JsonProperty("id") DeviceType moduleType,
             @JsonProperty("firmware") String firmwarePath,
             @JsonProperty("gpioTracer") Boolean gpioTracer,
-            @JsonProperty("serialDump") Boolean serialDump
+            @JsonProperty("serialDump") Boolean serialDump,
+            @JsonProperty("serialForward") Boolean serialForward
     ) {
         this.moduleType = moduleType;
         this.firmwarePath = firmwarePath;
         this.gpioTracer = Optional.ofNullable(gpioTracer).orElse(false);
         this.serialDump = Optional.ofNullable(serialDump).orElse(true);
+        this.serialForward = Optional.ofNullable(serialForward).orElse(false);
     }
 
     @Override
@@ -39,6 +44,9 @@ public class ExperimentModule {
         return "ExperimentModule{" +
                 "moduleType=" + moduleType +
                 ", firmwarePath='" + firmwarePath + '\'' +
+                ", gpioTracer=" + gpioTracer +
+                ", serialDump=" + serialDump +
+                ", serialForward=" + serialForward +
                 '}';
     }
 }

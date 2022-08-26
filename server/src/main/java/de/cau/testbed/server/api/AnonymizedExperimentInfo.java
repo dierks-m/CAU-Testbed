@@ -14,9 +14,13 @@ public class AnonymizedExperimentInfo {
     @JsonProperty("end")
     public final LocalDateTime end;
 
-    public AnonymizedExperimentInfo(String name, LocalDateTime start, LocalDateTime end) {
+    @JsonProperty("id")
+    private final long id;
+
+    public AnonymizedExperimentInfo(String name, LocalDateTime start, LocalDateTime end, long id) {
         this.name = name;
         this.start = start;
         this.end = end;
+        this.id = id;
     }
 }

@@ -33,12 +33,18 @@ public class ExperimentService {
     }
 
     public long createNewExperiment(ExperimentTemplate template, User owner) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
+        checkTimeStamps(template);
         checkTimeCollision(template);
         checkModules(template);
 
         final ExperimentDescriptor experiment = database.addExperiment(template, owner);
 
         return experiment.getId();
+    }
+
+    private void checkTimeStamps(ExperimentTemplate template) {
+        if (template.end.isBefore(template.start))
+            throw new TimeCollisionException("Experiment's start time is after end time");
     }
 
     private void checkTimeCollision(ExperimentTemplate template) throws TimeCollisionException {
@@ -116,7 +122,7 @@ public class ExperimentService {
         final List<AnonymizedExperimentInfo> anonymizedDescriptors = new ArrayList<>();
 
         for (ExperimentDescriptor descriptor : experimentDescriptors) {
-            anonymizedDescriptors.add(new AnonymizedExperimentInfo(descriptor.getName(), descriptor.getStart(), descriptor.getEnd()));
+            anonymizedDescriptors.add(new AnonymizedExperimentInfo(descriptor.getName(), descriptor.getStart(), descriptor.getEnd(), descriptor.getId()));
         }
 
         return anonymizedDescriptors;

@@ -50,6 +50,15 @@ public class ExperimentSchedulingThread extends Thread {
     }
 
     private void prepareExperiment(ExperimentDescriptor descriptor) {
+        if (descriptor.getEnd().isBefore(LocalDateTime.now())) {
+            logger.info(String.format(
+                    "[Experiment %d] %s ended before current time. Skipping.",
+                    descriptor.getId(),
+                    descriptor.getName()
+            ));
+            return;
+        }
+
         logger.info(String.format(
                 "[Experiment %d] Preparing experiment %s",
                 descriptor.getId(),
