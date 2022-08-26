@@ -9,6 +9,7 @@ from typing import List
 import experiment.modules.module
 from configuration import nodeConfiguration
 from configuration.experiment import Experiment, ExperimentModule
+from experiment.modules.sky import SkyExperimentModule
 from experiment.modules.zoul import ZoulExperimentModule
 from network import firmware, log
 
@@ -19,15 +20,24 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
     if module.serial_dump:
         log_path_prefix = nodeConfiguration.configuration.workingDirectory.joinpath(experiment_id, "logs")
     else:
-        log_path_prefix = Path("/tmp")
+        log_path_prefix = Path("/tmp", "tesbed", experiment_id)
 
     if module.id == "ZOUL":
         return ZoulExperimentModule(
-            firmware_path=os.path.join(
-                firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, experiment_id),
-                module.firmware
-            ),
+            firmware_path=firmware.resolve_local_fw_path(
+                nodeConfiguration.configuration.workingDirectory, experiment_id
+            ).joinpath(module.firmware),
             log_path=log_path_prefix.joinpath("zoul.log"),
+            serial_dump=module.serial_dump,
+            serial_forward=module.serial_forward,
+            gpio_tracer=module.gpio_tracer
+        )
+    elif module.id == "SKY":
+        return SkyExperimentModule(
+            firmware_path=firmware.resolve_local_fw_path(
+                nodeConfiguration.configuration.workingDirectory, experiment_id
+            ).joinpath(module.firmware),
+            log_path=log_path_prefix.joinpath("sky.log"),
             serial_dump=module.serial_dump,
             serial_forward=module.serial_forward,
             gpio_tracer=module.gpio_tracer
