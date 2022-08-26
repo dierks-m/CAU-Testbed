@@ -9,9 +9,9 @@ class ModuleType(Enum):
     SKY = 3
 
 class ExperimentModule:
-    def __init__(self, id: ModuleType, firmwarePath: str, serialDump: bool, serialForward: bool, gpioTracer: bool):
+    def __init__(self, id: ModuleType, firmware: str, serialDump: bool, serialForward: bool, gpioTracer: bool):
         self.id = id
-        self.firmware = firmwarePath
+        self.firmware = firmware
         self.serial_dump = serialDump
         self.gpio_tracer = gpioTracer
         self.serial_forward = serialForward
