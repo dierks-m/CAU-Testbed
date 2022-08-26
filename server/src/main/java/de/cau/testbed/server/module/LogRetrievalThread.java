@@ -9,14 +9,13 @@ import de.cau.testbed.server.network.fileTransfer.SCPFileTransferHandler;
 import de.cau.testbed.server.network.message.LogRetrievalMessage;
 import de.cau.testbed.server.network.serialization.LogRetrievalMessageDeserializer;
 import de.cau.testbed.server.util.PathUtil;
-import de.cau.testbed.server.util.event.EventHandler;
 import de.cau.testbed.server.util.event.LogRetrievedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.SubmissionPublisher;
 
 public class LogRetrievalThread extends Thread {
     private final Logger logger = LoggerFactory.getLogger(LogRetrievalThread.class);
@@ -24,10 +23,10 @@ public class LogRetrievalThread extends Thread {
     private final KafkaNetworkReceiver<LogRetrievalMessage> logRetrievalReceiver;
 
     private final FileTransferHandler fileTransferHandler;
-    private final EventHandler<LogRetrievedEvent> logEventHandler;
+    private final SubmissionPublisher<LogRetrievedEvent> logEventHandler;
     private final int id;
 
-    public LogRetrievalThread(Path workingDirectory, EventHandler<LogRetrievedEvent> logEventHandler, int id) {
+    public LogRetrievalThread(Path workingDirectory, SubmissionPublisher<LogRetrievedEvent> logEventHandler, int id) {
         logger.info("Initializing thread " + id);
         this.logEventHandler = logEventHandler;
         this.id = id;
@@ -63,7 +62,7 @@ public class LogRetrievalThread extends Thread {
 
                 logSuccessfulRetrieval(retrievalMessage);
 
-                logEventHandler.publishEvent(new LogRetrievedEvent(retrievalMessage.experimentId, retrievalMessage.nodeId));
+                logEventHandler.submit(new LogRetrievedEvent(retrievalMessage.experimentId, retrievalMessage.nodeId));
             } catch (Exception e) {
                 logger.error(String.format(
                         "[Experiment %d] Failed to execute log transfer for node %s due to ",

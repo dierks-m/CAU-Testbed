@@ -15,7 +15,6 @@ import de.cau.testbed.server.service.FirmwareService;
 import de.cau.testbed.server.service.NodeService;
 import de.cau.testbed.server.service.UserService;
 import de.cau.testbed.server.util.PathUtil;
-import de.cau.testbed.server.util.event.EventHandler;
 import de.cau.testbed.server.util.event.LogRetrievedEvent;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
@@ -27,6 +26,7 @@ import io.dropwizard.forms.MultiPartBundle;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import java.util.List;
+import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
 public class TestbedServerApplication extends Application<TestbedServerConfiguration> {
@@ -50,9 +50,9 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         for (int i = 0; i < 2; i++)
             new FirmwareDistributionThread(configuration.workingDirectory, i).start();
 
-        final EventHandler<LogRetrievedEvent> logEventHandler = new EventHandler<>();
+        final SubmissionPublisher<LogRetrievedEvent> logEventPublisher = new SubmissionPublisher<>();
         for (int i = 0; i < 2; i++)
-            new LogRetrievalThread(configuration.workingDirectory, logEventHandler, i).start();
+            new LogRetrievalThread(configuration.workingDirectory, logEventPublisher, i).start();
 
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
 
