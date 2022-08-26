@@ -102,7 +102,7 @@ public class ExperimentService {
 
         for (ExperimentNode node : experiment.getNodes()) {
             for (ExperimentModule module : node.modules) {
-                firmwares.add(module.firmwarePath);
+                firmwares.add(module.firmware);
             }
         }
 
