@@ -9,6 +9,7 @@ from typing import List
 import experiment.modules.module
 from configuration import nodeConfiguration
 from configuration.experiment import Experiment, ExperimentModule
+from experiment.modules.nrf52 import NRF52ExperimentModule
 from experiment.modules.sky import SkyExperimentModule
 from experiment.modules.zoul import ZoulExperimentModule
 from network import firmware, log
@@ -38,6 +39,16 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
                 nodeConfiguration.configuration.workingDirectory, experiment_id
             ).joinpath(module.firmware),
             log_path=log_path_prefix.joinpath("sky.log"),
+            serial_dump=module.serial_dump,
+            serial_forward=module.serial_forward,
+            gpio_tracer=module.gpio_tracer
+        )
+    elif module.id == "NRF52":
+        return NRF52ExperimentModule(
+            firmware_path=firmware.resolve_local_fw_path(
+                nodeConfiguration.configuration.workingDirectory, experiment_id
+            ).joinpath(module.firmware),
+            log_path=log_path_prefix.joinpath("nrf52.log"),
             serial_dump=module.serial_dump,
             serial_forward=module.serial_forward,
             gpio_tracer=module.gpio_tracer
