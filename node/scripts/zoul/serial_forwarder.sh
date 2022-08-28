@@ -23,7 +23,7 @@ screen -wipe
 screen -dmS zoulscreen bash
 
 
-screen -S zoulscreen -X stuff "cat $tty | ~/scripts/contiki-timestamp | tee -a $log_path | netcat -lkt 0.0.0.0 $port > $tty\n"
+screen -S zoulscreen -X stuff "cat $tty | scripts/contiki-timestamp | tee -a $log_path | netcat -lkt 0.0.0.0 $port > $tty\n"
 sleep 1
 
 ps | grep "$! "

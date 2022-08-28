@@ -22,9 +22,9 @@ while [  $COUNTER -lt 5 ]; do
     let COUNTER=COUNTER+1
 
     #reset
-    /home/user/scripts/sky/skytools/msp430-bsl-linux --telosb -c $tty_path -r
+    scripts/sky/skytools/msp430-bsl-linux --telosb -c $tty_path -r
     # erase and program
-    ~/scripts/sky/skytools/msp430-bsl-linux --telosb --speed=38400 --framesize=224 -c $tty_path -e --erasecycles=2 -p -I $firmware_path && sleep 2
+    scripts/sky/skytools/msp430-bsl-linux --telosb --speed=38400 --framesize=224 -c $tty_path -e --erasecycles=2 -p -I $firmware_path && sleep 2
 
     if [ $? -eq 0 ]; then
         break
@@ -34,7 +34,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 #reset
-/home/user/scripts/sky/skytools/msp430-bsl-linux --telosb -c $tty_path -r
+scripts/sky/skytools/msp430-bsl-linux --telosb -c $tty_path -r
 # Reboot the node
-/home/user/scripts/usb-hub-off.sh
-/home/user/scripts/usb-hub-on.sh
+scripts/usb-hub-off.sh
+scripts/usb-hub-on.sh
