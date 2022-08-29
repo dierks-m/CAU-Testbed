@@ -16,8 +16,10 @@ class FirmwareRetrievalMessage:
         self.targetPath = targetPath
         self.nodeId = nodeId
 
-def resolve_local_fw_path(working_directory: str, experiment_id: str) -> Path:
-    return os.path.join(working_directory, experiment_id, "firmware")
+
+def resolve_local_fw_path(working_directory: Path, experiment_id: str) -> Path:
+    return working_directory.joinpath(experiment_id, "firmware")
+
 
 class FirmwareRetriever():
     def __init__(self, host_name: str, node_id: str, working_directory: str, kafka_bootstrap: str):
@@ -30,7 +32,7 @@ class FirmwareRetriever():
         )
 
     def retrieve_firmware(self, experiment_id: str, firmware_name: str):
-        local_fw_path = resolve_local_fw_path(self.working_directory, experiment_id)
+        local_fw_path = resolve_local_fw_path(Path(self.working_directory), experiment_id)
         os.makedirs(local_fw_path, exist_ok=True)
 
         self.retrieval_msg_producer.send(
@@ -39,7 +41,7 @@ class FirmwareRetriever():
                 experiment_id,
                 firmware_name,
                 self.host_name,
-                local_fw_path,
+                str(local_fw_path),
                 self.node_id
             )
         )

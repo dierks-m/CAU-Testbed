@@ -80,7 +80,7 @@ class ExperimentWrapper:
         return []
 
     def retrieve_firmware(self):
-        logging.debug("Initiating firmware retrieval")
+        logging.info("Initiating firmware retrieval")
 
         modules = self.get_modules()
 

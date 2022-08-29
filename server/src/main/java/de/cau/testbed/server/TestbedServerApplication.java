@@ -47,11 +47,11 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
         final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes);
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 5; i++)
             new FirmwareDistributionThread(configuration.workingDirectory, i).start();
 
         final SubmissionPublisher<LogRetrievedEvent> logEventPublisher = new SubmissionPublisher<>();
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 5; i++)
             new LogRetrievalThread(configuration.workingDirectory, logEventPublisher, i).start();
 
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
