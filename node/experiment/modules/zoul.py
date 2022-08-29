@@ -15,7 +15,7 @@ class ZoulExperimentModule(ExperimentModule):
 
         os.system("arm-none-eabi-objdump -h %s |"
                   "grep -B1 LOAD | grep -Ev 'LOAD|\\-\\-' |"
-                  "awk '{print \"0x\" $5}' | sort -g | head -1 > %s" % (self.firmware_path, self.bsl_address_path))
+                  "awk '{print \"0x\" $5}' | sort -g | head -1 > %s" % (str(self.firmware_path), self.bsl_address_path))
 
 
         # print(f"BSL address is {self.bsl_address_path}")
