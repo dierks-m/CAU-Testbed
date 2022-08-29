@@ -15,18 +15,19 @@ class ZoulExperimentModule(ExperimentModule):
 
         os.system("arm-none-eabi-objdump -h %s |"
                   "grep -B1 LOAD | grep -Ev 'LOAD|\\-\\-' |"
-                  "awk '{print \"0x\" $5}' | sort -g | head -1 > %s" % (str(self.firmware_path), self.bsl_address_path))
+                  "awk '{print \"0x\" $5}' | sort -g | head -1 > %s" % (str(self.firmware_path), str(self.bsl_address_path)))
 
 
         # print(f"BSL address is {self.bsl_address_path}")
 
         os.system(
-            "arm-none-eabi-objcopy -O binary --gap-fill 0xff %s %s" % (str(self.firmware_path), self.firmware_path + ".bin")
+            "arm-none-eabi-objcopy -O binary --gap-fill 0xff %s %s" % (str(self.firmware_path), str(self.firmware_path) + ".bin")
         )
 
     def start(self):
         logging.info("Starting ZOUL module")
-        os.system("scripts/zoul/install.sh %s %s" % (str(self.firmware_path) + ".bin", self.bsl_address_path))
+        
+        os.system("scripts/zoul/install.sh %s %s" % (str(self.firmware_path) + ".bin", str(self.bsl_address_path)))
 
         if self.serial_forward:
             os.system("scripts/zoul/serial_forwarder.sh %s" % (self.log_path))
