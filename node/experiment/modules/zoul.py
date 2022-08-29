@@ -8,6 +8,7 @@ class ZoulExperimentModule(ExperimentModule):
     def __init__(self, *args, **kwargs):
         super(ZoulExperimentModule, self).__init__(*args, **kwargs)
         self.bsl_address_path = self.firmware_path.with_suffix("-bsl-address.txt")
+        self.bsl_address_path = self.firmware_path.with_name(self.firmware_path.name + "-bsl-address.txt")
 
 
     def prepare(self):
