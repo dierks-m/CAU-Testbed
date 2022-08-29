@@ -56,6 +56,8 @@ public class ExperimentSchedulingThread extends Thread {
                     descriptor.getId(),
                     descriptor.getName()
             ));
+            descriptor.setStatus(ExperimentStatus.DONE);
+
             return;
         }
 
