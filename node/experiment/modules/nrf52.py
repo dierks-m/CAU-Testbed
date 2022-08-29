@@ -10,12 +10,12 @@ class NRF52ExperimentModule(ExperimentModule):
 
     def start(self):
         logging.info("Starting NRF52 module")
-        os.system("scripts/nrf52/install.sh %s" % (self.firmware_path))
+        os.system("scripts/nrf52/install.sh %s" % str(self.firmware_path))
 
         if self.serial_forward:
             logging.info("Serial forward not defined for NRF52 module. Doing serial dump.")
 
-        os.system("scripts/nrf52/serial-dump.sh %s" % (self.firmware_path))
+        os.system("scripts/nrf52/serial-dump.sh %s" % str(self.firmware_path))
 
     def stop(self):
         logging.info("Stopping NRF52 module")
