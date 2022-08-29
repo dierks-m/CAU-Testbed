@@ -25,7 +25,7 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
 
     if module.id == "ZOUL":
         return ZoulExperimentModule(
-            firmware_path=firmware.resolve_local_fw_path(
+            firmware=firmware.resolve_local_fw_path(
                 nodeConfiguration.configuration.workingDirectory, experiment_id
             ).joinpath(module.firmware),
             log_path=log_path_prefix.joinpath("zoul.log"),
@@ -35,7 +35,7 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
         )
     elif module.id == "SKY":
         return SkyExperimentModule(
-            firmware_path=firmware.resolve_local_fw_path(
+            firmware=firmware.resolve_local_fw_path(
                 nodeConfiguration.configuration.workingDirectory, experiment_id
             ).joinpath(module.firmware),
             log_path=log_path_prefix.joinpath("sky.log"),
@@ -45,7 +45,7 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
         )
     elif module.id == "NRF52":
         return NRF52ExperimentModule(
-            firmware_path=firmware.resolve_local_fw_path(
+            firmware=firmware.resolve_local_fw_path(
                 nodeConfiguration.configuration.workingDirectory, experiment_id
             ).joinpath(module.firmware),
             log_path=log_path_prefix.joinpath("nrf52.log"),
