@@ -45,7 +45,6 @@ public class ExperimentSchedulingThread extends Thread {
 
                 if (secondDiff <= PREPARE_BUFFER_SEC) {
                     prepareExperiment(descriptor);
-                    trackerFactory.createExperimentFinishTracker(descriptor);
                 } else {
                     logger.info("Next experiment is " + secondDiff + " seconds away. Sleeping.");
                     trySleep((secondDiff - PREPARE_BUFFER_SEC) * 1000);
@@ -74,6 +73,7 @@ public class ExperimentSchedulingThread extends Thread {
 
         experimentSender.send(null, new ExperimentMessage(descriptor, NodeInvocationMethod.START));
         descriptor.setStatus(ExperimentStatus.STARTED);
+        trackerFactory.createExperimentFinishTracker(descriptor);
     }
 
     public void cancelExperiment(ExperimentDescriptor experiment) {

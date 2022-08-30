@@ -49,7 +49,12 @@ public class ExperimentService {
     }
 
     private void checkTimeCollision(ExperimentTemplate template) throws TimeCollisionException {
-        if (!database.getExperimentsInTimeFrame(template.start.minusSeconds(299), template.end.plusSeconds(299)).isEmpty())
+        final List<ExperimentDescriptor> experimentsInTimeFrame = database.getExperimentsInTimeFrame(
+                template.start.minusSeconds(299),
+                template.end.plusSeconds(299)
+        );
+
+        if (experimentsInTimeFrame.stream().anyMatch(x -> !x.getStatus().isFinished()))
             throw new TimeCollisionException("Experiment's start or end time is too close to another experiment");
     }
 
