@@ -56,7 +56,7 @@ public class ExperimentSchedulingThread extends Thread {
     private void prepareExperiment(ExperimentDescriptor descriptor) {
         if (descriptor.getEnd().isBefore(LocalDateTime.now())) {
             logger.info(String.format(
-                    "[Experiment %d] %s ended before current time. Skipping.",
+                    "[Experiment %d] %s ended before current time. Skipping and setting status to DONE.",
                     descriptor.getId(),
                     descriptor.getName()
             ));
@@ -73,7 +73,6 @@ public class ExperimentSchedulingThread extends Thread {
 
         experimentSender.send(null, new ExperimentMessage(descriptor));
         descriptor.setStatus(ExperimentStatus.STARTED);
-        database.updateExperiment(descriptor);
     }
 
     public void wakeup() {

@@ -7,7 +7,6 @@ import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.datastore.UserDatabase;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.config.experiment.ExperimentDetail;
-import de.cau.testbed.server.config.experiment.ExperimentInfo;
 import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
@@ -55,7 +54,7 @@ public class YAMLDatabase implements Database {
     private List<ExperimentDescriptor> loadExperiments(YAMLExperimentList experimentList) {
         final List<ExperimentDescriptor> experimentDescriptors = new ArrayList<>();
 
-        for (ExperimentInfo experimentInfo : experimentList.experiments) {
+        for (YAMLExperimentInfo experimentInfo : experimentList.experiments) {
             try {
                 final ExperimentDetail experimentDetail = YAMLParser.parseFile(
                         PathUtil.getExperimentPath(experimentInfo.experimentId).resolve("configuration.yaml"),
@@ -64,7 +63,7 @@ public class YAMLDatabase implements Database {
 
                 //TODO: Perhaps incorporate user into experiment info (saved data structure != represented structure)
                 experimentDescriptors.add(
-                        new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userDatabase)
+                        new YAMLExperimentDescriptor(this, experimentInfo, experimentDetail, userDatabase)
                 );
             } catch (IOException ignored) {
             }
@@ -97,7 +96,7 @@ public class YAMLDatabase implements Database {
 
     @Override
     public synchronized ExperimentDescriptor addExperiment(ExperimentTemplate template, User owner) {
-        final ExperimentInfo experimentInfo = new ExperimentInfo(
+        final YAMLExperimentInfo experimentInfo = new YAMLExperimentInfo(
                 template.name,
                 owner.getId(),
                 nextId++,
@@ -108,7 +107,7 @@ public class YAMLDatabase implements Database {
 
         final ExperimentDetail experimentDetail = new ExperimentDetail(template.nodes);
 
-        final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(experimentInfo, experimentDetail, userDatabase);
+        final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(this, experimentInfo, experimentDetail, userDatabase);
 
         experimentDescriptors.add(experiment);
         writeExperimentFile(experiment);

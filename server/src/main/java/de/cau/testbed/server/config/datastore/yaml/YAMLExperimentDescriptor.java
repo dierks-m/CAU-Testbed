@@ -16,10 +16,12 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private final String name;
     private final LocalDateTime start;
     private final LocalDateTime end;
+    private final YAMLDatabase database;
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
-    public YAMLExperimentDescriptor(ExperimentInfo experimentInfo, ExperimentDetail experimentDetail, UserDatabase userTable) {
+    public YAMLExperimentDescriptor(YAMLDatabase database, YAMLExperimentInfo experimentInfo, ExperimentDetail experimentDetail, UserDatabase userTable) {
+        this.database = database;
         final Optional<User> user = userTable.getUserById(experimentInfo.owner);
         if (user.isEmpty())
             throw new IllegalArgumentException("User with id " + experimentInfo.owner + " does not exist!");
@@ -66,6 +68,7 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     @Override
     public void setStatus(ExperimentStatus status) {
         this.status = status;
+        database.updateExperiment(this);
     }
 
     @Override

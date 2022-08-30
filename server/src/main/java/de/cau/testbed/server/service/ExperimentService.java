@@ -93,7 +93,6 @@ public class ExperimentService {
         checkExperimentFirmwareExists(experiment);
 
         experiment.setStatus(ExperimentStatus.SCHEDULED);
-        database.updateExperiment(experiment);
         experimentScheduler.wakeup();
     }
 
