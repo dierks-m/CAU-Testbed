@@ -4,9 +4,9 @@ from typing import List, Dict
 
 
 class ModuleType(Enum):
-    NRF52 = 1
-    ZOUL = 2
-    SKY = 3
+    NRF52 = "NRF52"
+    ZOUL = "ZOUL"
+    SKY = "SKY"
 
 
 class InvocationMethod(Enum):
