@@ -16,16 +16,22 @@ class InvocationMethod(Enum):
 
 
 class ExperimentModule:
-    def __init__(self, id: ModuleType, firmware: str, serialDump: bool, serialForward: bool, gpioTracer: bool):
+    def __init__(self, id: ModuleType, firmware: str, serial_dump: bool, serial_forward: bool, gpio_tracer: bool):
         self.id = id
         self.firmware = firmware
-        self.serial_dump = serialDump
-        self.gpio_tracer = gpioTracer
-        self.serial_forward = serialForward
+        self.serial_dump = serial_dump
+        self.gpio_tracer = gpio_tracer
+        self.serial_forward = serial_forward
 
     @staticmethod
     def from_json(json_dict: Dict):
-        return ExperimentModule(**json_dict)
+        return ExperimentModule(
+            id=ModuleType(json_dict["id"]),
+            firmware=json_dict["firmware"],
+            serial_dump=json_dict["serialDump"],
+            serial_forward=json_dict["serialForward"],
+            gpio_tracer=json_dict["gpioTracer"]
+        )
 
     def __repr__(self):
         return f"ExperimentModule(id={self.id}, firmware={self.firmware})"

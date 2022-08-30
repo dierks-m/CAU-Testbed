@@ -8,7 +8,7 @@ from typing import List
 
 import experiment.modules.module
 from configuration import nodeConfiguration
-from configuration.experiment import Experiment, ExperimentModule
+from configuration.experiment import Experiment, ExperimentModule, ModuleType
 from experiment.modules.nrf52 import NRF52ExperimentModule
 from experiment.modules.sky import SkyExperimentModule
 from experiment.modules.zoul import ZoulExperimentModule
@@ -21,7 +21,7 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
     else:
         log_path_prefix = Path("/tmp", "tesbed", experiment_id)
 
-    if module.id == "ZOUL":
+    if module.id == ModuleType.ZOUL:
         return ZoulExperimentModule(
             firmware=firmware.resolve_local_fw_path(
                 nodeConfiguration.configuration.workingDirectory, experiment_id
@@ -31,7 +31,7 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
             serial_forward=module.serial_forward,
             gpio_tracer=module.gpio_tracer
         )
-    elif module.id == "SKY":
+    elif module.id == ModuleType.SKY:
         return SkyExperimentModule(
             firmware=firmware.resolve_local_fw_path(
                 nodeConfiguration.configuration.workingDirectory, experiment_id
@@ -41,7 +41,7 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
             serial_forward=module.serial_forward,
             gpio_tracer=module.gpio_tracer
         )
-    elif module.id == "NRF52":
+    elif module.id == ModuleType.NRF52:
         return NRF52ExperimentModule(
             firmware=firmware.resolve_local_fw_path(
                 nodeConfiguration.configuration.workingDirectory, experiment_id
