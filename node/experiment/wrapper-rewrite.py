@@ -1,9 +1,9 @@
-import datetime
 import logging
 import os.path
 import sched
 import threading
 import time
+import types
 from datetime import datetime as DateTime
 from datetime import timedelta as TimeDelta
 from pathlib import Path
@@ -80,12 +80,13 @@ def module_factory(experiment_id: str, module: experiment.ExperimentModule):
 
 
 class ExperimentWrapper:
-    def __init__(self, node_id: str, descriptor: Experiment):
+    def __init__(self, node_id: str, descriptor: Experiment, on_finish_callback: types.MethodType):
         self.scheduler = sched.scheduler(time.time, time.sleep)
         self.node_id = node_id
         self.descriptor = descriptor
         self.wrapped_modules: List[ModuleWrapper] = []
         self.event_list = []
+        self.on_finish_callback = on_finish_callback
 
         log.transfer_handler.create_logging_directory(self.descriptor.experiment_id)
 
@@ -156,6 +157,7 @@ class ExperimentWrapper:
 
         self.scheduler.enter(0, 1, logging.shutdown)
         self.scheduler.run()
+        self.on_finish_callback()
 
     def schedule(self, *args, **kwargs):
         self.event_list.append(self.scheduler.enter(*args, **kwargs))
@@ -189,3 +191,4 @@ class ExperimentWrapper:
         self.schedule_abs(end, 3, logging.shutdown)
 
         self.scheduler.run()
+        self.on_finish_callback()
