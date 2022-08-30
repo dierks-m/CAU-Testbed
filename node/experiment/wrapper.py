@@ -122,7 +122,12 @@ class ExperimentWrapper:
 
     def cancel(self):
         for event in reversed(self.event_list):
-            self.scheduler.cancel(event)
+            try:
+                self.scheduler.cancel(event)
+            except ValueError: # Event probably already got executed
+                pass
+
+        self.event_list.clear()
 
         for module in self.wrapped_modules:
             self.scheduler.enter(0, 0, module.stop)

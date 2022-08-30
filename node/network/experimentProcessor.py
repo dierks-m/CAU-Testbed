@@ -36,6 +36,7 @@ class ExperimentTracker:
         for id, wrapper in self.running_experiments.items():
             if wrapper == experiment:
                 del self.running_experiments[id]
+                return
 
 
 class ExperimentProcessor(ExperimentTracker, Thread):
