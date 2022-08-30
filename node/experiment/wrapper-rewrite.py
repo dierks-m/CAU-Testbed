@@ -78,6 +78,7 @@ def module_factory(experiment_id: str, module: experiment.ExperimentModule):
 
     return ModuleWrapper(module_inst)
 
+
 class ExperimentWrapper:
     def __init__(self, node_id: str, descriptor: Experiment):
         self.scheduler = sched.scheduler(time.time, time.sleep)
