@@ -7,16 +7,8 @@ from threading import Thread
 from kafka import KafkaConsumer
 
 from configuration import constants
-from configuration.experiment import Experiment, ExperimentNode, InvocationMethod
+from configuration.experiment import Experiment, InvocationMethod
 from experiment.wrapper import ExperimentWrapper
-
-
-def get_matching_experiment_node(node_id: str, experiment: Experiment) -> ExperimentNode:
-    for node in experiment.nodes:
-        if node.id == node_id:
-            return node
-
-    return None
 
 
 class ExperimentTracker:
@@ -57,8 +49,8 @@ class ExperimentProcessor(ExperimentTracker, Thread):
             experiment = message.value
 
             if experiment.action == InvocationMethod.START:
-                wrapper = ExperimentWrapper(self, self.node_id, experiment)
-                threading.Thread(target=wrapper.initiate).start()
+                wrapper = ExperimentWrapper(self.node_id, experiment, lambda: self.cleanup(experiment))
+                threading.Thread(target=wrapper.run).start()
 
                 self.add_experiment(experiment.experiment_id, wrapper)
             elif experiment.action == InvocationMethod.CANCEL:
