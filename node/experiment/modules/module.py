@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from pathlib import Path
 
 
@@ -18,8 +19,10 @@ class ExperimentModule:
     def prepare(self):
         pass  # Can be used to e.g. extract firmware addresses and such
 
+    @abstractmethod
     def start(self):
         pass  # To be defined by subclasses!
 
+    @abstractmethod
     def stop(self):
         pass  # To be defined by subclasses!
