@@ -13,7 +13,6 @@ from experiment.modules.nrf52 import NRF52ExperimentModule
 from experiment.modules.sky import SkyExperimentModule
 from experiment.modules.zoul import ZoulExperimentModule
 from network import firmware, log
-from network.experimentProcessor import ExperimentTracker
 
 
 def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.modules.module.ExperimentModule:
@@ -55,8 +54,9 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
 
     return None
 
+
 class ExperimentWrapper:
-    def __init__(self, tracker: ExperimentTracker, node_id: str, experiment: Experiment):
+    def __init__(self, tracker, node_id: str, experiment: Experiment):
         self.tracker = tracker
         self.scheduler = sched.scheduler(time.time, time.sleep)
         self.node_id = node_id
@@ -97,7 +97,8 @@ class ExperimentWrapper:
 
         for module in modules:
             firmware_file_path = os.path.join(
-                firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory, self.experiment.experiment_id),
+                firmware.resolve_local_fw_path(nodeConfiguration.configuration.workingDirectory,
+                                               self.experiment.experiment_id),
                 module.firmware
             )
 
@@ -134,7 +135,9 @@ class ExperimentWrapper:
         # or a maximum of 30 seconds from now (in case of immediate/late execution)
         self.retrieve_firmware()
         self.event_list.append(
-            self.scheduler.enter(0, 0, lambda: self.wait_for_firmware(max(self.experiment.start - datetime.timedelta(seconds=30), datetime.datetime.now() + datetime.timedelta(seconds=30))))
+            self.scheduler.enter(0, 0, lambda: self.wait_for_firmware(
+                max(self.experiment.start - datetime.timedelta(seconds=30),
+                    datetime.datetime.now() + datetime.timedelta(seconds=30))))
         )
 
         modules = self.get_modules()
@@ -145,14 +148,16 @@ class ExperimentWrapper:
             if wrapped_module is not None:
                 self.event_list.append(
                     self.scheduler.enter(0, 1, wrapped_module.prepare)
-                ) # Prepare right after firmware arrives (e.g. BSL address etc.)
+                )  # Prepare right after firmware arrives (e.g. BSL address etc.)
 
                 # Enter start and stop times for the individual modules
                 self.event_list.append(
-                    self.scheduler.enterabs(max(self.experiment.start, datetime.datetime.now()).timestamp(), 1, wrapped_module.start)
+                    self.scheduler.enterabs(max(self.experiment.start, datetime.datetime.now()).timestamp(), 1,
+                                            wrapped_module.start)
                 )
                 self.event_list.append(
-                    self.scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 1, wrapped_module.stop)
+                    self.scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 1,
+                                            wrapped_module.stop)
                 )
 
                 self.wrapped_modules.append(wrapped_module)
@@ -160,7 +165,8 @@ class ExperimentWrapper:
         # Initiate log retrieval for *all* modules
         end = max(self.experiment.end, datetime.datetime.now()).timestamp()
         self.event_list.append(
-            self.scheduler.enterabs(end, 2, lambda: log.transfer_handler.initiate_log_retrieval(self.experiment.experiment_id))
+            self.scheduler.enterabs(end, 2,
+                                    lambda: log.transfer_handler.initiate_log_retrieval(self.experiment.experiment_id))
         )
 
         self.event_list.append(
