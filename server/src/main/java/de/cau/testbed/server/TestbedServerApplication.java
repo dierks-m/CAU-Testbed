@@ -48,7 +48,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
 
         final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes);
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
             new FirmwareDistributionThread(configuration.workingDirectory, i).start();
 
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
@@ -56,7 +56,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         final SubmissionPublisher<LogRetrievedEvent> logEventPublisher = new SubmissionPublisher<>();
         final ExperimentFinishTrackerFactory trackerFactory = new ExperimentFinishTrackerFactory(logEventPublisher);
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
             new LogRetrievalThread(configuration.workingDirectory, logEventPublisher, i).start();
 
         trackerFactory.createInitialTrackers(database);

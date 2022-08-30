@@ -4,6 +4,7 @@ import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.constants.ExperimentStatus;
 import de.cau.testbed.server.constants.KafkaTopic;
+import de.cau.testbed.server.constants.NodeInvocationMethod;
 import de.cau.testbed.server.network.KafkaNetworkSender;
 import de.cau.testbed.server.network.NetworkSender;
 import de.cau.testbed.server.network.message.ExperimentMessage;
@@ -71,8 +72,16 @@ public class ExperimentSchedulingThread extends Thread {
                 descriptor.getName()
         ));
 
-        experimentSender.send(null, new ExperimentMessage(descriptor));
+        experimentSender.send(null, new ExperimentMessage(descriptor, NodeInvocationMethod.START));
         descriptor.setStatus(ExperimentStatus.STARTED);
+    }
+
+    public void cancelExperiment(ExperimentDescriptor experiment) {
+        if (experiment.getStatus().isFinished())
+            return;
+
+        experiment.setStatus(ExperimentStatus.CANCELLED);
+        experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.CANCEL));
     }
 
     public void wakeup() {

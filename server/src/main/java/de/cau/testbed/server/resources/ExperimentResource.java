@@ -47,6 +47,20 @@ public class ExperimentResource {
         }
     }
 
+    @Path("cancel-experiment")
+    @POST
+    public Response cancelExperiment(
+            @Auth User user,
+            @Valid ExperimentId experimentId
+    ) {
+        try {
+            service.cancelExperiment(experimentId.id, user);
+            return Response.ok().build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
+        }
+    }
+
     @Path("list-experiments")
     @GET
     public Response listExperiments(

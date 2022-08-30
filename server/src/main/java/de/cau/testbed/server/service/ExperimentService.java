@@ -1,5 +1,6 @@
 package de.cau.testbed.server.service;
 
+import de.cau.testbed.server.constants.UserType;
 import de.cau.testbed.server.util.PathUtil;
 import de.cau.testbed.server.api.AnonymizedExperimentInfo;
 import de.cau.testbed.server.api.ExperimentTemplate;
@@ -125,5 +126,19 @@ public class ExperimentService {
         }
 
         return anonymizedDescriptors;
+    }
+
+    public void cancelExperiment(long id, User user) {
+        final Optional<ExperimentDescriptor> maybeExperiment = database.getExperimentById(id);
+
+        if (maybeExperiment.isEmpty())
+            throw new NoSuchExperimentException("Experiment does not exist");
+
+        final ExperimentDescriptor experiment = maybeExperiment.get();
+
+        if (!experiment.getOwner().equals(user) && !(user.getType() == UserType.ADMIN))
+            throw new UnauthorizedException();
+
+        experimentScheduler.cancelExperiment(experiment);
     }
 }

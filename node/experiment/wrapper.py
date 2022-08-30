@@ -13,8 +13,7 @@ from experiment.modules.nrf52 import NRF52ExperimentModule
 from experiment.modules.sky import SkyExperimentModule
 from experiment.modules.zoul import ZoulExperimentModule
 from network import firmware, log
-
-scheduler = sched.scheduler(time.time, time.sleep)
+from network.experimentProcessor import ExperimentTracker
 
 
 def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.modules.module.ExperimentModule:
@@ -56,11 +55,15 @@ def module_factory(experiment_id: str, module: ExperimentModule) -> experiment.m
 
     return None
 
-
 class ExperimentWrapper:
-    def __init__(self, node_id: str, experiment: Experiment):
+    def __init__(self, tracker: ExperimentTracker, node_id: str, experiment: Experiment):
+        self.tracker = tracker
+        self.scheduler = sched.scheduler(time.time, time.sleep)
         self.node_id = node_id
         self.experiment = experiment
+        self.wrapped_modules = []
+
+        self.event_list = []
 
         log.transfer_handler.create_logging_directory(self.experiment.experiment_id)
 
@@ -116,11 +119,23 @@ class ExperimentWrapper:
 
         logging.info("All firmware received")
 
+    def cancel(self):
+        for event in reversed(self.event_list):
+            self.scheduler.cancel(event)
+
+        for module in self.wrapped_modules:
+            self.scheduler.enter(0, 0, module.stop)
+
+        self.scheduler.enter(0, 1, logging.shutdown)
+        self.scheduler.run()
+
     def initiate(self):
         # Initiate firmware retrieval and wait either until 30 seconds before experiment (scheduled)
         # or a maximum of 30 seconds from now (in case of immediate/late execution)
         self.retrieve_firmware()
-        scheduler.enter(0, 0, lambda: self.wait_for_firmware(max(self.experiment.start - datetime.timedelta(seconds=30), datetime.datetime.now() + datetime.timedelta(seconds=30))))
+        self.event_list.append(
+            self.scheduler.enter(0, 0, lambda: self.wait_for_firmware(max(self.experiment.start - datetime.timedelta(seconds=30), datetime.datetime.now() + datetime.timedelta(seconds=30))))
+        )
 
         modules = self.get_modules()
 
@@ -128,17 +143,29 @@ class ExperimentWrapper:
             wrapped_module = module_factory(self.experiment.experiment_id, module)
 
             if wrapped_module is not None:
-                scheduler.enter(0, 1, wrapped_module.prepare) # Prepare right after firmware arrives (e.g. BSL address etc.)
+                self.event_list.append(
+                    self.scheduler.enter(0, 1, wrapped_module.prepare)
+                ) # Prepare right after firmware arrives (e.g. BSL address etc.)
 
                 # Enter start and stop times for the individual modules
-                scheduler.enterabs(max(self.experiment.start, datetime.datetime.now()).timestamp(), 1, wrapped_module.start)
-                scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 1, wrapped_module.stop)
+                self.event_list.append(
+                    self.scheduler.enterabs(max(self.experiment.start, datetime.datetime.now()).timestamp(), 1, wrapped_module.start)
+                )
+                self.event_list.append(
+                    self.scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 1, wrapped_module.stop)
+                )
+
+                self.wrapped_modules.append(wrapped_module)
 
         # Initiate log retrieval for *all* modules
-        scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 2,
-                           lambda: log.transfer_handler.initiate_log_retrieval(self.experiment.experiment_id))
+        end = max(self.experiment.end, datetime.datetime.now()).timestamp()
+        self.event_list.append(
+            self.scheduler.enterabs(end, 2, lambda: log.transfer_handler.initiate_log_retrieval(self.experiment.experiment_id))
+        )
 
-        scheduler.enterabs(max(self.experiment.end, datetime.datetime.now()).timestamp(), 3,
-                           lambda: logging.shutdown())
+        self.event_list.append(
+            self.scheduler.enterabs(end, 3, lambda: logging.shutdown())
+        )
 
-        scheduler.run()
+        self.scheduler.run()
+        self.tracker.cleanup(self)

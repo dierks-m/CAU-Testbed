@@ -8,6 +8,13 @@ class ModuleType(Enum):
     ZOUL = 2
     SKY = 3
 
+
+class InvocationMethod(Enum):
+    START = "START"
+    STOP = "STOP"
+    CANCEL = "CANCEL"
+
+
 class ExperimentModule:
     def __init__(self, id: ModuleType, firmware: str, serialDump: bool, serialForward: bool, gpioTracer: bool):
         self.id = id
@@ -22,6 +29,7 @@ class ExperimentModule:
 
     def __repr__(self):
         return f"ExperimentModule(id={self.id}, firmware={self.firmware})"
+
 
 class ExperimentNode:
     def __init__(self, id: str, modules: List[ExperimentModule]):
@@ -44,9 +52,18 @@ class ExperimentNode:
     def __repr__(self):
         return f"ExperimentNode(id={self.id}, modules=[{self.modules}])"
 
+
 class Experiment:
-    def __init__(self, name: str, experimentId: str, start: datetime.datetime, end: datetime.datetime, nodes: List[ExperimentNode]):
-        self.name = name;
+    def __init__(self,
+                 name: str,
+                 experimentId: str,
+                 start: datetime.datetime,
+                 end: datetime.datetime,
+                 nodes: List[ExperimentNode],
+                 action: InvocationMethod
+                 ):
+        self.action = action
+        self.name = name
         self.experiment_id = experimentId
         self.start = start
         self.end = end
@@ -65,5 +82,6 @@ class Experiment:
             json_dict["experimentId"],
             datetime.datetime(*json_dict["start"]),
             datetime.datetime(*json_dict["end"]),
-            nodes_list
+            nodes_list,
+            InvocationMethod(json_dict["action"])
         )

@@ -22,6 +22,8 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
 
     private final Set<String> retrievedIds;
 
+    private Timer retrievalTimeoutTimer;
+
 
     public ExperimentFinishTracker(ExperimentDescriptor descriptor, List<String> retrievedIds) {
         this.descriptor = descriptor;
@@ -41,7 +43,7 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
     }
 
     public void initializeTimer() {
-        final Timer retrievalFailedTimer = new Timer(true);
+        retrievalTimeoutTimer = new Timer(true);
 
         // Wait until experiment end + timeout
         final long timeout = Math.min(
@@ -49,7 +51,14 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
                 WAIT_TIMEOUT_MSEC
         );
 
-        retrievalFailedTimer.schedule(new TimeoutTimerTask(), timeout);
+        retrievalTimeoutTimer.schedule(new TimeoutTimerTask(), timeout);
+    }
+
+    private void cleanup() {
+        subscription.cancel();
+
+        if (retrievalTimeoutTimer != null)
+            retrievalTimeoutTimer.cancel();
     }
 
     private void checkRetrievedIds() {
@@ -61,7 +70,7 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
                 descriptor.getId()
         ));
 
-        subscription.cancel();
+        cleanup();
         descriptor.setStatus(ExperimentStatus.DONE);
     }
 
@@ -79,9 +88,9 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
             return;
 
         retrievedIds.add(event.nodeId());
-        checkRetrievedIds();
-
         subscription.request(1);
+
+        checkRetrievedIds();
     }
 
     @Override
