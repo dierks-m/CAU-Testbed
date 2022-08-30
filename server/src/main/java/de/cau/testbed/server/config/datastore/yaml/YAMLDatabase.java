@@ -91,6 +91,11 @@ public class YAMLDatabase implements Database {
     }
 
     @Override
+    public List<ExperimentDescriptor> getExperiments() {
+        return experimentDescriptors;
+    }
+
+    @Override
     public synchronized ExperimentDescriptor addExperiment(ExperimentTemplate template, User owner) {
         final ExperimentInfo experimentInfo = new ExperimentInfo(
                 template.name,

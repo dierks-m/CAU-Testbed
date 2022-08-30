@@ -14,6 +14,7 @@ import de.cau.testbed.server.service.ExperimentService;
 import de.cau.testbed.server.service.FirmwareService;
 import de.cau.testbed.server.service.NodeService;
 import de.cau.testbed.server.service.UserService;
+import de.cau.testbed.server.util.ExperimentFinishTrackerFactory;
 import de.cau.testbed.server.util.PathUtil;
 import de.cau.testbed.server.util.event.LogRetrievedEvent;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -50,15 +51,19 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         for (int i = 0; i < 5; i++)
             new FirmwareDistributionThread(configuration.workingDirectory, i).start();
 
+        final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
+
         final SubmissionPublisher<LogRetrievedEvent> logEventPublisher = new SubmissionPublisher<>();
+        final ExperimentFinishTrackerFactory trackerFactory = new ExperimentFinishTrackerFactory(logEventPublisher);
+
         for (int i = 0; i < 5; i++)
             new LogRetrievalThread(configuration.workingDirectory, logEventPublisher, i).start();
 
-        final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
+        trackerFactory.createInitialTrackers(database);
 
         registerAuthorizationComponent(environment, database);
 
-        final ExperimentSchedulingThread schedulingThread = new ExperimentSchedulingThread(database);
+        final ExperimentSchedulingThread schedulingThread = new ExperimentSchedulingThread(database, trackerFactory);
         schedulingThread.start();
 
         final ExperimentService experimentService = new ExperimentService(database, configuration.nodes, schedulingThread, configuration.workingDirectory);

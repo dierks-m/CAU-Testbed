@@ -8,6 +8,7 @@ import de.cau.testbed.server.network.KafkaNetworkSender;
 import de.cau.testbed.server.network.NetworkSender;
 import de.cau.testbed.server.network.message.ExperimentMessage;
 import de.cau.testbed.server.network.serialization.ExperimentSerializer;
+import de.cau.testbed.server.util.ExperimentFinishTrackerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +21,12 @@ public class ExperimentSchedulingThread extends Thread {
     private final Object waitObject = new Object();
     private final Logger logger = LoggerFactory.getLogger(ExperimentSchedulingThread.class);
     private final Database database;
+    private final ExperimentFinishTrackerFactory trackerFactory;
     private final NetworkSender<ExperimentMessage> experimentSender;
 
-    public ExperimentSchedulingThread(Database database) {
+    public ExperimentSchedulingThread(Database database, ExperimentFinishTrackerFactory trackerFactory) {
         this.database = database;
+        this.trackerFactory = trackerFactory;
         this.experimentSender = new KafkaNetworkSender<>(new ExperimentSerializer(), KafkaTopic.EXPERIMENT_PREPARATION);
     }
 
@@ -41,6 +44,7 @@ public class ExperimentSchedulingThread extends Thread {
 
                 if (secondDiff <= PREPARE_BUFFER_SEC) {
                     prepareExperiment(descriptor);
+                    trackerFactory.createExperimentFinishTracker(descriptor);
                 } else {
                     logger.info("Next experiment is " + secondDiff + " seconds away. Sleeping.");
                     trySleep((secondDiff - PREPARE_BUFFER_SEC) * 1000);

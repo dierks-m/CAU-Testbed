@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface Database {
     Optional<ExperimentDescriptor> getNextScheduledExperiment();
 
+    List<ExperimentDescriptor> getExperiments();
+
     /**
      * Adds a new experiment, but does not schedule it, yet.
      * @param experimentDescriptor
