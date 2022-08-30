@@ -109,7 +109,10 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
                     descriptor.getId()
             ));
             subscription.cancel();
-            descriptor.setStatus(ExperimentStatus.FAILED_TO_RETRIEVE_LOGS);
+
+            // Experiment might have been cancelled or stopped before
+            if (!descriptor.getStatus().isFinished())
+                descriptor.setStatus(ExperimentStatus.FAILED_TO_RETRIEVE_LOGS);
         }
     }
 }

@@ -31,7 +31,7 @@ public class ExperimentFinishTrackerFactory {
         final List<ExperimentFinishTracker> trackers = new ArrayList<>();
 
         for (ExperimentDescriptor descriptor : experiments) {
-            if (descriptor.getStatus() == ExperimentStatus.STARTED) {
+            if (descriptor.getStatus().hasStarted() && !descriptor.getStatus().isFinished()) {
                 final List<String> retrievedLogs = compileRetrievedLogList(descriptor.getId());
 
                 final ExperimentFinishTracker tracker = new ExperimentFinishTracker(descriptor, retrievedLogs);
