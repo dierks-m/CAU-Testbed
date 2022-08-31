@@ -22,7 +22,7 @@ if len(sys.argv) < 3:
     print(f"Usage: {sys.argv[0]} <server-address> <user-name>")
     print()
     print("The API key will be written to standard output. This can be used as follows:")
-    print(f'"{sys.argv[0]} > config/api_key.txt"')
+    print(f'"{sys.argv[0]} <server-address> <user-name> > config/api_key.txt"')
     exit(1)
 
 print(gen_api_key(sys.argv[1], sys.argv[2]))
