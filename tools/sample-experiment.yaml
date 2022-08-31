@@ -1,0 +1,76 @@
+name: 20 Nodes 10 Firmware Threads 10 Log Retrieval Threads
+start: 2022-08-30T16:51
+end:   2022-08-30T16:52
+nodes:
+  - id: raspi01
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi02
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi03
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi04
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi06
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi07
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi08
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi09
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi10
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi12
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi13
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi14
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi15
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi16
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi17
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi18
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi19
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi21
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul

@@ -125,14 +125,26 @@ public class ExperimentService {
         return anonymizedDescriptors;
     }
 
-    public void cancelExperiment(long id, User user) {
+    public AnonymizedExperimentInfo cancelExperiment(long id, User user) {
         final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
+
+        if (experiment.getStatus().isFinished())
+            throw new RuntimeException("Experiment has already finished");
+
         experimentScheduler.cancelExperiment(experiment);
+
+        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId());
     }
 
-    public void stopExperiment(long id, User user) {
+    public AnonymizedExperimentInfo stopExperiment(long id, User user) {
         final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
+
+        if (experiment.getStatus().isFinished())
+            throw new RuntimeException("Experiment has already finished");
+
         experimentScheduler.stopExperiment(experiment);
+
+        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId());
     }
 
     private ExperimentDescriptor getAuthorizedExperimentById(long id, User user) {

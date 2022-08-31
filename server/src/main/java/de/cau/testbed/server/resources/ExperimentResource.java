@@ -54,8 +54,7 @@ public class ExperimentResource {
             @Valid ExperimentId experimentId
     ) {
         try {
-            service.cancelExperiment(experimentId.id, user);
-            return Response.ok().build();
+            return Response.ok(service.cancelExperiment(experimentId.id, user)).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
         }
@@ -68,8 +67,7 @@ public class ExperimentResource {
             @Valid ExperimentId experimentId
     ) {
         try {
-            service.stopExperiment(experimentId.id, user);
-            return Response.ok().build();
+            return Response.ok(service.stopExperiment(experimentId.id, user)).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
         }
