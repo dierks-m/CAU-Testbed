@@ -80,15 +80,7 @@ public class ExperimentService {
     }
 
     public void scheduleExperiment(long id, User user) {
-        final Optional<ExperimentDescriptor> maybeExperiment = database.getExperimentById(id);
-
-        if (maybeExperiment.isEmpty())
-            throw new NoSuchExperimentException("Experiment does not exist");
-
-        final ExperimentDescriptor experiment = maybeExperiment.get();
-
-        if (!experiment.getOwner().equals(user))
-            throw new UnauthorizedException();
+        final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
 
         if (experiment.getStatus() != ExperimentStatus.CREATED)
             throw new BadRequestException("Experiment cannot be scheduled as it may already have been started");
@@ -134,6 +126,16 @@ public class ExperimentService {
     }
 
     public void cancelExperiment(long id, User user) {
+        final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
+        experimentScheduler.cancelExperiment(experiment);
+    }
+
+    public void stopExperiment(long id, User user) {
+        final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
+        experimentScheduler.stopExperiment(experiment);
+    }
+
+    private ExperimentDescriptor getAuthorizedExperimentById(long id, User user) {
         final Optional<ExperimentDescriptor> maybeExperiment = database.getExperimentById(id);
 
         if (maybeExperiment.isEmpty())
@@ -144,6 +146,6 @@ public class ExperimentService {
         if (!experiment.getOwner().equals(user) && !(user.getType() == UserType.ADMIN))
             throw new UnauthorizedException();
 
-        experimentScheduler.cancelExperiment(experiment);
+        return experiment;
     }
 }

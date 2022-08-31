@@ -61,6 +61,20 @@ public class ExperimentResource {
         }
     }
 
+    @Path("stop-experiment")
+    @POST
+    public Response stopExperiment(
+            @Auth User user,
+            @Valid ExperimentId experimentId
+    ) {
+        try {
+            service.stopExperiment(experimentId.id, user);
+            return Response.ok().build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
+        }
+    }
+
     @Path("list-experiments")
     @GET
     public Response listExperiments(

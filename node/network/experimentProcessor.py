@@ -56,3 +56,6 @@ class ExperimentProcessor(ExperimentTracker, Thread):
             elif experiment.action == InvocationMethod.CANCEL:
                 logging.info(f'Cancelling experiment {experiment.experiment_id}')
                 self.cancel_experiment(experiment.experiment_id)
+            elif experiment.action == InvocationMethod.STOP:
+                logging.info(f'Stopping experiment {experiment.experiment_id} early')
+                

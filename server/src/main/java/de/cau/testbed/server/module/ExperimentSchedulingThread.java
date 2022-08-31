@@ -84,6 +84,13 @@ public class ExperimentSchedulingThread extends Thread {
         experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.CANCEL));
     }
 
+    public void stopExperiment(ExperimentDescriptor experiment) {
+        if (experiment.getStatus().isFinished())
+            return;
+
+        experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.STOP));
+    }
+
     public void wakeup() {
         synchronized (waitObject) {
             waitObject.notify();
@@ -106,5 +113,6 @@ public class ExperimentSchedulingThread extends Thread {
             }
         } catch (InterruptedException ignored) {
         }
+
     }
 }

@@ -142,7 +142,7 @@ class ExperimentWrapper:
 
         logging.info("All firmware received")
 
-    def cancel(self):
+    def __early_stop(self, retrieve_logs: bool):
         for event in reversed(self.event_list):
             try:
                 self.scheduler.cancel(event)
@@ -155,8 +155,18 @@ class ExperimentWrapper:
             self.scheduler.enter(0, 0, module.stop)
 
         self.scheduler.enter(0, 1, logging.shutdown)
+
+        if retrieve_logs:
+            self.scheduler.enter(0, 2, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
+
         self.scheduler.run()
         self.on_finish_callback()
+
+    def cancel(self):
+        self.__early_stop(False)
+
+    def stop(self):
+        self.__early_stop(True)
 
     def schedule(self, *args, **kwargs):
         self.event_list.append(self.scheduler.enter(*args, **kwargs))
