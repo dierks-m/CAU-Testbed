@@ -1,3 +1,7 @@
+import os
+import re
+from pathlib import Path
+
 import requests
 from enum import Enum
 import urllib
@@ -56,5 +60,35 @@ def multipart_request(server_address: str, resource: str, files: dict, auth: str
 
     return json_content
 
-    return json_content
 
+def download_file(server_address: str, resource: str, target_directory: Path, json_data: dict = None, auth: str = None):
+    target = urllib.parse.urljoin(server_address, resource)
+
+    if auth is not None:
+        auth = (auth, '')
+
+    response = requests.get(target, auth=auth, json=json_data)
+
+    if response.status_code != requests.codes["ok"]:
+        try:
+            json_content = response.json()
+        except:
+            json_content = {}
+
+        if "error" in json_content:
+            raise RuntimeError(json_content["error"])
+        else:
+            raise RuntimeError("Error: " + str(response))
+
+    content_disposition_header = response.headers["content-disposition"]
+    file_name = re.search("filename=\"(.+)\"", content_disposition_header).group(1)
+
+    if not file_name:
+        raise RuntimeError("Could not extract file name from server response")
+
+    file_destination = target_directory.joinpath(file_name)
+
+    os.makedirs(target_directory, exist_ok=True)
+    open(file_destination, 'wb').write(response.content)
+
+    return file_name

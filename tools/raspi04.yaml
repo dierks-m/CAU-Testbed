@@ -1,6 +1,6 @@
 name: 20 Nodes 5 Firmware Threads 5 Log Retrieval Threads
-start: 2022-08-31T14:00
-end:   2022-08-31T14:02
+start: 2022-08-31T20:50
+end:   2022-08-31T20:51
 nodes:
   - id: raspi04
     modules:

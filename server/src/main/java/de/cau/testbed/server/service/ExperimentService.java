@@ -14,7 +14,9 @@ import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.constants.ExperimentStatus;
 import de.cau.testbed.server.module.ExperimentSchedulingThread;
 import jakarta.ws.rs.BadRequestException;
+import org.zeroturnaround.zip.ZipUtil;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -145,6 +147,21 @@ public class ExperimentService {
         experimentScheduler.stopExperiment(experiment);
 
         return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId());
+    }
+
+    public File createOrGetResultsFile(long id, User user) {
+        final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
+
+        if (!experiment.getStatus().isFinished())
+            throw new RuntimeException("Experiment is not finished, yet");
+
+        final Path experimentDirectory = PathUtil.getExperimentPath(id);
+        final File resultsZip = experimentDirectory.resolve("results_" + id + ".zip").toFile();
+
+        if (!resultsZip.isFile())
+            ZipUtil.pack(PathUtil.getLogPath(id).toFile(), resultsZip);
+
+        return resultsZip;
     }
 
     private ExperimentDescriptor getAuthorizedExperimentById(long id, User user) {

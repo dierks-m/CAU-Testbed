@@ -9,9 +9,11 @@ import de.cau.testbed.server.service.ExperimentService;
 import io.dropwizard.auth.Auth;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.File;
 import java.time.LocalDateTime;
 
 @Path("/")
@@ -68,6 +70,23 @@ public class ExperimentResource {
     ) {
         try {
             return Response.ok(service.stopExperiment(experimentId.id, user)).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
+        }
+    }
+
+    @Path("get-results")
+    @GET
+    public Response getResults(
+            @Auth User user,
+            @Valid ExperimentId experimentId
+    ) {
+        try {
+            final File resultsFile = service.createOrGetResultsFile(experimentId.id, user);
+            return Response.ok(resultsFile).header(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + resultsFile.getName() + "\""
+            ).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
         }
