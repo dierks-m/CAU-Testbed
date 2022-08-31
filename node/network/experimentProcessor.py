@@ -24,6 +24,12 @@ class ExperimentTracker:
 
         self.running_experiments[id].cancel()
 
+    def stop_experiment(self, id: int):
+        if not id in self.running_experiments:
+            return
+
+        self.running_experiments[id].stop()
+
     def cleanup(self, experiment: ExperimentWrapper):
         for id, wrapper in self.running_experiments.items():
             if wrapper == experiment:
@@ -58,4 +64,4 @@ class ExperimentProcessor(ExperimentTracker, Thread):
                 self.cancel_experiment(experiment.experiment_id)
             elif experiment.action == InvocationMethod.STOP:
                 logging.info(f'Stopping experiment {experiment.experiment_id} early')
-                
+                self.stop_experiment(experiment.experiment_id)
