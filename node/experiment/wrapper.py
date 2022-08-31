@@ -195,9 +195,8 @@ class ExperimentWrapper:
             self.wrapped_modules.append(wrapped_module)
 
         end = max(self.descriptor.end, DateTime.now()).timestamp()
-        self.schedule_abs(end, 2, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
-
         self.schedule_abs(end, 3, logging.shutdown)
+        self.schedule_abs(end, 4, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
 
         self.scheduler.run()
         self.on_finish_callback()
