@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 
 public class NodeStatusObject {
-    private static final long INITAL_CONTACT_TIME_MS = 120_000;
+    private static final long INITIAL_CONTACT_TIME_MS = 120_000;
 
     @JsonProperty("id")
     private final String nodeId;
@@ -24,14 +24,18 @@ public class NodeStatusObject {
         this.status = DeviceStatus.WAIT_FOR_INITIAL_CONTACT;
 
         // Kafka Metadata exchange can sometimes take quite some time. Wait a bit longer for initial contact
-        createOnNoResponseTimer(INITAL_CONTACT_TIME_MS);
+        createOnNoResponseTimer(INITIAL_CONTACT_TIME_MS);
     }
 
     public void onHeartbeat(String heartbeatId) {
         if (!nodeId.equals(heartbeatId))
             return;
 
-        this.status = DeviceStatus.ALIVE;
+        if (status.wasDead())
+            status = DeviceStatus.RECONNECT;
+        else
+            status = DeviceStatus.ALIVE;
+
         nodeDeadTimer.cancel();
         createOnNoResponseTimer(KafkaConstants.HEARTBEAT_INTERVAL + 1_000);
     }
