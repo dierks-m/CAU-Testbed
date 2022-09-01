@@ -80,7 +80,7 @@ def module_factory(experiment_id: str, module: experiment.ExperimentModule):
 
 class ExperimentWrapper:
     def __init__(self, node_id: str, descriptor: Experiment, on_finish_callback: Callable):
-        self.scheduler = sched.scheduler(time.perf_counter, time.sleep)
+        self.scheduler = sched.scheduler(time.time, time.sleep)
         self.node_id = node_id
         self.descriptor = descriptor
         self.wrapped_modules: List[ModuleWrapper] = []
