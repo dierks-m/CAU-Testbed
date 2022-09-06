@@ -49,18 +49,20 @@ public class ExperimentResource {
         }
     }
 
-    @Path("cancel-experiment")
-    @POST
-    public Response cancelExperiment(
-            @Auth User user,
-            @Valid ExperimentId experimentId
-    ) {
-        try {
-            return Response.ok(service.cancelExperiment(experimentId.id, user)).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
-        }
-    }
+    // Revoked for now. As time slot is immediately released, there might be a race condition
+    // between a new experiment being flashed while the node is reverting to null firmware
+//    @Path("cancel-experiment")
+//    @POST
+//    public Response cancelExperiment(
+//            @Auth User user,
+//            @Valid ExperimentId experimentId
+//    ) {
+//        try {
+//            return Response.ok(service.cancelExperiment(experimentId.id, user)).build();
+//        } catch (RuntimeException e) {
+//            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
+//        }
+//    }
 
     @Path("stop-experiment")
     @POST
