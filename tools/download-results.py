@@ -27,7 +27,7 @@ if api_key is None:
 
 try:
     file_name = request.download_file(server_address, "get-results", target_directory, {"id": experiment_id}, api_key)
-    print(f'Successfully downloaded \'{file_name}\'.')
+    print(f'Successfully downloaded \'{file_name}\' to \'{target_directory}\'.')
 except requests.exceptions.ConnectionError:
     print("Could not connect to server. Perhaps the address is incorrect?")
 except RuntimeError as e:

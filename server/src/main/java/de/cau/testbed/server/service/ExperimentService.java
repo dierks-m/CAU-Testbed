@@ -121,7 +121,7 @@ public class ExperimentService {
         final List<AnonymizedExperimentInfo> anonymizedDescriptors = new ArrayList<>();
 
         for (ExperimentDescriptor descriptor : experimentDescriptors) {
-            anonymizedDescriptors.add(new AnonymizedExperimentInfo(descriptor.getName(), descriptor.getStart(), descriptor.getEnd(), descriptor.getId()));
+            anonymizedDescriptors.add(new AnonymizedExperimentInfo(descriptor.getName(), descriptor.getStart(), descriptor.getEnd(), descriptor.getId(), descriptor.getStatus()));
         }
 
         return anonymizedDescriptors;
@@ -135,7 +135,7 @@ public class ExperimentService {
 
         experimentScheduler.cancelExperiment(experiment);
 
-        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId());
+        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId(), experiment.getStatus());
     }
 
     public AnonymizedExperimentInfo stopExperiment(long id, User user) {
@@ -146,7 +146,7 @@ public class ExperimentService {
 
         experimentScheduler.stopExperiment(experiment);
 
-        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId());
+        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId(), experiment.getStatus());
     }
 
     public File createOrGetResultsFile(long id, User user) {
