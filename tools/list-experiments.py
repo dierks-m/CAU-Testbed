@@ -35,9 +35,10 @@ def print_experiment_list(experiment_list: list):
     if len(experiment_list) == 0:
         print("No experiments currently scheduled.")
 
-    longest_name = max(*map(lambda x: len(x["name"]), experiment_list))
-    for x in experiment_list:
-        x["name"] = x["name"].ljust(longest_name)
+    if len(experiment_list) > 1:
+        longest_name = max(*map(lambda x: len(x["name"]), experiment_list))
+        for x in experiment_list:
+            x["name"] = x["name"].ljust(longest_name)
 
     list_created = []
     list_scheduled = []
