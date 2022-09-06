@@ -35,7 +35,7 @@ public class ExperimentService {
         this.workingDirectory = workingDirectory;
     }
 
-    public long createNewExperiment(ExperimentTemplate template, User owner) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
+    public synchronized long createNewExperiment(ExperimentTemplate template, User owner) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
         checkTimeStamps(template);
         checkTimeCollision(template);
         checkModules(template);
