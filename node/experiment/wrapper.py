@@ -189,14 +189,14 @@ class ExperimentWrapper:
             wrapped_module = module_factory(self.descriptor.experiment_id, module)
 
             self.schedule(0, 1, wrapped_module.prepare)
-            self.schedule_abs(max(self.descriptor.start, DateTime.now()).timestamp(), 1, wrapped_module.start)
-            self.schedule_abs(max(self.descriptor.end, DateTime.now()).timestamp(), 2, wrapped_module.stop)
+            self.schedule_abs(max(self.descriptor.start, DateTime.now()).timestamp(), 2, wrapped_module.start)
+            self.schedule_abs(max(self.descriptor.end, DateTime.now()).timestamp(), 3, wrapped_module.stop)
 
             self.wrapped_modules.append(wrapped_module)
 
         end = max(self.descriptor.end, DateTime.now()).timestamp()
-        self.schedule_abs(end, 3, logging.shutdown)
-        self.schedule_abs(end, 4, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
+        self.schedule_abs(end, 4, logging.shutdown)
+        self.schedule_abs(end, 5, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
 
         self.scheduler.run()
         self.on_finish_callback()

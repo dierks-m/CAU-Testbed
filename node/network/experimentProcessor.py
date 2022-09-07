@@ -11,6 +11,14 @@ from configuration.experiment import Experiment, InvocationMethod
 from experiment.wrapper import ExperimentWrapper
 
 
+def node_in_experiment(node_id: str, experiment: Experiment) -> bool:
+    for node in experiment.nodes:
+        if node.id == node_id:
+            return True
+
+    return False
+
+
 class ExperimentTracker:
     def __init__(self):
         self.running_experiments = {}
@@ -19,13 +27,13 @@ class ExperimentTracker:
         self.running_experiments[id]: typing.Dict[int, ExperimentWrapper] = experiment
 
     def cancel_experiment(self, id: int):
-        if not id in self.running_experiments:
+        if id not in self.running_experiments:
             return
 
         self.running_experiments[id].cancel()
 
     def stop_experiment(self, id: int):
-        if not id in self.running_experiments:
+        if id not in self.running_experiments:
             return
 
         self.running_experiments[id].stop()
@@ -55,10 +63,11 @@ class ExperimentProcessor(ExperimentTracker, Thread):
             experiment = message.value
 
             if experiment.action == InvocationMethod.START:
-                wrapper = ExperimentWrapper(self.node_id, experiment, lambda: self.cleanup(experiment))
-                threading.Thread(target=wrapper.run).start()
+                if node_in_experiment(self.node_id, experiment):
+                    wrapper = ExperimentWrapper(self.node_id, experiment, lambda: self.cleanup(experiment))
+                    threading.Thread(target=wrapper.run).start()
 
-                self.add_experiment(experiment.experiment_id, wrapper)
+                    self.add_experiment(experiment.experiment_id, wrapper)
             elif experiment.action == InvocationMethod.CANCEL:
                 logging.info(f'Cancelling experiment {experiment.experiment_id}')
                 self.cancel_experiment(experiment.experiment_id)
