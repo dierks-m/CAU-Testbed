@@ -51,7 +51,7 @@ class ModuleWrapper:
                 self.wrapped_module.stop()
 
 
-def module_factory(experiment_id: str, module: experiment.ExperimentModule):
+def module_factory(experiment_id: str, module: experiment.ExperimentModule, logger: logging.Logger):
     if module.serial_dump:
         log_path_prefix = nodeConfiguration.configuration.workingDirectory.joinpath(experiment_id, "logs")
     else:
@@ -61,6 +61,7 @@ def module_factory(experiment_id: str, module: experiment.ExperimentModule):
         "firmware": firmware.resolve_local_fw_path(
             nodeConfiguration.configuration.workingDirectory, experiment_id
         ).joinpath(module.firmware),
+        "logger": logger,
         "serial_dump": module.serial_dump,
         "serial_forward": module.serial_forward,
         "gpio_tracer": module.gpio_tracer
@@ -86,16 +87,24 @@ class ExperimentWrapper:
         self.wrapped_modules: List[ModuleWrapper] = []
         self.event_list = []
         self.on_finish_callback = on_finish_callback
+        self.logger = logging.getLogger(f'experiment{descriptor.experiment_id}')
 
         log.transfer_handler.create_logging_directory(self.descriptor.experiment_id)
 
-        logging.basicConfig(
+        file_handler = logging.FileHandler(
             filename=os.path.join(nodeConfiguration.configuration.workingDirectory, descriptor.experiment_id, "logs", "node.log"),
-            level=logging.INFO,
-            format=f'%(asctime)s.%(msecs)03d [%(levelname)s] [{nodeConfiguration.configuration.id}] [Experiment {descriptor.experiment_id}] %(message)s',
-            datefmt='%H:%M:%S',
-            force=True
+            mode='w'
         )
+
+        formatter = logging.Formatter(
+            fmt=f'%(asctime)s.%(msecs)03d [%(levelname)s] [{nodeConfiguration.configuration.id}] [Experiment {descriptor.experiment_id}] %(message)s',
+            datefmt='%H:%M:%S'
+        )
+
+        file_handler.setFormatter(formatter)
+
+        self.logger.addHandler(file_handler)
+        self.logger.setLevel(logging.INFO)
 
     def get_descriptor_modules(self) -> List[experiment.ExperimentModule]:
         for node in self.descriptor.nodes:
@@ -105,7 +114,7 @@ class ExperimentWrapper:
         return []
 
     def initiate_firmware_retrieval(self):
-        logging.info("Initiating firmware retrieval")
+        self.logger.info("Initiating firmware retrieval")
 
         modules = self.get_descriptor_modules()
 
@@ -113,7 +122,7 @@ class ExperimentWrapper:
             nodeConfiguration.firmware_retriever.retrieve_firmware(self.descriptor.experiment_id, module.firmware)
 
     def wait_for_firmware(self, target_time: DateTime):
-        logging.info("Waiting for firmware")
+        self.logger.info("Waiting for firmware")
 
         modules = self.get_descriptor_modules()
 
@@ -138,9 +147,9 @@ class ExperimentWrapper:
                 time.sleep(0.05)
 
             print(f"Got firmware '{module.firmware}'")
-            logging.info(f"Got firmware '{module.firmware}'")
+            self.logger.info(f"Got firmware '{module.firmware}'")
 
-        logging.info("All firmware received")
+        self.logger.info("All firmware received")
 
     def __early_stop(self, retrieve_logs: bool):
         for event in reversed(self.event_list):
@@ -154,7 +163,7 @@ class ExperimentWrapper:
         for module in self.wrapped_modules:
             self.scheduler.enter(0, 0, module.stop)
 
-        self.scheduler.enter(0, 1, logging.shutdown)
+        self.scheduler.enter(0, 1, lambda: map(self.logger.removeHandler, self.logger.handlers))
 
         if retrieve_logs:
             self.scheduler.enter(0, 2, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
@@ -163,9 +172,11 @@ class ExperimentWrapper:
         self.on_finish_callback()
 
     def cancel(self):
+        self.logger.info("Cancelling experiment.")
         self.__early_stop(False)
 
     def stop(self):
+        self.logger.info("Stopping experiment.")
         self.__early_stop(True)
 
     def schedule(self, *args, **kwargs):
@@ -186,7 +197,7 @@ class ExperimentWrapper:
 
         modules = self.get_descriptor_modules()
         for module in modules:
-            wrapped_module = module_factory(self.descriptor.experiment_id, module)
+            wrapped_module = module_factory(self.descriptor.experiment_id, module, self.logger)
 
             self.schedule(0, 1, wrapped_module.prepare)
             self.schedule_abs(max(self.descriptor.start, DateTime.now()).timestamp(), 2, wrapped_module.start)
@@ -195,7 +206,7 @@ class ExperimentWrapper:
             self.wrapped_modules.append(wrapped_module)
 
         end = max(self.descriptor.end, DateTime.now()).timestamp()
-        self.schedule_abs(end, 4, logging.shutdown)
+        self.schedule_abs(end, 4, lambda: map(self.logger.removeHandler, self.logger.handlers))
         self.schedule_abs(end, 5, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
 
         self.scheduler.run()

@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from logging import Logger
 from pathlib import Path
 
 
@@ -6,10 +7,12 @@ class ExperimentModule:
     def __init__(self,
                  firmware: Path,
                  log_path: Path,
+                 logger: Logger,
                  serial_dump: bool,
                  serial_forward: bool,
                  gpio_tracer: bool
                  ):
+        self.logger = logger
         self.firmware_path = firmware
         self.log_path = log_path
         self.serial_dump = serial_dump

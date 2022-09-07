@@ -1,4 +1,3 @@
-import logging
 import os
 
 from experiment.modules.module import ExperimentModule
@@ -11,7 +10,7 @@ class ZoulExperimentModule(ExperimentModule):
 
 
     def prepare(self):
-        logging.info("Preparing ZOUL module")
+        self.logger.info("Preparing ZOUL module")
 
         os.system("arm-none-eabi-objdump -h %s |"
                   "grep -B1 LOAD | grep -Ev 'LOAD|\\-\\-' |"
@@ -25,7 +24,7 @@ class ZoulExperimentModule(ExperimentModule):
         )
 
     def start(self):
-        logging.info("Starting ZOUL module")
+        self.logger.info("Starting ZOUL module")
         
         os.system("scripts/zoul/install.sh %s %s" % (str(self.firmware_path) + ".bin", str(self.bsl_address_path)))
 
@@ -35,8 +34,9 @@ class ZoulExperimentModule(ExperimentModule):
             os.system("scripts/zoul/serialdump.sh %s" % (self.log_path))
 
     def stop(self):
-        logging.info("Stopping ZOUL module")
+        self.logger.info("Stopping ZOUL module")
         os.system("scripts/zoul/stop-forwarder-dump.sh")
 
         # Install null firmware to get device to a known state
         os.system("scripts/zoul/install.sh scripts/zoul/null.bin scripts/zoul/null_bsl_address.txt")
+        self.logger.info("Stopped ZOUL module")
