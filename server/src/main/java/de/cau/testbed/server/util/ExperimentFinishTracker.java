@@ -68,7 +68,10 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
         ));
 
         cleanup();
-        descriptor.setStatus(ExperimentStatus.DONE);
+
+        synchronized (descriptor.getLockObject()) {
+            descriptor.setStatus(ExperimentStatus.DONE);
+        }
     }
 
     private boolean areAllLogsReceived() {
@@ -108,8 +111,10 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
             subscription.cancel();
 
             // Experiment might have been cancelled or stopped before
-            if (!descriptor.getStatus().isFinished())
-                descriptor.setStatus(ExperimentStatus.FAILED_TO_RETRIEVE_LOGS);
+            synchronized (descriptor.getLockObject()) {
+                if (!descriptor.getStatus().isFinished())
+                    descriptor.setStatus(ExperimentStatus.FAILED_TO_RETRIEVE_LOGS);
+            }
         }
     }
 }

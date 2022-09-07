@@ -84,15 +84,18 @@ public class ExperimentService {
     public void scheduleExperiment(long id, User user) {
         final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
 
-        if (experiment.getStatus() != ExperimentStatus.CREATED)
-            throw new BadRequestException("Experiment cannot be scheduled as it may already have been started");
+        synchronized (experiment.getLockObject()) {
+            if (experiment.getStatus() != ExperimentStatus.CREATED)
+                throw new BadRequestException("Experiment cannot be scheduled as it may already have been started");
 
-        if (experiment.getEnd().compareTo(LocalDateTime.now()) < 0)
-            throw new IllegalExperimentTimeException("Experiment's end time is before current time");
+            if (experiment.getEnd().compareTo(LocalDateTime.now()) < 0)
+                throw new IllegalExperimentTimeException("Experiment's end time is before current time");
 
-        checkExperimentFirmwareExists(experiment);
+            checkExperimentFirmwareExists(experiment);
 
-        experiment.setStatus(ExperimentStatus.SCHEDULED);
+            experiment.setStatus(ExperimentStatus.SCHEDULED);
+        }
+
         experimentScheduler.wakeup();
     }
 

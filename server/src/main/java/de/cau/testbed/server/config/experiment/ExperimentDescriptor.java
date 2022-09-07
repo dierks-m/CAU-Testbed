@@ -26,4 +26,6 @@ public interface ExperimentDescriptor {
     void setStatus(ExperimentStatus status);
 
     List<ExperimentNode> getNodes();
+
+    Object getLockObject();
 }

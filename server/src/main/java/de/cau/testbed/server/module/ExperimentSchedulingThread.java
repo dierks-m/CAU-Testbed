@@ -54,25 +54,27 @@ public class ExperimentSchedulingThread extends Thread {
     }
 
     private void prepareExperiment(ExperimentDescriptor descriptor) {
-        if (descriptor.getEnd().isBefore(LocalDateTime.now())) {
+        synchronized (descriptor.getLockObject()) {
+            if (descriptor.getEnd().isBefore(LocalDateTime.now())) {
+                logger.info(String.format(
+                        "[Experiment %d] %s ended before current time. Skipping and setting status to DONE.",
+                        descriptor.getId(),
+                        descriptor.getName()
+                ));
+                descriptor.setStatus(ExperimentStatus.DONE);
+
+                return;
+            }
+
             logger.info(String.format(
-                    "[Experiment %d] %s ended before current time. Skipping and setting status to DONE.",
+                    "[Experiment %d] Preparing experiment %s",
                     descriptor.getId(),
                     descriptor.getName()
             ));
-            descriptor.setStatus(ExperimentStatus.DONE);
 
-            return;
+            experimentSender.send(null, new ExperimentMessage(descriptor, NodeInvocationMethod.START));
+            descriptor.setStatus(ExperimentStatus.STARTED);
         }
-
-        logger.info(String.format(
-                "[Experiment %d] Preparing experiment %s",
-                descriptor.getId(),
-                descriptor.getName()
-        ));
-
-        experimentSender.send(null, new ExperimentMessage(descriptor, NodeInvocationMethod.START));
-        descriptor.setStatus(ExperimentStatus.STARTED);
         trackerFactory.createExperimentFinishTracker(descriptor);
     }
 
@@ -88,7 +90,14 @@ public class ExperimentSchedulingThread extends Thread {
         if (experiment.getStatus().isFinished())
             return;
 
-        experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.STOP));
+        synchronized (experiment.getLockObject()) {
+            if (!experiment.getStatus().hasStarted()) {
+                experiment.setStatus(ExperimentStatus.DONE);
+                return;
+            }
+
+            experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.STOP));
+        }
     }
 
     public void wakeup() {

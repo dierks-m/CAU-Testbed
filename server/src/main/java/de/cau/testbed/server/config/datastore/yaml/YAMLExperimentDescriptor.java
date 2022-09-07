@@ -20,6 +20,8 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
+    private final Object lockObject = new Object();
+
     public YAMLExperimentDescriptor(YAMLDatabase database, YAMLExperimentInfo experimentInfo, ExperimentDetail experimentDetail, UserDatabase userTable) {
         this.database = database;
         final Optional<User> user = userTable.getUserById(experimentInfo.owner);
@@ -74,6 +76,11 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     @Override
     public List<ExperimentNode> getNodes() {
         return nodes;
+    }
+
+    @Override
+    public Object getLockObject() {
+        return lockObject;
     }
 
     @Override
