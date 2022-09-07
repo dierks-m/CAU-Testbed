@@ -35,10 +35,6 @@ This ID is important to retrieve the experiment's results later
 <br><br>
 <div style="page-break-after: always;"></div>
 
-## Cancelling an experiment
-Use `./cancel-experiment.py <experiment-id>` to cancel an experiment that is not done, yet.
-If you cancel an experiment, your results will not contain any log files.
-
 ## Stopping an experiment
 Use `./stop-experiment.py <experiment-id>` to stop an experiment that has not finished, yet.
 If the experiment has already started, log files will still be transferred and you will be able to retrieve them.
