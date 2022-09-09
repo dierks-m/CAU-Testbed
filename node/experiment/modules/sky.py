@@ -16,9 +16,12 @@ class SkyExperimentModule(ExperimentModule):
         else:
             os.system("scripts/sky/serial-dump.sh %s" % str(self.firmware_path))
 
+        self.logger.info("Started SKY module")
+
     def stop(self):
         self.logger.info("Stopping SKY module")
         os.system("scripts/sky/stop-forwarder-dump.sh")
 
         # Install null firmware to get device to a known state
         os.system("scripts/sky/install.sh scripts/sky/null.sky.ihex")
+        self.logger.info("Stopped SKY module")

@@ -33,6 +33,8 @@ class ZoulExperimentModule(ExperimentModule):
         else:
             os.system("scripts/zoul/serialdump.sh %s" % (self.log_path))
 
+        self.logger.info("Started ZOUL module")
+
     def stop(self):
         self.logger.info("Stopping ZOUL module")
         os.system("scripts/zoul/stop-forwarder-dump.sh")

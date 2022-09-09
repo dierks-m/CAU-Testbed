@@ -15,6 +15,7 @@ class NRF52ExperimentModule(ExperimentModule):
             self.logger.info("Serial forward not defined for NRF52 module. Doing serial dump.")
 
         os.system("scripts/nrf52/serial-dump.sh %s" % str(self.firmware_path))
+        self.logger.info("Started NRF52 module")
 
     def stop(self):
         self.logger.info("Stopping NRF52 module")
@@ -22,3 +23,4 @@ class NRF52ExperimentModule(ExperimentModule):
 
         # Install null firmware to get device to a known state
         os.system("scripts/nrf52/install.sh scripts/sky/null.nrf52.hex")
+        self.logger.info("Stopped NRF52 module")
