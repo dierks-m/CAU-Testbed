@@ -171,6 +171,12 @@ class ExperimentWrapper:
         self.scheduler.run()
         self.on_finish_callback()
 
+    def initiate_log_retrieval(self):
+        self.logger.info("Initiating log retrieval")
+        map(self.logger.removeHandler, self.logger.handlers)
+        del self.logger.manager.loggerDict[self.logger.name]
+        log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id)
+
     def cancel(self):
         self.logger.info("Cancelling experiment.")
         self.__early_stop(False)
@@ -206,8 +212,7 @@ class ExperimentWrapper:
             self.wrapped_modules.append(wrapped_module)
 
         end = max(self.descriptor.end, DateTime.now()).timestamp()
-        self.schedule_abs(end, 4, lambda: map(self.logger.removeHandler, self.logger.handlers))
-        self.schedule_abs(end, 5, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))
+        self.schedule_abs(end, 4, self.initiate_log_retrieval)
 
         self.scheduler.run()
         self.on_finish_callback()
