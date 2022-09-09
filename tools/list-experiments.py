@@ -105,7 +105,7 @@ def print_experiment_list(experiment_list: list):
     print()
 
 
-def print_list(experiment_list, is_last = False):
+def print_list(experiment_list):
     for item in experiment_list:
         if len(item) > 0:
             print(
