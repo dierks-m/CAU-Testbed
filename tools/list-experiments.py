@@ -7,6 +7,12 @@ from pathlib import Path
 
 import requests
 
+try:
+    from tabulate import tabulate
+    tabulate_installed = True
+except ImportError as e:
+    tabulate_installed = False
+
 import tools.request as request
 from tools.configuration import get_server_address
 
@@ -40,14 +46,32 @@ def get_experiment_list(server_address: str, start_delta: timedelta = timedelta(
     )
 
 
+def format_line(item: dict):
+    return [
+        item["id"],
+        item["name"],
+        item["status"].display_value,
+        str(datetime(*item["start"])),
+        str(datetime(*item["end"]))
+    ]
+
+
+def compile_table(*args):
+    output_table = []
+
+    for i in range(len(args)):
+        for item in args[i]:
+            output_table.append(format_line(item))
+
+        if i < len(args) - 1 and len(args[i]) > 0:
+            output_table.append([])
+
+    return output_table
+
+
 def print_experiment_list(experiment_list: list):
     if len(experiment_list) == 0:
         print("No experiments currently scheduled.")
-
-    if len(experiment_list) > 1:
-        longest_name = max(*map(lambda x: len(x["name"]), experiment_list))
-        for x in experiment_list:
-            x["name"] = x["name"].ljust(longest_name)
 
     list_created = []
     list_scheduled = []
@@ -70,20 +94,26 @@ def print_experiment_list(experiment_list: list):
         except:
             pass
 
-    print_list(list_created)
-    print_list(list_scheduled)
-    print_list(list_started)
-    print_list(list_done, True)
+    output_table = compile_table(list_created, list_scheduled, list_started, list_done)
+
+    print()
+
+    if tabulate_installed:
+        print(tabulate(output_table, headers=["ID", "Name", "Status", "Start", "End"], maxcolwidths=[None, 55], tablefmt='fancy_grid'))
+    else:
+        print_list(output_table)
+    print()
 
 
 def print_list(experiment_list, is_last = False):
-    for experiment in experiment_list:
-        print(
-            f'{experiment["name"]} (ID {experiment["id"]})\t[{experiment["status"].display_value}]:\t{datetime(*experiment["start"])}\t->\t{datetime(*experiment["end"])}'
-        )
+    for item in experiment_list:
+        if len(item) > 0:
+            print(
+                f'{item[1]} (ID {item[0]})\t[{item[2]}]:\t{item[3]}\t->\t{item[4]}'
+            )
+        else:
+            print()
 
-    if len(experiment_list) > 0 and not is_last:
-        print()
 
 
 server_address = get_server_address(Path(os.getcwd()))
