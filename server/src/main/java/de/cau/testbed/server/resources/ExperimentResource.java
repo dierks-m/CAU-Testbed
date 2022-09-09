@@ -32,8 +32,12 @@ public class ExperimentResource {
             @Auth User user,
             @Valid ExperimentId experimentId
     ) {
-        service.scheduleExperiment(experimentId.id, user);
-        return Response.ok().build();
+        try {
+            service.scheduleExperiment(experimentId.id, user);
+            return Response.ok().build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
+        }
     }
 
     @Path("create-experiment")

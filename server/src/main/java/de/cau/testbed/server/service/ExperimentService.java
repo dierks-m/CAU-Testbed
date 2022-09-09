@@ -48,6 +48,9 @@ public class ExperimentService {
     private void checkTimeStamps(ExperimentTemplate template) {
         if (template.end.isBefore(template.start))
             throw new TimeCollisionException("Experiment's start time is after end time");
+
+        if (template.end.isBefore(LocalDateTime.now()))
+            throw new TimeCollisionException("Experiment's end time is before current time");
     }
 
     private void checkTimeCollision(ExperimentTemplate template) throws TimeCollisionException {
