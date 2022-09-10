@@ -205,6 +205,9 @@ public class ExperimentService {
         if (!experiment.getStatus().isFinished())
             throw new RuntimeException("Experiment is not finished, yet");
 
+        if (!PathUtil.getLogPath(id).toFile().isDirectory())
+            throw new RuntimeException("No logs for experiment are present");
+
         final Path experimentDirectory = PathUtil.getExperimentPath(id);
         final File resultsZip = experimentDirectory.resolve("results_" + id + ".zip").toFile();
 
