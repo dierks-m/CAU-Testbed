@@ -19,9 +19,11 @@ import java.util.*;
 
 public class YAMLDatabase implements Database {
     private final Path workingDirectory;
+
     private final YAMLUserDatabase userDatabase;
 
     private long nextId;
+
     private final List<ExperimentDescriptor> experimentDescriptors;
 
     public YAMLDatabase(Path workingDirectory) {
@@ -30,14 +32,6 @@ public class YAMLDatabase implements Database {
         this.userDatabase = new YAMLUserDatabase(workingDirectory);
         this.nextId = experimentList.nextId;
         this.experimentDescriptors = loadExperiments(experimentList);
-    }
-
-    private YAMLUserTable loadUserTable() {
-        try {
-            return YAMLParser.parseFile(workingDirectory.resolve("users.yaml"), YAMLUserTable.class);
-        } catch (IOException e) {
-            return new YAMLUserTable(Collections.emptyList(), 1);
-        }
     }
 
     private YAMLExperimentList loadExperimentList() {
@@ -58,7 +52,7 @@ public class YAMLDatabase implements Database {
                         ExperimentDetail.class
                 );
 
-                //TODO: Perhaps incorporate user into experiment info (saved data structure != represented structure)
+                //TODO: Perhaps incorporate User into experiment info (saved data structure != represented structure)
                 experimentDescriptors.add(
                         new YAMLExperimentDescriptor(this, experimentInfo, experimentDetail, userDatabase)
                 );
@@ -87,19 +81,9 @@ public class YAMLDatabase implements Database {
 
     @Override
     public Optional<ExperimentDescriptor> getNextScheduledExperiment() {
-        ExperimentDescriptor nextExperiment = null;
-
-        for (ExperimentDescriptor descriptor : experimentDescriptors) {
-            if (descriptor.getStatus() == ExperimentStatus.SCHEDULED) {
-                if (nextExperiment == null)
-                    nextExperiment = descriptor;
-                else if (descriptor.getStart().isBefore(nextExperiment.getStart())) {
-                    nextExperiment = descriptor;
-                }
-            }
-        }
-
-        return Optional.ofNullable(nextExperiment);
+        return experimentDescriptors.stream()
+                .filter(x -> x.getStatus() == ExperimentStatus.SCHEDULED)
+                .min(Comparator.comparing(ExperimentDescriptor::getStart));
     }
 
     @Override
