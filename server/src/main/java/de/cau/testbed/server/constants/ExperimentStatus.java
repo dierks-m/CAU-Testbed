@@ -4,8 +4,9 @@ public enum ExperimentStatus {
     CREATED("Created", false),
     SCHEDULED("Scheduled", false),
     STARTED("Started", true, false),
+    STOPPING("Stopping", true, false),
     FAILED_TO_RETRIEVE_LOGS("Done, failed to retrieve all results", true, true),
-    CANCELLED("Cancelled", true, true),
+    CANCELLED("Cancelled", false, true),
     DONE("Done", true, true),
     ;
 

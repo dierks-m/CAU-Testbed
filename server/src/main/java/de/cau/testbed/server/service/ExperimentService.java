@@ -180,12 +180,23 @@ public class ExperimentService {
     public AnonymizedExperimentInfo stopExperiment(long id, User user) {
         final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
 
-        if (experiment.getStatus().isFinished())
-            throw new RuntimeException("Experiment has already finished");
+        synchronized (experiment.getLockObject()) {
+            if (experiment.getStatus().isFinished())
+                throw new RuntimeException("Experiment has already finished");
 
-        experimentScheduler.stopExperiment(experiment);
+            if (experiment.getStatus() == ExperimentStatus.STOPPING)
+                throw new RuntimeException("Experiment is already stopping");
 
-        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId(), experiment.getStatus());
+            if (!experiment.getStatus().hasStarted()) {
+                experiment.setStatus(ExperimentStatus.CANCELLED);
+            } else {
+                experiment.setStatus(ExperimentStatus.STOPPING);
+            }
+
+            experimentScheduler.stopExperiment(experiment);
+
+            return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId(), experiment.getStatus());
+        }
     }
 
     public File createOrGetResultsFile(long id, User user) {

@@ -87,16 +87,12 @@ public class ExperimentSchedulingThread extends Thread {
     }
 
     public void stopExperiment(ExperimentDescriptor experiment) {
-        if (experiment.getStatus().isFinished())
-            return;
-
         synchronized (experiment.getLockObject()) {
-            if (!experiment.getStatus().hasStarted()) {
-                experiment.setStatus(ExperimentStatus.DONE);
+            if (experiment.getStatus().isFinished())
                 return;
-            }
 
-            experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.STOP));
+            if (experiment.getStatus().hasStarted())
+                experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.STOP));
         }
     }
 

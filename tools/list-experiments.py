@@ -30,6 +30,7 @@ class ExperimentStatus(str, Enum):
     CREATED = ("CREATED", "Created")
     SCHEDULED = ("SCHEDULED", "Scheduled")
     STARTED = ("STARTED", "Started")
+    STOPPING = ("STOPPING", "Stopping")
     FAILED_TO_RETRIEVE_LOGS = ("FAILED_TO_RETRIEVE_LOGS", "Failed to retrieve all logs")
     CANCELLED = ("CANCELLED", "Cancelled")
     DONE = ("DONE", "Done")
