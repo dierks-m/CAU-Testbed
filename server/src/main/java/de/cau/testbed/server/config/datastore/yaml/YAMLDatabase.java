@@ -15,10 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class YAMLDatabase implements Database {
     private final Path workingDirectory;
@@ -70,6 +67,19 @@ public class YAMLDatabase implements Database {
         }
 
         return experimentDescriptors;
+    }
+
+    @Override
+    public Optional<ExperimentDescriptor> getNextExperiment() {
+        return experimentDescriptors.stream()
+                .min(Comparator.comparing(ExperimentDescriptor::getStart));
+    }
+
+    @Override
+    public Optional<ExperimentDescriptor> getFollowingExperiment(ExperimentDescriptor previous) {
+        return experimentDescriptors.stream()
+                .filter(x -> x.getStart().isAfter(previous.getEnd()))
+                .min(Comparator.comparing(ExperimentDescriptor::getStart));
     }
 
     @Override

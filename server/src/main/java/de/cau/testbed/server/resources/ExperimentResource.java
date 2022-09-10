@@ -1,10 +1,8 @@
 package de.cau.testbed.server.resources;
 
-import de.cau.testbed.server.api.ErrorMessage;
-import de.cau.testbed.server.api.ExperimentId;
-import de.cau.testbed.server.api.ExperimentTemplate;
-import de.cau.testbed.server.api.TimeFrame;
+import de.cau.testbed.server.api.*;
 import de.cau.testbed.server.config.datastore.User;
+import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import de.cau.testbed.server.service.ExperimentService;
 import io.dropwizard.auth.Auth;
 import jakarta.validation.Valid;
@@ -47,7 +45,20 @@ public class ExperimentResource {
             @Valid ExperimentTemplate experimentTemplate
     ) {
         try {
-            return Response.ok(new ExperimentId(service.createNewExperiment(experimentTemplate, user))).build();
+            return Response.ok(anonymizeExperimentInfo(service.createNewExperiment(experimentTemplate, user))).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
+        }
+    }
+
+    @Path("queue-experiment")
+    @POST
+    public Response queueExperiment(
+            @Auth User user,
+            @Valid QueuedExperimentTemplate experimentTemplate
+    ) {
+        try {
+            return Response.ok(anonymizeExperimentInfo(service.queueNewExperiment(experimentTemplate, user))).build();
         } catch (RuntimeException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ErrorMessage(e.getMessage())).build();
         }
@@ -108,5 +119,15 @@ public class ExperimentResource {
         }
 
         return Response.ok(service.listAnonymizedExperiments(timeframe.start, timeframe.end)).build();
+    }
+
+    private AnonymizedExperimentInfo anonymizeExperimentInfo(ExperimentDescriptor descriptor) {
+        return new AnonymizedExperimentInfo(
+                descriptor.getName(),
+                descriptor.getStart(),
+                descriptor.getEnd(),
+                descriptor.getId(),
+                descriptor.getStatus()
+        );
     }
 }

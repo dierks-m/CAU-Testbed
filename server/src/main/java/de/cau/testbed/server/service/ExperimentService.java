@@ -1,5 +1,6 @@
 package de.cau.testbed.server.service;
 
+import de.cau.testbed.server.api.QueuedExperimentTemplate;
 import de.cau.testbed.server.constants.UserType;
 import de.cau.testbed.server.util.PathUtil;
 import de.cau.testbed.server.api.AnonymizedExperimentInfo;
@@ -19,6 +20,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -26,23 +28,50 @@ public class ExperimentService {
     private final Database database;
     private final List<HardwareNode> availableNodes;
     private final ExperimentSchedulingThread experimentScheduler;
-    private final Path workingDirectory;
 
-    public ExperimentService(Database database, List<HardwareNode> availableNodes, ExperimentSchedulingThread experimentScheduler, Path workingDirectory) {
+    private static final Object DATABASE_LOCK = new Object();
+
+    public ExperimentService(Database database, List<HardwareNode> availableNodes, ExperimentSchedulingThread experimentScheduler) {
         this.database = database;
         this.availableNodes = availableNodes;
         this.experimentScheduler = experimentScheduler;
-        this.workingDirectory = workingDirectory;
     }
 
-    public synchronized long createNewExperiment(ExperimentTemplate template, User owner) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
-        checkTimeStamps(template);
-        checkTimeCollision(template);
-        checkModules(template);
+    public ExperimentDescriptor createNewExperiment(ExperimentTemplate template, User owner) throws TimeCollisionException, UnknownNodeException, UnknownModuleException {
+        synchronized (DATABASE_LOCK) {
+            checkTimeStamps(template);
+            checkTimeCollision(template);
+            checkModules(template);
 
-        final ExperimentDescriptor experiment = database.addExperiment(template, owner);
+            return database.addExperiment(template, owner);
+        }
+    }
 
-        return experiment.getId();
+    public ExperimentDescriptor queueNewExperiment(QueuedExperimentTemplate template, User owner) {
+        synchronized (DATABASE_LOCK) {
+            final LocalDateTime start = determineFreeTimeSlot(template.duration());
+
+            return createNewExperiment(new ExperimentTemplate(
+                    template.name(),
+                    start,
+                    start.plus(template.duration()),
+                    template.nodes()
+            ), owner);
+        }
+    }
+
+    private LocalDateTime determineFreeTimeSlot(Duration duration) {
+        final Duration durationWithBuffer = duration.plusMinutes(10);
+
+        LocalDateTime previousTimestamp = LocalDateTime.now();
+        Optional<ExperimentDescriptor> nextExperiment = database.getNextExperiment();
+
+        while (nextExperiment.isPresent() && previousTimestamp.plus(durationWithBuffer).isAfter(nextExperiment.get().getStart())) {
+            previousTimestamp = nextExperiment.get().getStart();
+            nextExperiment = database.getFollowingExperiment(nextExperiment.get());
+        }
+
+        return previousTimestamp.plusMinutes(5);
     }
 
     private void checkTimeStamps(ExperimentTemplate template) {
