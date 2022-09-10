@@ -148,7 +148,7 @@ public class YAMLDatabase implements Database {
         return userDatabase;
     }
 
-    private void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {
+    private synchronized void writeExperimentFile(ExperimentDescriptor experimentDescriptor) {
         try {
             Files.createDirectories(PathUtil.getExperimentPath(experimentDescriptor.getId()));
 
