@@ -32,6 +32,7 @@ class ExperimentStatus(str, Enum):
     STARTED = ("STARTED", "Started")
     STOPPING = ("STOPPING", "Stopping")
     FAILED_TO_RETRIEVE_LOGS = ("FAILED_TO_RETRIEVE_LOGS", "Failed to retrieve all logs")
+    FAILED_TO_START = ("FAILED_TO_START", "Failed to start")
     CANCELLED = ("CANCELLED", "Cancelled")
     DONE = ("DONE", "Done")
 
@@ -61,11 +62,11 @@ def compile_table(*args):
     output_table = []
 
     for i in range(len(args)):
+        if len(output_table) > 0 and len(args[i]) > 0:
+            output_table.append([])
+
         for item in args[i]:
             output_table.append(format_line(item))
-
-        if i < len(args) - 1 and len(args[i + 1]) > 0:
-            output_table.append([])
 
     return output_table
 

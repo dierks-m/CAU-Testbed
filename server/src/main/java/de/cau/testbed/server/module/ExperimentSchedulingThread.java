@@ -57,11 +57,11 @@ public class ExperimentSchedulingThread extends Thread {
         synchronized (descriptor.getLockObject()) {
             if (descriptor.getEnd().isBefore(LocalDateTime.now())) {
                 logger.info(String.format(
-                        "[Experiment %d] %s ended before current time. Skipping and setting status to DONE.",
+                        "[Experiment %d] %s ended before current time. Skipping and setting status to FAILED_TO_START.",
                         descriptor.getId(),
                         descriptor.getName()
                 ));
-                descriptor.setStatus(ExperimentStatus.DONE);
+                descriptor.setStatus(ExperimentStatus.FAILED_TO_START);
 
                 return;
             }

@@ -1,27 +1,26 @@
 package de.cau.testbed.server.constants;
 
 public enum ExperimentStatus {
-    CREATED("Created", false),
-    SCHEDULED("Scheduled", false),
-    STARTED("Started", true, false),
-    STOPPING("Stopping", true, false),
-    FAILED_TO_RETRIEVE_LOGS("Done, failed to retrieve all results", true, true),
-    CANCELLED("Cancelled", false, true),
-    DONE("Done", true, true),
+    CREATED(false),
+    SCHEDULED(false),
+    STARTED(true, false),
+    STOPPING(true, false),
+    FAILED_TO_RETRIEVE_LOGS(true, true),
+    FAILED_TO_START(false, true),
+    CANCELLED(false, true),
+    DONE(true, true),
     ;
 
     private final boolean isFinished;
-    private final String displayValue;
     private final boolean hasStarted;
 
-    ExperimentStatus(String displayValue, boolean hasStarted, boolean isFinished) {
-        this.displayValue = displayValue;
+    ExperimentStatus(boolean hasStarted, boolean isFinished) {
         this.hasStarted = hasStarted;
         this.isFinished = isFinished;
     }
 
-    ExperimentStatus(String displayValue, boolean isFinished) {
-        this(displayValue, false, isFinished);
+    ExperimentStatus(boolean isFinished) {
+        this(false, isFinished);
     }
 
     public boolean isFinished() {
