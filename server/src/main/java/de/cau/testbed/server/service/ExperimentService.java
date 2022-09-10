@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class ExperimentService {
@@ -49,7 +50,10 @@ public class ExperimentService {
 
     public ExperimentDescriptor queueNewExperiment(QueuedExperimentTemplate template, User owner) {
         synchronized (DATABASE_LOCK) {
-            final LocalDateTime start = determineFreeTimeSlot(template.duration());
+            final LocalDateTime start = determineFreeTimeSlot(template.duration()).truncatedTo(ChronoUnit.SECONDS);
+
+            System.out.println("Start " + start);
+            System.out.println("Duration " + template.duration());
 
             return createNewExperiment(new ExperimentTemplate(
                     template.name(),
@@ -67,7 +71,7 @@ public class ExperimentService {
         Optional<ExperimentDescriptor> nextExperiment = database.getNextExperiment();
 
         while (nextExperiment.isPresent() && previousTimestamp.plus(durationWithBuffer).isAfter(nextExperiment.get().getStart())) {
-            previousTimestamp = nextExperiment.get().getStart();
+            previousTimestamp = nextExperiment.get().getEnd();
             nextExperiment = database.getFollowingExperiment(nextExperiment.get());
         }
 

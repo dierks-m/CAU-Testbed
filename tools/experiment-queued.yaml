@@ -1,0 +1,15 @@
+name: Experiment for 5 minutes
+duration: 5:00
+nodes:
+  - id: raspi01
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi02
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi03
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul

@@ -63,7 +63,7 @@ def compile_table(*args):
         for item in args[i]:
             output_table.append(format_line(item))
 
-        if i < len(args) - 1 and len(args[i]) > 0:
+        if i < len(args) - 1 and len(args[i + 1]) > 0:
             output_table.append([])
 
     return output_table
@@ -72,6 +72,7 @@ def compile_table(*args):
 def print_experiment_list(experiment_list: list):
     if len(experiment_list) == 0:
         print("No experiments currently scheduled.")
+        return
 
     list_created = []
     list_scheduled = []
