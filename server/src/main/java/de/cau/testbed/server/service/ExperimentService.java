@@ -52,9 +52,6 @@ public class ExperimentService {
         synchronized (DATABASE_LOCK) {
             final LocalDateTime start = determineFreeTimeSlot(template.duration()).truncatedTo(ChronoUnit.SECONDS);
 
-            System.out.println("Start " + start);
-            System.out.println("Duration " + template.duration());
-
             return createNewExperiment(new ExperimentTemplate(
                     template.name(),
                     start,
