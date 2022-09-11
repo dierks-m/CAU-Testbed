@@ -97,7 +97,7 @@ def print_experiment_list(experiment_list: list):
         except:
             pass
 
-    output_table = compile_table(list_created, list_scheduled, list_started, list_done)
+    output_table = compile_table(list_done, list_created, list_scheduled, list_started)
 
     print()
 
