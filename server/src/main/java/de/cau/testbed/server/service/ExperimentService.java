@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ExperimentService {
     private final Database database;
@@ -161,6 +162,13 @@ public class ExperimentService {
         }
 
         return anonymizedDescriptors;
+    }
+
+    public List<ExperimentDescriptor> listUserExperiments(User user) {
+        final List<ExperimentDescriptor> experimentDescriptors = database.getExperiments().stream()
+                .filter(x -> user.equals(x.getOwner()))
+                .collect(Collectors.toList());
+        return experimentDescriptors;
     }
 
     public AnonymizedExperimentInfo cancelExperiment(long id, User user) {

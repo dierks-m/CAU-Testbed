@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -121,7 +122,19 @@ public class ExperimentResource {
         return Response.ok(service.listAnonymizedExperiments(timeframe.start, timeframe.end)).build();
     }
 
-    private AnonymizedExperimentInfo anonymizeExperimentInfo(ExperimentDescriptor descriptor) {
+    @Path("list-user-experiments")
+    @GET
+    public Response listUserExperiments(
+            @Auth User user
+    ) {
+        return Response.ok(
+                service.listUserExperiments(user).stream()
+                        .map(ExperimentResource::anonymizeExperimentInfo)
+                        .collect(Collectors.toList())
+        ).build();
+    }
+
+    private static AnonymizedExperimentInfo anonymizeExperimentInfo(ExperimentDescriptor descriptor) {
         return new AnonymizedExperimentInfo(
                 descriptor.getName(),
                 descriptor.getStart(),
