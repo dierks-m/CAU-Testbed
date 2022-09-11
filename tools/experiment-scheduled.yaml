@@ -1,76 +1,42 @@
-name: 20 Nodes 10 Firmware Threads 10 Log Retrieval Threads
-start: 2022-09-06T14:49
-end:   2022-09-06T14:51
+name: Entire Testbed with zoul-test.zoul
+start: 2022-09-11T21:05
+end:   2022-09-11T21:10
 nodes:
   - id: raspi01
-    modules:
+    modules: &default-modules
       - id: ZOUL
         firmware: zoul-test.zoul
   - id: raspi02
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi03
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi04
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi06
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi07
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi08
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi09
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi10
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi12
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi13
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi14
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi15
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi16
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi17
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi18
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi19
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules
   - id: raspi21
-    modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+    modules: *default-modules

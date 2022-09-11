@@ -19,6 +19,12 @@ This is meant to execute an experiment as soon as possible for a given duration.
 
 For this, first create an experiment descriptor file. This file contains information about the name, duration and what nodes are involved.
 
+You can specify the duration several ways:\
+`duration: 600` will run for 600 seconds\
+`duration: 10:00` will run for 10 minutes\
+`duration: 12:00:00` will run for 12 hours\
+`duration: 1:00:00:00` will run for one day.
+
 Once you have done this, make sure that all firmware files you specified in the configuration are available in one folder.
 The script will search for the exact names used in the configuration.
 
