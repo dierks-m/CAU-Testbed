@@ -66,7 +66,7 @@ public class ExperimentService {
         final Duration durationWithBuffer = duration.plusMinutes(10);
 
         LocalDateTime previousTimestamp = LocalDateTime.now();
-        Optional<ExperimentDescriptor> nextExperiment = database.getNextExperiment();
+        Optional<ExperimentDescriptor> nextExperiment = database.getCurrentOrNextExperiment();
 
         while (nextExperiment.isPresent() && previousTimestamp.plus(durationWithBuffer).isAfter(nextExperiment.get().getStart())) {
             previousTimestamp = nextExperiment.get().getEnd();
@@ -169,17 +169,6 @@ public class ExperimentService {
                 .filter(x -> user.equals(x.getOwner()))
                 .collect(Collectors.toList());
         return experimentDescriptors;
-    }
-
-    public AnonymizedExperimentInfo cancelExperiment(long id, User user) {
-        final ExperimentDescriptor experiment = getAuthorizedExperimentById(id, user);
-
-        if (experiment.getStatus().isFinished())
-            throw new RuntimeException("Experiment has already finished");
-
-        experimentScheduler.cancelExperiment(experiment);
-
-        return new AnonymizedExperimentInfo(experiment.getName(), experiment.getStart(), experiment.getEnd(), experiment.getId(), experiment.getStatus());
     }
 
     public AnonymizedExperimentInfo stopExperiment(long id, User user) {

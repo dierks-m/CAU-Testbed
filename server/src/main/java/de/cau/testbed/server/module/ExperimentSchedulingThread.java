@@ -78,14 +78,6 @@ public class ExperimentSchedulingThread extends Thread {
         trackerFactory.createExperimentFinishTracker(descriptor);
     }
 
-    public void cancelExperiment(ExperimentDescriptor experiment) {
-        if (experiment.getStatus().isFinished())
-            return;
-
-        experiment.setStatus(ExperimentStatus.CANCELLED);
-        experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.CANCEL));
-    }
-
     public void stopExperiment(ExperimentDescriptor experiment) {
         synchronized (experiment.getLockObject()) {
             if (experiment.getStatus().isFinished())

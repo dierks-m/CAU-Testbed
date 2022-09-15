@@ -64,11 +64,11 @@ public class YAMLDatabase implements Database {
     }
 
     @Override
-    public Optional<ExperimentDescriptor> getNextExperiment() {
+    public Optional<ExperimentDescriptor> getCurrentOrNextExperiment() {
         final LocalDateTime now = LocalDateTime.now();
 
         return experimentDescriptors.stream()
-                .filter(x -> now.isBefore(x.getStart()))
+                .filter(x -> now.isBefore(x.getEnd()))
                 .min(Comparator.comparing(ExperimentDescriptor::getStart));
     }
 
