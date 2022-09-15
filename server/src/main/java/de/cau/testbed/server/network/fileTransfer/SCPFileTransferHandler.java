@@ -9,13 +9,13 @@ import java.nio.file.Path;
 public class SCPFileTransferHandler implements FileTransferHandler {
     @Override
     public void upload(TransferTarget target, Path localPath) throws IOException {
-        final SSHClient sshClient = createSSHConnection(target.getHost());
+        final SSHClient sshClient = createSSHConnection(target.host());
 
         try {
-            sshClient.authPublickey(target.getUser());
+            sshClient.authPublickey(target.user());
             sshClient.newSCPFileTransfer().upload(
                     localPath.toString(),
-                    target.getPath().toString()
+                    target.path().toString()
             );
         } finally {
             sshClient.disconnect();
@@ -24,12 +24,12 @@ public class SCPFileTransferHandler implements FileTransferHandler {
 
     @Override
     public void download(TransferTarget target, Path localPath) throws IOException {
-        final SSHClient sshClient = createSSHConnection(target.getHost());
+        final SSHClient sshClient = createSSHConnection(target.host());
 
         try {
-            sshClient.authPublickey(target.getUser());
+            sshClient.authPublickey(target.user());
             sshClient.newSCPFileTransfer().download(
-                    target.getPath().toString(),
+                    target.path().toString(),
                     localPath.toString()
             );
         } finally {
