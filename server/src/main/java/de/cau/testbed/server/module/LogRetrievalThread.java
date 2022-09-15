@@ -35,7 +35,7 @@ public class LogRetrievalThread extends Thread {
                 KafkaTopic.LOG_RETRIEVAL,
                 KafkaConstants.CLIENT_ID
         );
-        this.fileTransferHandler = new SCPFileTransferHandler(workingDirectory);
+        this.fileTransferHandler = new SCPFileTransferHandler();
     }
 
     @Override

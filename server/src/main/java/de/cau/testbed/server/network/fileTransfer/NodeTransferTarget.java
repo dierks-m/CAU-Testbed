@@ -1,7 +1,6 @@
 package de.cau.testbed.server.network.fileTransfer;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class NodeTransferTarget implements TransferTarget {
     private final String host;

@@ -22,19 +22,17 @@ public class FirmwareDistributionThread extends Thread {
     private final KafkaNetworkReceiver<FirmwareRetrievalMessage> firmwareReceiver;
 
     private final FileTransferHandler fileTransferHandler;
-    private final Path workingDirectory;
     private final int id;
 
-    public FirmwareDistributionThread(Path workingDirectory, int id) {
+    public FirmwareDistributionThread(int id) {
         logger.info("Intializing thread " + id);
-        this.workingDirectory = workingDirectory;
         this.id = id;
         this.firmwareReceiver = new KafkaNetworkReceiver<>(
                 new FirmwareRetrievalMessageDeserializer(),
                 KafkaTopic.FIRMWARE_RETRIEVAL,
                 KafkaConstants.CLIENT_ID
         );
-        this.fileTransferHandler = new SCPFileTransferHandler(workingDirectory);
+        this.fileTransferHandler = new SCPFileTransferHandler();
     }
 
     @Override

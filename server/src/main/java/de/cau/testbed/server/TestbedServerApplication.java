@@ -49,7 +49,7 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes);
 
         for (int i = 0; i < 10; i++)
-            new FirmwareDistributionThread(configuration.workingDirectory, i).start();
+            new FirmwareDistributionThread(i).start();
 
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
 
