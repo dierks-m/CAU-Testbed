@@ -1,4 +1,6 @@
-tty=`ls /dev/serial/by-id/*Zolertia_Firefly*` 
+#!/bin/bash
+
+tty=`ls /dev/serial/by-id/*Zolertia_Firefly*`
 port=50000
 log_path=$1
 
