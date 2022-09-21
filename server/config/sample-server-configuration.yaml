@@ -20,6 +20,8 @@ logging:
       threshold: INFO
       target: stdout
 
+numFirmwareDistributionThreads: 10
+numLogRetrievalThreads: 10
 nodes:
   - id: raspi01
     capabilities: [ ZOUL ]

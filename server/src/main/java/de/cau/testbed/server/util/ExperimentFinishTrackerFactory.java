@@ -2,7 +2,6 @@ package de.cau.testbed.server.util;
 
 import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
-import de.cau.testbed.server.constants.ExperimentStatus;
 import de.cau.testbed.server.util.event.LogRetrievedEvent;
 
 import java.io.File;

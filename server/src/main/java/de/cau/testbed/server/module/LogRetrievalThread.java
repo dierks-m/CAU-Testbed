@@ -26,7 +26,7 @@ public class LogRetrievalThread extends Thread {
     private final SubmissionPublisher<LogRetrievedEvent> logEventHandler;
     private final int id;
 
-    public LogRetrievalThread(Path workingDirectory, SubmissionPublisher<LogRetrievedEvent> logEventHandler, int id) {
+    public LogRetrievalThread(SubmissionPublisher<LogRetrievedEvent> logEventHandler, int id) {
         logger.info("Initializing thread " + id);
         this.logEventHandler = logEventHandler;
         this.id = id;

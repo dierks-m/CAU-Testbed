@@ -31,7 +31,6 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 
 public class TestbedServerApplication extends Application<TestbedServerConfiguration> {
-
     public static void main(String[] args) throws Exception {
         new TestbedServerApplication().run(args);
     }
@@ -45,36 +44,42 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
     @Override
     public void run(TestbedServerConfiguration configuration, Environment environment) {
         PathUtil.initialize(configuration.workingDirectory);
+        final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
+        registerAuthorizationComponent(environment, database);
 
         final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes);
+        createFirmwareDistributionThreads(configuration.numFirmwareDistributionThreads);
 
-        for (int i = 0; i < 10; i++)
-            new FirmwareDistributionThread(i).start();
 
-        final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
-
-        final SubmissionPublisher<LogRetrievedEvent> logEventPublisher = new SubmissionPublisher<>();
-        final ExperimentFinishTrackerFactory trackerFactory = new ExperimentFinishTrackerFactory(logEventPublisher);
-
-        for (int i = 0; i < 10; i++)
-            new LogRetrievalThread(configuration.workingDirectory, logEventPublisher, i).start();
+        final SubmissionPublisher<LogRetrievedEvent> logRetrievedHandler = new SubmissionPublisher<>();
+        final ExperimentFinishTrackerFactory trackerFactory = new ExperimentFinishTrackerFactory(logRetrievedHandler);
+        createLogRetrievalThreads(configuration.numLogRetrievalThreads, logRetrievedHandler);
 
         trackerFactory.createInitialTrackers(database);
-
-        registerAuthorizationComponent(environment, database);
 
         final ExperimentSchedulingThread schedulingThread = new ExperimentSchedulingThread(database, trackerFactory);
         schedulingThread.start();
 
+        // Services handle backend stuff for the front-end REST API
         final ExperimentService experimentService = new ExperimentService(database, configuration.nodes, schedulingThread);
-        environment.jersey().register(new ExperimentResource(experimentService));
-
         final FirmwareService firmwareService = new FirmwareService(database);
-        environment.jersey().register(new UploadFirmwareResource(firmwareService));
-
         final UserService userService = new UserService(database.getUserDatabase());
         final NodeService nodeService = new NodeService(nodeStatusList);
+
+        // XYZResources provide the REST API for interaction and utilize the according services in the background
+        environment.jersey().register(new ExperimentResource(experimentService));
+        environment.jersey().register(new UploadFirmwareResource(firmwareService));
         environment.jersey().register(new AdminResource(userService, nodeService));
+    }
+
+    private void createLogRetrievalThreads(int numLogRetrievalThreads, SubmissionPublisher<LogRetrievedEvent> trackerFactory) {
+        for (int i = 0; i < numLogRetrievalThreads; i++)
+            new LogRetrievalThread(trackerFactory, i).start();
+    }
+
+    private void createFirmwareDistributionThreads(int numFirmwareDistributionThreads) {
+        for (int i = 0; i < numFirmwareDistributionThreads; i++)
+            new FirmwareDistributionThread(i).start();
     }
 
     private void registerAuthorizationComponent(Environment environment, YAMLDatabase database) {
