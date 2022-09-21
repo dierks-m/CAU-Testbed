@@ -10,11 +10,15 @@ from typing import List, Callable
 
 from configuration import nodeConfiguration, experiment
 from configuration.experiment import ModuleType, Experiment
+from experiment.gpiotracer import GPIOTracer
 from experiment.modules.module import ExperimentModule
 from experiment.modules.nrf52 import NRF52ExperimentModule
 from experiment.modules.sky import SkyExperimentModule
 from experiment.modules.zoul import ZoulExperimentModule
 from network import firmware, log
+
+
+gpio_tracer = GPIOTracer()
 
 
 class ModuleWrapper:
@@ -77,6 +81,10 @@ def module_factory(experiment_id: str, module: experiment.ExperimentModule, logg
         raise RuntimeError("Module type " + str(module.id) + " not defined")
 
     return ModuleWrapper(module_inst)
+
+
+def is_gpio_trace_enabled(modules: list[ExperimentModule]) -> bool:
+    return True in (module.gpio_tracer for module in modules)
 
 
 class ExperimentWrapper:
@@ -207,12 +215,27 @@ class ExperimentWrapper:
 
             self.schedule(0, 1, wrapped_module.prepare)
             self.schedule_abs(max(self.descriptor.start, DateTime.now()).timestamp(), 2, wrapped_module.start)
-            self.schedule_abs(max(self.descriptor.end, DateTime.now()).timestamp(), 3, wrapped_module.stop)
+            self.schedule_abs(max(self.descriptor.end, DateTime.now()).timestamp(), 5, wrapped_module.stop)
 
             self.wrapped_modules.append(wrapped_module)
 
+        if is_gpio_trace_enabled(modules):
+            self.schedule_gpio_tracing()
+
         end = max(self.descriptor.end, DateTime.now()).timestamp()
-        self.schedule_abs(end, 4, self.initiate_log_retrieval)
+        self.schedule_abs(end, 6, self.initiate_log_retrieval)
 
         self.scheduler.run()
         self.on_finish_callback()
+
+    def schedule_gpio_tracing(self):
+        self.schedule_abs(
+            max(self.descriptor.start, DateTime.now()).timestamp(),
+            3,
+            lambda: gpio_tracer.start(int(self.descriptor.experiment_id), self.logger)
+        )
+        self.schedule_abs(
+            max(self.descriptor.end, DateTime.now()).timestamp(),
+            4,
+            gpio_tracer.stop
+        )
