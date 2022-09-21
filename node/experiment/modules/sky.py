@@ -14,7 +14,7 @@ class SkyExperimentModule(ExperimentModule):
         if self.serial_forward:
             os.system("scripts/sky/serial-forwarder.sh %s" % str(self.firmware_path))
         else:
-            os.system("scripts/sky/serial-dump.sh %s" % str(self.firmware_path))
+            os.system("scripts/sky/serial-dump.sh %s" % str(self.log_path))
 
         self.logger.info("Started SKY module")
 
