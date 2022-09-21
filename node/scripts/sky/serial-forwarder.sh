@@ -1,6 +1,9 @@
+#!/bin/bash
+
 tty=`ls /dev/serial/by-id/usb-FTDI_MTM-CM5000*`
 port=50000
 log_path=$1
+
 if [ -z "$tty" ]
 then
         echo "Could not find sky device"
