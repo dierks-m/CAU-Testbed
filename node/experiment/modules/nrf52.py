@@ -22,5 +22,5 @@ class NRF52ExperimentModule(ExperimentModule):
         os.system("scripts/nrf52/stop-forwarder-dump.sh")
 
         # Install null firmware to get device to a known state
-        os.system("scripts/nrf52/install.sh scripts/sky/null.nrf52.hex")
+        os.system("scripts/nrf52/install.sh scripts/nrf52/null.nrf52.hex")
         self.logger.info("Stopped NRF52 module")
