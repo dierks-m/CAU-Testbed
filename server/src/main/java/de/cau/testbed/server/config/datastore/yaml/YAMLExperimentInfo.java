@@ -10,38 +10,23 @@ import java.time.LocalDateTime;
  * start, stop, name, owner and experiment ID, which is used for linking to the individual
  * configuration file.
  */
-public class YAMLExperimentInfo {
-    public final long owner;
-    public final long experimentId;
-    public final String name;
-    public final ExperimentStatus status;
-    public final LocalDateTime start;
-
-    public final LocalDateTime end;
-
-    public YAMLExperimentInfo(
-            @JsonProperty("name") String name,
-            @JsonProperty("owner") long ownerId,
-            @JsonProperty("experimentId") long experimentId,
-            @JsonProperty("status") ExperimentStatus status,
-            @JsonProperty("start") LocalDateTime start,
-            @JsonProperty("end")LocalDateTime end
-            ) {
-        this.name = name;
-        this.owner = ownerId;
-        this.experimentId = experimentId;
-        this.status = status;
-        this.start = start;
-        this.end = end;
-    }
-
+record YAMLExperimentInfo(
+        @JsonProperty("name") String name,
+        @JsonProperty("owner") long owner,
+        @JsonProperty("experimentId") long experimentId,
+        @JsonProperty("status") ExperimentStatus status,
+        @JsonProperty("start") LocalDateTime start,
+        @JsonProperty("end") LocalDateTime end
+) {
     @Override
     public String toString() {
-        return "YAMLExperimentStatus{" +
-                "owner='" + owner + '\'' +
-                ", experimentId='" + experimentId + '\'' +
-                ", name='" + name + '\'' +
+        return "YAMLExperimentInfo1{" +
+                "name='" + name + '\'' +
+                ", owner=" + owner +
+                ", experimentId=" + experimentId +
                 ", status=" + status +
+                ", start=" + start +
+                ", end=" + end +
                 '}';
     }
 }

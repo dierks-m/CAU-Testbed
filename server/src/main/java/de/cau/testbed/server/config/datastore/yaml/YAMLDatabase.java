@@ -6,7 +6,6 @@ import de.cau.testbed.server.config.YAMLParser;
 import de.cau.testbed.server.config.datastore.Database;
 import de.cau.testbed.server.config.datastore.UserDatabase;
 import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
-import de.cau.testbed.server.config.experiment.ExperimentDetail;
 import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.constants.ExperimentStatus;
 
@@ -36,7 +35,7 @@ public class YAMLDatabase implements Database {
         this.userDatabase = new YAMLUserDatabase(workingDirectory);
 
         final YAMLExperimentList experimentList = loadExperimentList(); // Loads the central 'experiments.yaml' file
-        this.nextId = experimentList.nextId;
+        this.nextId = experimentList.nextId();
 
         // Construct experiment descriptors by tying together the experiments.yaml and individual configuration.yaml's
         this.experimentDescriptors = loadExperiments(experimentList);
@@ -53,11 +52,11 @@ public class YAMLDatabase implements Database {
     private List<ExperimentDescriptor> loadExperiments(YAMLExperimentList experimentList) {
         final List<ExperimentDescriptor> experimentDescriptors = new ArrayList<>();
 
-        for (YAMLExperimentInfo experimentInfo : experimentList.experiments) {
+        for (YAMLExperimentInfo experimentInfo : experimentList.experiments()) {
             try {
-                final ExperimentDetail experimentDetail = YAMLParser.parseFile(
-                        PathUtil.getExperimentPath(experimentInfo.experimentId).resolve("configuration.yaml"),
-                        ExperimentDetail.class
+                final YAMLExperimentDetail experimentDetail = YAMLParser.parseFile(
+                        PathUtil.getExperimentPath(experimentInfo.experimentId()).resolve("configuration.yaml"),
+                        YAMLExperimentDetail.class
                 );
 
                 experimentDescriptors.add(
@@ -110,7 +109,7 @@ public class YAMLDatabase implements Database {
                 template.end
         );
 
-        final ExperimentDetail experimentDetail = new ExperimentDetail(template.nodes);
+        final YAMLExperimentDetail experimentDetail = new YAMLExperimentDetail(template.nodes);
 
         final ExperimentDescriptor experiment = new YAMLExperimentDescriptor(this, experimentInfo, experimentDetail, userDatabase);
 
@@ -163,7 +162,7 @@ public class YAMLDatabase implements Database {
             YAMLParser.writeFile(Paths.get(workingDirectory.toString(), "experiments.yaml"), YAMLExperimentList.fromExperimentDescriptorList(experimentDescriptors, nextId));
             YAMLParser.writeFile(
                     PathUtil.getExperimentPath(experimentDescriptor.getId()).resolve("configuration.yaml"),
-                    new ExperimentDetail(experimentDescriptor.getNodes())
+                    new YAMLExperimentDetail(experimentDescriptor.getNodes())
             );
         } catch (IOException e) {
             throw new RuntimeException(e);

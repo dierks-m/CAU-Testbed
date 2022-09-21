@@ -10,21 +10,7 @@ import java.util.List;
  * Data representation for the central 'experiments.yaml' file, which contains a list of
  * experiment information and the next experiment ID.
  */
-public class YAMLExperimentList {
-    @JsonProperty
-    public final List<YAMLExperimentInfo> experiments;
-
-    @JsonProperty
-    public final long nextId;
-
-    public YAMLExperimentList(
-            @JsonProperty("experiments") List<YAMLExperimentInfo> experiments,
-            @JsonProperty("nextId") long nextId
-    ) {
-        this.experiments = experiments;
-        this.nextId = nextId;
-    }
-
+public record YAMLExperimentList(@JsonProperty List<YAMLExperimentInfo> experiments, @JsonProperty long nextId) {
     public static YAMLExperimentList fromExperimentDescriptorList(List<ExperimentDescriptor> experimentDescriptors, long nextId) {
         final List<YAMLExperimentInfo> experimentStatusList = new ArrayList<>();
 

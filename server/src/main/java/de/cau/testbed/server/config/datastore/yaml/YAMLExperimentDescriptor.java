@@ -28,21 +28,21 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     // Used for synchronization of reading and writing the experiment status
     private final Object lockObject = new Object();
 
-    public YAMLExperimentDescriptor(YAMLDatabase database, YAMLExperimentInfo experimentInfo, ExperimentDetail experimentDetail, UserDatabase userTable) {
+    public YAMLExperimentDescriptor(YAMLDatabase database, YAMLExperimentInfo experimentInfo, YAMLExperimentDetail experimentDetail, UserDatabase userTable) {
         this.database = database;
-        final Optional<User> user = userTable.getUserById(experimentInfo.owner);
+        final Optional<User> user = userTable.getUserById(experimentInfo.owner());
 
         this.owner = user.orElseThrow(() -> new IllegalArgumentException(String.format(
                 "Could not instantiate experiment %d; user not found!",
-                experimentInfo.experimentId
+                experimentInfo.experimentId()
         )));
 
-        this.id = experimentInfo.experimentId;
-        this.name = experimentInfo.name;
-        this.start = experimentInfo.start;
-        this.end = experimentInfo.end;
-        this.nodes = experimentDetail.nodes;
-        this.status = experimentInfo.status;
+        this.id = experimentInfo.experimentId();
+        this.name = experimentInfo.name();
+        this.start = experimentInfo.start();
+        this.end = experimentInfo.end();
+        this.nodes = experimentDetail.nodes();
+        this.status = experimentInfo.status();
     }
 
     @Override
