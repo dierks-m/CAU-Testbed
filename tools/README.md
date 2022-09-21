@@ -12,12 +12,15 @@ The output will look similar to this:
 
 20 Nodes 10 Firmware Threads 10 Log Retrieval Threads (ID 24)   [DONE]: 2022-09-06 13:46:00     ->      2022-09-06 13:47:00
 ```
+
+Install the `tabulate` package with `pip install tabulate` to get a prettified output.
 <br><br>
 
 ## Queueing an experiment
 This is meant to execute an experiment as soon as possible for a given duration.
 
 For this, first create an experiment descriptor file. This file contains information about the name, duration and what nodes are involved.
+Refer to `experiment-queued.yaml` to get an example for this.
 
 You can specify the duration several ways:\
 `duration: 600` will run for 600 seconds\
@@ -30,7 +33,7 @@ The script will search for the exact names used in the configuration.
 
 Invoke the script by using `./queue-experiment.py <experiment-descriptor> <firmware-directory>`.
 
-For example: `./queue-experiment.py sample-experiment.yaml ./firmware`.
+For example: `./queue-experiment.py experiment-queued.yaml ./firmware`.
 
 You will receive output if the experiment was successfully scheduled and receive a unique ID as well as the scheduled time for the experiment.
 This ID is important to retrieve the experiment's results later.
@@ -43,14 +46,14 @@ This is meant to execute experiments at a given time.
 For this, first create an experiment descriptor file. This file contains information about the name, start and end of the experiment and most importantly what nodes are involved.
 If you are unsure if the time slot you want to schedule your experiment in is already taken, refer to **Listing experiments**.
 
-Refer to the `sample-experiment.yaml` file to get a template for this.
+Refer to the `experiment-scheduled.yaml` file to get a template for this.
 
 Once you have done this, make sure that all firmware files you specified in the configuration are available in one folder.
 The script will search for the exact names used in the configuration.
 
 Invoke the script by using `./schedule-experiment.py <experiment-descriptor> <firmware-directory>`.
 
-For example: `./schedule-experiment.py sample-experiment.yaml ./firmware`.
+For example: `./schedule-experiment.py experiment-scheduled.yaml ./firmware`.
 
 You will receive output if the experiment was successfully scheduled and receive a unique ID for the experiment.
 This ID is important to retrieve the experiment's results later.
