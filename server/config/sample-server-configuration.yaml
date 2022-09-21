@@ -1,6 +1,6 @@
 # This is what a configuration for the server might look like
 
-workingDirectory: "/home/mikod/testbed-server"
+workingDirectory: "datastore"
 
 server:
   requestLog:
@@ -13,8 +13,8 @@ logging:
   appenders:
     - type: file
       threshold: INFO
-      currentLogFilename: "/home/mikod/testbed-server/logs/server.log"
-      archivedLogFilenamePattern: "/home/mikod/testbed-server/logs/server.%d.log.gz"
+      currentLogFilename: "datastore/logs/server.log"
+      archivedLogFilenamePattern: "datastore/logs/server.%d.log.gz"
       archivedFileCount: 5
     - type: console
       threshold: INFO
