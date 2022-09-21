@@ -83,8 +83,10 @@ public class ExperimentSchedulingThread extends Thread {
             if (experiment.getStatus().isFinished())
                 return;
 
-            if (experiment.getStatus().hasStarted())
+            if (experiment.getStatus().hasStarted()) {
                 experimentSender.send(null, new ExperimentMessage(experiment, NodeInvocationMethod.STOP));
+                trackerFactory.createExperimentFinishTracker(experiment);
+            }
         }
     }
 

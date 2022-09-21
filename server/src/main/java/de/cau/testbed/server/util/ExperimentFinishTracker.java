@@ -46,9 +46,18 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
         retrievalTimeoutTimer = new Timer(true);
 
         // Wait until experiment end + timeout
-        final long timeout = Math.max(0, ChronoUnit.MILLIS.between(LocalDateTime.now(), descriptor.getEnd())) + WAIT_TIMEOUT_MSEC;
+        // If we initiated experiment stop, only wait for timeout
+        final long timeout;
+        synchronized (descriptor.getLockObject()) {
+            if (descriptor.getStatus() == ExperimentStatus.STOPPING) {
+                timeout = 0;
+            }
+            else {
+                timeout = Math.max(0, ChronoUnit.MILLIS.between(LocalDateTime.now(), descriptor.getEnd()));
+            }
+        }
 
-        retrievalTimeoutTimer.schedule(new TimeoutTimerTask(), timeout);
+        retrievalTimeoutTimer.schedule(new TimeoutTimerTask(), timeout + WAIT_TIMEOUT_MSEC);
     }
 
     private void cleanup() {
