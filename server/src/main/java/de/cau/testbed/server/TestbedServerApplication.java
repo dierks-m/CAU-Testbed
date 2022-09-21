@@ -50,13 +50,15 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes);
         createFirmwareDistributionThreads(configuration.numFirmwareDistributionThreads);
 
-
+        // Setup for event-based pipeline between log retrieval threads and trackers
         final SubmissionPublisher<LogRetrievedEvent> logRetrievedHandler = new SubmissionPublisher<>();
         final ExperimentFinishTrackerFactory trackerFactory = new ExperimentFinishTrackerFactory(logRetrievedHandler);
         createLogRetrievalThreads(configuration.numLogRetrievalThreads, logRetrievedHandler);
 
+        // Create trackers for experiments that have started before execution of server
         trackerFactory.createInitialTrackers(database);
 
+        // Create scheduling thread that handles initiation of experiments
         final ExperimentSchedulingThread schedulingThread = new ExperimentSchedulingThread(database, trackerFactory);
         schedulingThread.start();
 

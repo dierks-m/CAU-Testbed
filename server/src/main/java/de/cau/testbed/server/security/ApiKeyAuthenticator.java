@@ -8,6 +8,10 @@ import io.dropwizard.auth.basic.BasicCredentials;
 
 import java.util.Optional;
 
+/**
+ * Authenticates users using an API key that is provided in the user field of the HTTP header.
+ * The password field is ignored.
+ */
 public class ApiKeyAuthenticator implements Authenticator<BasicCredentials, User> {
     private final UserDatabase userDatabase;
 
