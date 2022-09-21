@@ -6,6 +6,10 @@ import de.cau.testbed.server.config.experiment.ExperimentDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data representation for the central 'experiments.yaml' file, which contains a list of
+ * experiment information and the next experiment ID.
+ */
 public class YAMLExperimentList {
     @JsonProperty
     public final List<YAMLExperimentInfo> experiments;

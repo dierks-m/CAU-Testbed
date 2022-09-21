@@ -5,6 +5,11 @@ import de.cau.testbed.server.constants.ExperimentStatus;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data representation for an individual entry in the 'experiments.yaml' file that contains information about
+ * start, stop, name, owner and experiment ID, which is used for linking to the individual
+ * configuration file.
+ */
 public class YAMLExperimentInfo {
     public final long owner;
     public final long experimentId;

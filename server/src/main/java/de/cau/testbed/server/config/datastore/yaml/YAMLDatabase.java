@@ -17,6 +17,11 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * General wrapper for the YAML 'database' in the background.
+ * Ties together both the central 'experiments.yaml' file and the individual 'configuration.yaml' configuration files
+ * that hold information about nodes and modules in the experiment sub-folders.
+ */
 public class YAMLDatabase implements Database {
     private final Path workingDirectory;
 
@@ -28,9 +33,12 @@ public class YAMLDatabase implements Database {
 
     public YAMLDatabase(Path workingDirectory) {
         this.workingDirectory = workingDirectory;
-        final YAMLExperimentList experimentList = loadExperimentList();
         this.userDatabase = new YAMLUserDatabase(workingDirectory);
+
+        final YAMLExperimentList experimentList = loadExperimentList(); // Loads the central 'experiments.yaml' file
         this.nextId = experimentList.nextId;
+
+        // Construct experiment descriptors by tying together the experiments.yaml and individual configuration.yaml's
         this.experimentDescriptors = loadExperiments(experimentList);
     }
 
@@ -52,11 +60,11 @@ public class YAMLDatabase implements Database {
                         ExperimentDetail.class
                 );
 
-                //TODO: Perhaps incorporate User into experiment info (saved data structure != represented structure)
                 experimentDescriptors.add(
                         new YAMLExperimentDescriptor(this, experimentInfo, experimentDetail, userDatabase)
                 );
             } catch (IOException ignored) {
+                // If the experiment sub-folder does not exist anymore, don't list this experiment.
             }
         }
 

@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Describes an experiment with all its nodes/components.
  * This is a wrapper that provides abstraction from the database in the background.
+ * Provides all necessary information about an experiment and means to manipulate the status of it.
  */
 public interface ExperimentDescriptor {
     long getId();

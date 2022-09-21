@@ -9,6 +9,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Wrapper for the {@link ExperimentDescriptor} interface for the YAML data store.
+ * Ties together the 'experiments.yaml' ({@link YAMLExperimentList}) and the individual
+ * 'configuration.yaml' ({@link YAMLExperimentInfo}) files into one accessible class.
+ */
 public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private final long id;
 
@@ -20,14 +25,17 @@ public class YAMLExperimentDescriptor implements ExperimentDescriptor {
     private ExperimentStatus status;
     private final List<ExperimentNode> nodes;
 
+    // Used for synchronization of reading and writing the experiment status
     private final Object lockObject = new Object();
 
     public YAMLExperimentDescriptor(YAMLDatabase database, YAMLExperimentInfo experimentInfo, ExperimentDetail experimentDetail, UserDatabase userTable) {
         this.database = database;
         final Optional<User> user = userTable.getUserById(experimentInfo.owner);
-        if (user.isEmpty())
-            throw new IllegalArgumentException("User with id " + experimentInfo.owner + " does not exist!");
-        this.owner = user.get();
+
+        this.owner = user.orElseThrow(() -> new IllegalArgumentException(String.format(
+                "Could not instantiate experiment %d; user not found!",
+                experimentInfo.experimentId
+        )));
 
         this.id = experimentInfo.experimentId;
         this.name = experimentInfo.name;
