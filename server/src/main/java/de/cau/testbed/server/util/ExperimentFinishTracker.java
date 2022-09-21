@@ -12,9 +12,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.Flow;
 
+/**
+ * Determines when an experiment is finish by watching incoming {@link LogRetrievedEvent} events and setting the
+ * experiment status to {@link ExperimentStatus#DONE} once all logs are retrieved.
+ * Uses a timeout and sets the experiment status to {@link ExperimentStatus#FAILED_TO_RETRIEVE_LOGS} if not all logs
+ * were retrieved within timeout period.
+ */
 public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExperimentFinishTracker.class);
-    private static final int WAIT_TIMEOUT_MSEC = 300_000;
+    private static final int WAIT_TIMEOUT_MILLIS = 300_000;
 
     private Flow.Subscription subscription;
 
@@ -57,7 +63,7 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
             }
         }
 
-        retrievalTimeoutTimer.schedule(new TimeoutTimerTask(), timeout + WAIT_TIMEOUT_MSEC);
+        retrievalTimeoutTimer.schedule(new TimeoutTimerTask(), timeout + WAIT_TIMEOUT_MILLIS);
     }
 
     private void cleanup() {
