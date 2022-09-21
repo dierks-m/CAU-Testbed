@@ -24,38 +24,38 @@ numFirmwareDistributionThreads: 10
 numLogRetrievalThreads: 10
 nodes:
   - id: raspi01
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi02
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi03
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi04
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi06
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi07
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi08
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi09
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi10
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi12
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi13
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi14
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi15
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi16
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi17
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi18
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi19
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
   - id: raspi21
-    capabilities: [ ZOUL ]
+    capabilities: [ ZOUL, SKY, NRF52 ]
