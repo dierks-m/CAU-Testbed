@@ -18,6 +18,7 @@ from experiment.modules.zoul import ZoulExperimentModule
 from network import firmware, log
 
 
+# Create a shared GPIO tracer object
 gpio_tracer = GPIOTracer()
 
 
