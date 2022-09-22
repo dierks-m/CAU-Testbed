@@ -28,7 +28,7 @@ class GPIOTracer:
 
         self.logger.info("Starting GPIO trace")
 
-        gpio_output_dir = node_configuration.configuration.workingDirectory.joinpath(experiment_id, "logs")
+        gpio_output_dir = node_configuration.configuration.workingDirectory.joinpath(str(experiment_id), "logs")
         output_stream = os.popen(f'gpiotc --start --tracedir {gpio_output_dir}')
 
         try:
