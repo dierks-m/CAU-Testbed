@@ -61,6 +61,7 @@ def module_factory(experiment_id: str, module: experiment.ExperimentModule, logg
         log_path_prefix = nodeConfiguration.configuration.workingDirectory.joinpath(experiment_id, "logs")
     else:
         log_path_prefix = Path("/tmp", "testbed", experiment_id)
+        os.makedirs(log_path_prefix, exist_ok=True)
 
     kwargs = {
         "firmware": firmware.resolve_local_fw_path(
