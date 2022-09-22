@@ -1,7 +1,7 @@
 import os
 import threading
 from logging import Logger
-from configuration.nodeConfiguration import configuration
+import configuration.nodeConfiguration as node_configuration
 
 import network.log
 
@@ -28,7 +28,7 @@ class GPIOTracer:
 
         self.logger.info("Starting GPIO trace")
 
-        output_stream = os.popen(f'gpiotc --start --tracedir {network.log.resolve_local_log_path(configuration.workingDirectory, str(experiment_id))}')
+        output_stream = os.popen(f'gpiotc --start --tracedir {network.log.resolve_local_log_path(node_configuration.configuration.workingDirectory, str(experiment_id))}')
         command_output = output_stream.read()
         output_stream.close()
 
