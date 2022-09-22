@@ -45,7 +45,7 @@ class GPIOTracer:
         gpiotc_path = shutil.which("gpiotc")
 
         if gpiotc_path is None:
-            self.logger.warning("Cannot start GPIO tracer: gptioc not in PATH")
+            self.logger.warning("Cannot start GPIO tracer: gpiotc not in PATH")
             return
 
         gpio_output_dir = node_configuration.configuration.workingDirectory.joinpath(str(experiment_id), "logs")
