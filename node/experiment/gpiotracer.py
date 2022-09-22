@@ -1,4 +1,6 @@
 import os
+import shutil
+import subprocess
 import threading
 from logging import Logger
 import configuration.nodeConfiguration as node_configuration
@@ -27,21 +29,7 @@ class GPIOTracer:
             self.logger = logger
 
         self.logger.info("Starting GPIO trace")
-
-        gpio_output_dir = node_configuration.configuration.workingDirectory.joinpath(str(experiment_id), "logs")
-        output_stream = os.popen(f'gpiotc --start --tracedir {gpio_output_dir}')
-
-        try:
-            command_output = output_stream.read()
-
-            if command_output.find("started collection on device") > 0:
-                self.logger.info("Successfully started GPIO trace")
-            else:
-                self.logger.warning("Failed to start GPIO trace")
-        except Exception:
-            self.logger.warning("Failed to read output of GPIO trace command. Execution may have failed")
-
-        output_stream.close()
+        self._start_gpio_tracer(experiment_id)
 
     def stop(self):
         with self._lock:
@@ -52,3 +40,24 @@ class GPIOTracer:
             os.system(f'gpiotc --stop')
             self.owner = None
             self.logger = None
+
+    def _start_gpio_tracer(self, experiment_id: int):
+        gpiotc_path = shutil.which("gpiotc")
+
+        if gpiotc_path is None:
+            self.logger.warning("Cannot start GPIO tracer: gptioc not in PATH")
+            return
+
+        gpio_output_dir = node_configuration.configuration.workingDirectory.joinpath(str(experiment_id), "logs")
+        gpio_tracer_output = ""
+
+        process = subprocess.Popen(f'{gpiotc_path} --start --tracedir {gpio_output_dir}', shell=True, stdout=subprocess.PIPE)
+        for line in process.stdout:
+            gpio_tracer_output += line.decode(encoding='utf-8', errors='ignore')
+
+        process.wait()
+
+        if gpio_tracer_output.find("started collection on device") > 0:
+            self.logger.info("Successfully started GPIO trace")
+        else:
+            self.logger.warning("Failed to start GPIO trace")
