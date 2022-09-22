@@ -16,8 +16,8 @@ public class HeartbeatThread extends Thread {
     private final List<NodeStatusObject> nodeStatusList;
 
 
-    public HeartbeatThread(List<String> nodes) {
-        this.nodeStatusList = nodes.stream().map(x -> new NodeStatusObject(x)).collect(Collectors.toList());
+    public HeartbeatThread(List<String> nodes, int timeout) {
+        this.nodeStatusList = nodes.stream().map(x -> new NodeStatusObject(x, timeout)).collect(Collectors.toList());
         this.heartbeatReceiver = new KafkaNetworkReceiver<>(HeartbeatMessage.getDeserializer(), KafkaTopic.HEARTBEAT, "testbed-server");
     }
 

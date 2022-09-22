@@ -4,7 +4,10 @@ import de.cau.testbed.server.config.HardwareNode;
 import de.cau.testbed.server.config.TestbedServerConfiguration;
 import de.cau.testbed.server.config.datastore.User;
 import de.cau.testbed.server.config.datastore.yaml.YAMLDatabase;
+import de.cau.testbed.server.constants.KafkaConstants;
 import de.cau.testbed.server.module.*;
+import de.cau.testbed.server.network.KafkaNetworkReceiver;
+import de.cau.testbed.server.network.KafkaNetworkSender;
 import de.cau.testbed.server.resources.AdminResource;
 import de.cau.testbed.server.resources.ExperimentResource;
 import de.cau.testbed.server.resources.UploadFirmwareResource;
@@ -44,10 +47,13 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
     @Override
     public void run(TestbedServerConfiguration configuration, Environment environment) {
         PathUtil.initialize(configuration.workingDirectory);
+        KafkaNetworkSender.setKafkaAddress(configuration.kafkaAddress);
+        KafkaNetworkReceiver.setKafkaAddress(configuration.kafkaAddress);
+
         final YAMLDatabase database = new YAMLDatabase(configuration.workingDirectory);
         registerAuthorizationComponent(environment, database);
 
-        final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes);
+        final List<NodeStatusObject> nodeStatusList = createHeartbeatThread(configuration.nodes, configuration.heartbeatInterval);
         createFirmwareDistributionThreads(configuration.numFirmwareDistributionThreads);
 
         // Setup for event-based pipeline between log retrieval threads and trackers
@@ -96,9 +102,10 @@ public class TestbedServerApplication extends Application<TestbedServerConfigura
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
     }
 
-    private List<NodeStatusObject> createHeartbeatThread(List<HardwareNode> hardwareNodeList) {
+    private List<NodeStatusObject> createHeartbeatThread(List<HardwareNode> hardwareNodeList, int heartbeatInterval) {
         final HeartbeatThread thread = new HeartbeatThread(
-                hardwareNodeList.stream().map(x -> x.id).collect(Collectors.toList())
+                hardwareNodeList.stream().map(x -> x.id).collect(Collectors.toList()),
+                heartbeatInterval
         );
 
         thread.start();

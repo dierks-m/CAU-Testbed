@@ -13,14 +13,16 @@ public class NodeStatusObject {
 
     @JsonProperty("id")
     private final String nodeId;
+    private final int timeout;
 
     @JsonProperty("status")
     private DeviceStatus status;
 
     private Timer nodeDeadTimer;
 
-    public NodeStatusObject(String nodeId) {
+    public NodeStatusObject(String nodeId, int timeout) {
         this.nodeId = nodeId;
+        this.timeout = timeout;
         this.status = DeviceStatus.WAIT_FOR_INITIAL_CONTACT;
 
         // Kafka Metadata exchange can sometimes take quite some time. Wait a bit longer for initial contact
@@ -37,7 +39,7 @@ public class NodeStatusObject {
             status = DeviceStatus.ALIVE;
 
         nodeDeadTimer.cancel();
-        createOnNoResponseTimer(KafkaConstants.HEARTBEAT_INTERVAL + 1_000);
+        createOnNoResponseTimer(timeout + 1_000); // Allow for some leeway with another second
     }
 
     public DeviceStatus getStatus() {

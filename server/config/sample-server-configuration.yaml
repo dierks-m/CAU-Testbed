@@ -20,8 +20,10 @@ logging:
       threshold: INFO
       target: stdout
 
+kafkaAddress: localhost:9092
 numFirmwareDistributionThreads: 10
 numLogRetrievalThreads: 10
+heartbeatInterval: 10_000 # Milliseconds
 nodes:
   - id: raspi01
     capabilities: [ ZOUL, SKY, NRF52 ]

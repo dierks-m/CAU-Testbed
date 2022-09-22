@@ -13,13 +13,14 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class KafkaNetworkReceiver<T> implements NetworkReceiver<T> {
-    private static final Duration consumerTimeout = Duration.ofMillis(KafkaConstants.CONSUMER_TIMEOUT);
+    private static String kafkaAddress;
+    private static final Duration CONSUMER_TIMEOUT = Duration.ofMillis(1_000);
 
     private final KafkaConsumer<Long, T> consumer;
 
     public KafkaNetworkReceiver(Deserializer<T> deserializer, KafkaTopic receiveTopic, String consumerID) {
         final Properties consumerProps = new Properties();
-        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConstants.KAFKA_ADDRESS);
+        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaAddress);
         consumerProps.put(ConsumerConfig.CLIENT_ID_CONFIG, KafkaConstants.CLIENT_ID);
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer.getClass().getName());
@@ -33,11 +34,15 @@ public class KafkaNetworkReceiver<T> implements NetworkReceiver<T> {
     @Override
     public T receive() {
         while (true) {
-            final ConsumerRecords<Long, T> records = consumer.poll(consumerTimeout);
+            final ConsumerRecords<Long, T> records = consumer.poll(CONSUMER_TIMEOUT);
 
             if (!records.isEmpty()) {
                 return records.iterator().next().value();
             }
         }
+    }
+
+    public static void setKafkaAddress(String address) {
+        kafkaAddress = address;
     }
 }
