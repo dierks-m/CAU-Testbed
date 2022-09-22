@@ -28,14 +28,20 @@ class GPIOTracer:
 
         self.logger.info("Starting GPIO trace")
 
-        output_stream = os.popen(f'gpiotc --start --tracedir {network.log.resolve_local_log_path(node_configuration.configuration.workingDirectory, str(experiment_id))}')
-        command_output = output_stream.read()
-        output_stream.close()
+        gpio_output_dir = node_configuration.configuration.workingDirectory.joinpath(experiment_id, "logs")
+        output_stream = os.popen(f'gpiotc --start --tracedir {gpio_output_dir}')
 
-        if command_output.find("started collection on device") > 0:
-            self.logger.info("Successfully started GPIO trace")
-        else:
-            self.logger.warning("Failed to start GPIO trace")
+        try:
+            command_output = output_stream.read()
+
+            if command_output.find("started collection on device") > 0:
+                self.logger.info("Successfully started GPIO trace")
+            else:
+                self.logger.warning("Failed to start GPIO trace")
+        except Exception:
+            self.logger.warning("Failed to read output of GPIO trace command. Execution may have failed")
+
+        output_stream.close()
 
     def stop(self):
         with self._lock:
