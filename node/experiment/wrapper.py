@@ -172,7 +172,8 @@ class ExperimentWrapper:
         for module in self.wrapped_modules:
             self.scheduler.enter(0, 0, module.stop)
 
-        self.scheduler.enter(0, 1, lambda: map(self.logger.removeHandler, self.logger.handlers))
+        self.scheduler.enter(0, 1, gpio_tracer.stop)
+        self.scheduler.enter(0, 2, lambda: map(self.logger.removeHandler, self.logger.handlers))
 
         if retrieve_logs:
             self.scheduler.enter(0, 2, lambda: log.transfer_handler.initiate_log_retrieval(self.descriptor.experiment_id))

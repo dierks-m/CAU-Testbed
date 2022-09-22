@@ -27,12 +27,20 @@ class GPIOTracer:
             self.logger = logger
 
         self.logger.info("Starting GPIO trace")
-        os.system(f'gpiotc --start --tracedir {network.log.resolve_local_log_path(configuration.workingDirectory, str(experiment_id))}')
+
+        output_stream = os.popen(f'gpiotc --start --tracedir {network.log.resolve_local_log_path(configuration.workingDirectory, str(experiment_id))}')
+        command_output = output_stream.read()
+        output_stream.close()
+
+        if command_output.find("started collection on device") > 0:
+            self.logger.info("Successfully started GPIO trace")
+        else:
+            self.logger.warning("Failed to start GPIO trace")
 
     def stop(self):
         with self._lock:
             if self.owner != threading.current_thread():
-                raise RuntimeError("Tried to stop GPIO trace of other experiment thread")
+                return
 
             self.logger.info("Stopping GPIO trace")
             os.system(f'gpiotc --stop')
