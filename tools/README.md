@@ -14,7 +14,15 @@ The output will look similar to this:
 ```
 
 Install the `tabulate` package with `pip install tabulate` to get a prettified output.
-<br><br>
+
+## Listing your own experiments
+To list _all of_ your own experiments, invoke `./own-experiments.py`.
+The output will be formatted the same way as from `./list-experiments.py`
+
+<br>
+
+## Examples
+You will find a couple of general examples you can use for your configurations in the examples folder
 
 ## Queueing an experiment
 This is meant to execute an experiment as soon as possible for a given duration.
@@ -37,8 +45,6 @@ For example: `./queue-experiment.py experiment-queued.yaml ./firmware`.
 
 You will receive output if the experiment was successfully scheduled and receive a unique ID as well as the scheduled time for the experiment.
 This ID is important to retrieve the experiment's results later.
-
-<div style="page-break-after: always;"></div>
 
 ## Scheduling an experiment
 This is meant to execute experiments at a given time.

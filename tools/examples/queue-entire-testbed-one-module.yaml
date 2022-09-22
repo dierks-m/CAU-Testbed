@@ -1,0 +1,44 @@
+name: Entire testbed, 5 minutes
+duration: 5:00
+nodes:
+  - id: raspi01
+    # YAML anchors allow for reusing sections of a configuration.
+    # Here, all nodes will use the ZOUL module with the zoul-test.zoul firmware
+    # If you change something here, all nodes will be affected
+    modules:  &default-modules
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi02
+    modules: *default-modules
+  - id: raspi03
+    modules: *default-modules
+  - id: raspi04
+    modules: *default-modules
+  - id: raspi06
+    modules: *default-modules
+  - id: raspi07
+    modules: *default-modules
+  - id: raspi08
+    modules: *default-modules
+  - id: raspi09
+    modules: *default-modules
+  - id: raspi10
+    modules: *default-modules
+  - id: raspi12
+    modules: *default-modules
+  - id: raspi13
+    modules: *default-modules
+  - id: raspi14
+    modules: *default-modules
+  - id: raspi15
+    modules: *default-modules
+  - id: raspi16
+    modules: *default-modules
+  - id: raspi17
+    modules: *default-modules
+  - id: raspi18
+    modules: *default-modules
+  - id: raspi19
+    modules: *default-modules
+  - id: raspi21
+    modules: *default-modules

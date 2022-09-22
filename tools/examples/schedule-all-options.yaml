@@ -1,0 +1,18 @@
+name: Demonstration of all options, scheduled
+start: 2022-09-22T15:45
+end:   2022-09-22T15:46
+nodes:
+  - id: raspi01
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+        serialDump: True
+        serialForward: True
+        gpioTracer: True
+  - id: raspi02
+    modules:
+      - id: NRF52
+        firmware: test_nrf.nrf52.hex
+        serialDump: False
+        serialForward: True
+        gpioTracer: True

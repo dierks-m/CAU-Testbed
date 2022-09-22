@@ -1,0 +1,17 @@
+name: Demonstration of all options
+duration: 5:00
+nodes:
+  - id: raspi01
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+        serialDump: True
+        serialForward: True
+        gpioTracer: True
+  - id: raspi02
+    modules:
+      - id: NRF52
+        firmware: test_nrf.nrf52.hex
+        serialDump: False
+        serialForward: True
+        gpioTracer: True

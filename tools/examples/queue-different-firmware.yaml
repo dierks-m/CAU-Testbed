@@ -1,0 +1,11 @@
+name: Experiment w/ different firmware files
+duration: 5:00
+nodes:
+  - id: raspi01
+    modules:
+      - id: ZOUL
+        firmware: zoul-test.zoul
+  - id: raspi02
+    modules:
+      - id: NRF52
+        firmware: test_nrf.nrf52.hex

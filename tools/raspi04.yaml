@@ -1,8 +1,18 @@
 name: 20 Nodes 5 Firmware Threads 5 Log Retrieval Threads
-start: 2022-09-09T12:06
-end:   2022-09-09T12:07
+start: 2022-09-22T12:39
+end:   2022-09-22T12:40
 nodes:
+  - id: raspi01
+    modules:
+      # - id: SKY
+      #   firmware: hello-world.sky.ihex
+      - id: NRF52
+        firmware: test_nrf.nrf52.hex
+        gpioTracer: True
   - id: raspi04
     modules:
-      - id: ZOUL
-        firmware: zoul-test.zoul
+      # - id: SKY
+      #   firmware: hello-world.sky.ihex
+      - id: NRF52
+        firmware: test_nrf.nrf52.hex
+        gpioTracer: True
