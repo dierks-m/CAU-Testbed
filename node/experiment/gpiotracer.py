@@ -37,7 +37,7 @@ class GPIOTracer:
                 return
 
             self.logger.info("Stopping GPIO trace")
-            os.system(f'gpiotc --stop')
+            os.system(f'gpiotc --stop > /dev/null')
             self.owner = None
             self.logger = None
 
