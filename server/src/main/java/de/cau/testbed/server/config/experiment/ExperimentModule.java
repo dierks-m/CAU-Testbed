@@ -7,6 +7,10 @@ import de.cau.testbed.server.constants.DeviceType;
 
 import java.util.Optional;
 
+/**
+ * Holds information about an individual module (e.g. ZOUL, SKY) for a given experiment node {@link ExperimentNode}.
+ * This includes the used firmware and the utilized data collection methods (serial dump, serial forward and GPIO trace).
+ */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ExperimentModule {
     @JsonProperty("id")
