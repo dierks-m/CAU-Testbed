@@ -2,12 +2,14 @@ package de.cau.testbed.server.module;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.cau.testbed.server.constants.DeviceStatus;
-import de.cau.testbed.server.constants.KafkaConstants;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 
+/**
+ * Holds information about an individual node's status (ALIVE, DEAD, RECONNECT) and handles heartbeat messages.
+ */
 public class NodeStatusObject {
     private static final long INITIAL_CONTACT_TIME_MS = 120_000;
 
