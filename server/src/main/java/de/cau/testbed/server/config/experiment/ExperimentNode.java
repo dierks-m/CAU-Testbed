@@ -7,6 +7,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Describes a node of an experiment descriptor.
+ * Hold information about the node's id (e.g. raspi01) and the used modules (e.g. ZOUL and SKY)
+ * @param id Node's id, e.g., raspi01
+ * @param modules Used modules
+ */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public record ExperimentNode(
         @JsonProperty("id") String id,
