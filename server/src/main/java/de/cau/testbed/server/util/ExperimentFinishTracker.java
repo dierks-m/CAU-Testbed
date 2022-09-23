@@ -91,7 +91,7 @@ public class ExperimentFinishTracker implements Flow.Subscriber<LogRetrievedEven
 
     private boolean areAllLogsReceived() {
         for (ExperimentNode node : descriptor.getNodes())
-            if (!retrievedIds.contains(node.id))
+            if (!retrievedIds.contains(node.id()))
                 return false;
 
         return true;

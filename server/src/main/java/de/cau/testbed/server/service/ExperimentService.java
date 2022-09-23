@@ -102,8 +102,8 @@ public class ExperimentService {
 
     private void assertHardwareNodeExists(ExperimentNode node) throws UnknownModuleException, UnknownNodeException {
         for (HardwareNode hardwareNode : availableNodes) {
-            if (hardwareNode.id.equals(node.id)) {
-                for (ExperimentModule module : node.modules) {
+            if (hardwareNode.id.equals(node.id())) {
+                for (ExperimentModule module : node.modules()) {
                     if (!hardwareNode.capabilities.contains(module.moduleType))
                         throw new UnknownModuleException("Module type " + module.moduleType + " is not supported by " + hardwareNode.id);
                     else
@@ -112,7 +112,7 @@ public class ExperimentService {
             }
         }
 
-        throw new UnknownNodeException("No node called " + node.id + " exists");
+        throw new UnknownNodeException("No node called " + node.id() + " exists");
     }
 
     public void scheduleExperiment(long id, User user) {
@@ -137,7 +137,7 @@ public class ExperimentService {
         final Set<String> firmwares = new HashSet<>();
 
         for (ExperimentNode node : experiment.getNodes()) {
-            for (ExperimentModule module : node.modules) {
+            for (ExperimentModule module : node.modules()) {
                 firmwares.add(module.firmware);
             }
         }
