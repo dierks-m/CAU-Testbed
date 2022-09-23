@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Representation of data, as stored in users.yaml file.
+ * Holds information about individual users and their roles as well as the next user ID.
+ */
 public class YAMLUserTable {
     @JsonProperty("users")
     private final List<YAMLUser> users;

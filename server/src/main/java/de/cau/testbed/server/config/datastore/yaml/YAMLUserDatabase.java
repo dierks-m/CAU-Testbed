@@ -10,7 +10,13 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Optional;
 
+/**
+ * YAML representation of user database, as stored in users.yaml.
+ * Wraps loading and storing of data around the actual representation in {@link YAMLUserTable} of data.
+ */
 public class YAMLUserDatabase implements UserDatabase {
+    private static final String USERS_FILE_NAME = "users.yaml";
+
     private final Path workingDirectory;
     private final YAMLUserTable userTable;
 
@@ -21,7 +27,7 @@ public class YAMLUserDatabase implements UserDatabase {
 
     private YAMLUserTable loadUserTable() {
         try {
-            return YAMLParser.parseFile(workingDirectory.resolve("users.yaml"), YAMLUserTable.class);
+            return YAMLParser.parseFile(workingDirectory.resolve(USERS_FILE_NAME), YAMLUserTable.class);
         } catch (IOException e) {
             return new YAMLUserTable(Collections.emptyList(), 1);
         }
@@ -29,7 +35,7 @@ public class YAMLUserDatabase implements UserDatabase {
 
     private void writeUserTable() {
         try {
-            YAMLParser.writeFile(workingDirectory.resolve("users.yaml"), userTable);
+            YAMLParser.writeFile(workingDirectory.resolve(USERS_FILE_NAME), userTable);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
